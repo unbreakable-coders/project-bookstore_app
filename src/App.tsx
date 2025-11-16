@@ -12,14 +12,12 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { AboutPage } from "./pages/AboutPage";
 import { ContactPage } from "./pages/ContactPage";
 import { PageNotFound } from "./pages/NotFoundPage";
-
 import DevPreviewPage from "./pages/DevPreviewPage";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        {/* Стартова сторінка → Dev Preview */}
         <Route index element={<DevPreviewPage />} />
 
         <Route path="home" element={<HomePage />} />
@@ -33,8 +31,6 @@ export default function App() {
         <Route path="register" element={<RegisterPage />} />
 
         <Route path="dev/preview" element={<DevPreviewPage />} />
-
-        {/* 404 */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
