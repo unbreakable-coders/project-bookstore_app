@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import { Layout } from "./components/Layout/Layout";
+import { AppLayout } from "./components/templates/AppLayout";
 
 import { HomePage } from "./pages/HomePage";
 import { CatalogPage } from "./pages/CatalogPage";
@@ -18,7 +18,7 @@ import DevPreviewPage from "./pages/DevPreviewPage";
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<AppLayout />}>
         {/* Стартова сторінка → Dev Preview */}
         <Route index element={<DevPreviewPage />} />
 
