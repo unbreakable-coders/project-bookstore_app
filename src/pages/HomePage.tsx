@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/atoms/Button";
+import { Input } from "@/components/atoms/Input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/molecules/BookPreview/Card";
 
 export default function HomePage() {
   const gridCells = Array.from({ length: 12 }, (_, index) => index + 1);
