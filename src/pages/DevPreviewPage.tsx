@@ -7,7 +7,11 @@ import {
   CardTitle,
 } from "@/components/molecules/BookPreview/Card";
 
+import { useSupabaseHealthCheck } from "@/hooks/useSupabaseHealthCheck";
+
 export default function DevPreviewPage() {
+  useSupabaseHealthCheck();
+
   const gridCells = Array.from({ length: 12 }, (_, index) => index + 1);
 
   return (
@@ -144,7 +148,10 @@ export default function DevPreviewPage() {
             </div>
 
             <div className="rounded-xl bg-card shadow p-4 flex flex-col items-center gap-2">
-              <div className="h-16 w-16 rounded-full" style={{ backgroundColor: "#27AE60" }} />
+              <div
+                className="h-16 w-16 rounded-full"
+                style={{ backgroundColor: "#27AE60" }}
+              />
               <p className="text-sm font-semibold text-foreground">Green</p>
               <p className="text-xs text-muted-foreground">#27AE60</p>
             </div>
@@ -174,7 +181,9 @@ export default function DevPreviewPage() {
                 key={cell}
                 className="flex items-center justify-center h-16 rounded bg-muted border border-border"
               >
-                <span className="text-xs font-semibold text-foreground">{cell}</span>
+                <span className="text-xs font-semibold text-foreground">
+                  {cell}
+                </span>
               </div>
             ))}
           </div>
@@ -246,10 +255,14 @@ export default function DevPreviewPage() {
 
         {/* FONT TEST */}
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-foreground">Font test (Manrope)</h2>
+          <h2 className="text-xl font-semibold text-foreground">
+            Font test (Manrope)
+          </h2>
 
           <div className="space-y-3 bg-card shadow p-4 rounded-xl">
-            <p className="text-sm text-muted-foreground">Перевірка різних ваг шрифту:</p>
+            <p className="text-sm text-muted-foreground">
+              Перевірка різних ваг шрифту:
+            </p>
 
             <p className="text-base font-normal text-foreground">
               400 Regular — The quick brown fox jumps over the lazy dog.
