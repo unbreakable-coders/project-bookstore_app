@@ -10,6 +10,8 @@ import HeartIcon from '../../../assets/icons/icon-heart.svg';
 import SearchIcon from '../../../assets/icons/icon-search.svg';
 import UserIcon from '../../../assets/icons/icon-user.svg';
 import CartIcon from '../../../assets/icons/icon-cart.svg';
+import UnderlineActive from '../../../assets/icons/icon_underlining_black.svg';
+import UnderlineDisabled from '../../../assets/icons/icon_underlining_gray.svg';
 
 const iconMap = {
   arrowDown: ArrowDown,
@@ -22,6 +24,8 @@ const iconMap = {
   search: SearchIcon,
   user: UserIcon,
   cart: CartIcon,
+  underlineActive: UnderlineActive,
+  underlineDisabled: UnderlineDisabled,
 } as const;
 
 export type IconName = keyof typeof iconMap;
