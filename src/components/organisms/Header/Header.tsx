@@ -1,18 +1,17 @@
-import { useState } from "react";
-import { Logo } from "../../atoms/Logo";
-import { Icon } from "../../atoms/Icon";
-import type { IconName } from "../../atoms/Icon";
-import { Input } from "../../atoms/Input";
-import { Dropdown } from "../../atoms/Dropdown";
+import { useState } from 'react';
+import { Logo } from '../../atoms/Logo';
+import { Icon } from '../../atoms/Icon';
+import type { IconName } from '../../atoms/Icon';
+import { Input } from '../../atoms/Input';
+import { Dropdown } from '../../atoms/Dropdown';
 
-const navItems = ["Home", "Paper", "Kindle", "Audiobook"];
+const navItems = ['Home', 'Paper', 'Kindle', 'Audiobook'];
 
-type MobileIcon = Extract<IconName, "heart" | "cart" | "user">;
+type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
 export const Header = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMobileIcon, setActiveMobileIcon] =
-    useState<MobileIcon>("heart");
+  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
 
   const toggleMobile = () => setIsMobileOpen(prev => !prev);
   const closeMobile = () => setIsMobileOpen(false);
@@ -34,13 +33,13 @@ export const Header = () => {
                   type="button"
                   className={`relative pb-1 transition-colors ${
                     index === 0
-                      ? "text-[#050505]"
-                      : "text-[#9F9F9F] hover:text-[#050505]"
+                      ? 'text-[#050505]'
+                      : 'text-[#9F9F9F] hover:text-[#050505]'
                   }`}
                 >
                   {item}
                   {index === 0 && (
-                    <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 h-[2px] bg-[#050505]" />
+                    <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 h-0.5 bg-[#050505]" />
                   )}
                 </button>
               ))}
@@ -52,10 +51,7 @@ export const Header = () => {
             {/* Search + Categories (only lg+) */}
             <div className="hidden lg:flex items-center gap-4">
               <div className="w-[289px]">
-                <Input
-                  withSearchIcon
-                  placeholder="Find a book or author"
-                />
+                <Input withSearchIcon placeholder="Find a book or author" />
               </div>
 
               <Dropdown label="Categories" />
@@ -63,7 +59,7 @@ export const Header = () => {
 
             {/* Tablet icons (md–lg): search + heart + cart + user */}
             <div className="hidden md:flex lg:hidden items-center gap-2">
-              {["search", "heart", "cart", "user"].map(name => (
+              {['search', 'heart', 'cart', 'user'].map(name => (
                 <button
                   key={name}
                   type="button"
@@ -76,7 +72,7 @@ export const Header = () => {
 
             {/* Desktop icons (lg+): heart + cart + user */}
             <div className="hidden lg:flex items-center gap-2">
-              {["heart", "cart", "user"].map(name => (
+              {['heart', 'cart', 'user'].map(name => (
                 <button
                   key={name}
                   type="button"
@@ -95,7 +91,7 @@ export const Header = () => {
               aria-label="Toggle navigation"
             >
               <Icon
-                name={isMobileOpen ? "close" : "menu"}
+                name={isMobileOpen ? 'close' : 'menu'}
                 className="h-4 w-4"
               />
             </button>
@@ -115,15 +111,13 @@ export const Header = () => {
                     key={item}
                     type="button"
                     className={`block w-full text-left ${
-                      index === 0
-                        ? "text-[#050505]"
-                        : "hover:text-[#050505]"
+                      index === 0 ? 'text-[#050505]' : 'hover:text-[#050505]'
                     }`}
                     onClick={closeMobile}
                   >
                     {item}
                     {index === 0 && (
-                      <span className="mt-1 block h-[2px] w-10 bg-[#050505]" />
+                      <span className="mt-1 block h-0.5 w-10 bg-[#050505]" />
                     )}
                   </button>
                 ))}
@@ -131,10 +125,7 @@ export const Header = () => {
 
               {/* Search field */}
               <div className="mt-6">
-                <Input
-                  withSearchIcon
-                  placeholder="Find a book or author"
-                />
+                <Input withSearchIcon placeholder="Find a book or author" />
               </div>
 
               {/* Categories dropdown (full width) */}
@@ -146,7 +137,7 @@ export const Header = () => {
             {/* bottom icon bar (heart + cart + user) */}
             <div className="border-t">
               <div className="grid grid-cols-3">
-                {(["heart", "cart", "user"] as MobileIcon[]).map(name => {
+                {(['heart', 'cart', 'user'] as MobileIcon[]).map(name => {
                   const isActive = activeMobileIcon === name;
 
                   return (
@@ -158,8 +149,8 @@ export const Header = () => {
                     >
                       <Icon name={name} className="h-5 w-5" />
                       <span
-                        className={`mt-2 h-[2px] w-12 ${
-                          isActive ? "bg-[#050505]" : "bg-transparent"
+                        className={`mt-2 h-0.5 w-12 ${
+                          isActive ? 'bg-[#050505]' : 'bg-transparent'
                         }`}
                       />
                     </button>
