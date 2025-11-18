@@ -1,11 +1,11 @@
-import { Button } from "@/components/atoms/Button";
-import { Input } from "@/components/atoms/Input";
+import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/molecules/BookPreview/Card";
+} from '@/components/molecules/BookPreview/Card';
 
 export default function DevPreviewPage() {
   const gridCells = Array.from({ length: 12 }, (_, index) => index + 1);
@@ -26,14 +26,10 @@ export default function DevPreviewPage() {
 
         {/* FORM TEST */}
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-foreground">
-            Form check
-          </h2>
+          <h2 className="text-xl font-semibold text-foreground">Form check</h2>
 
           <div className="space-y-2 max-w-sm">
-            <p className="text-sm font-medium text-foreground">
-              Your name:
-            </p>
+            <p className="text-sm font-medium text-foreground">Your name:</p>
             <Input placeholder="Enter your name..." />
           </div>
 
@@ -90,12 +86,8 @@ export default function DevPreviewPage() {
             </div>
 
             <div className="rounded-xl bg-foreground shadow p-4 text-background space-y-2">
-              <p className="text-xs uppercase opacity-70">
-                Dark surface
-              </p>
-              <p className="text-sm">
-                Testing contrast and padding
-              </p>
+              <p className="text-xs uppercase opacity-70">Dark surface</p>
+              <p className="text-sm">Testing contrast and padding</p>
             </div>
           </div>
         </section>
@@ -133,7 +125,9 @@ export default function DevPreviewPage() {
 
             <div className="rounded-xl bg-card shadow p-4 flex flex-col items-center gap-2">
               <div className="h-16 w-16 rounded-full bg-background border border-border" />
-              <p className="text-sm font-semibold text-foreground">Hover + BG</p>
+              <p className="text-sm font-semibold text-foreground">
+                Hover + BG
+              </p>
               <p className="text-xs text-muted-foreground">#FAFBFC</p>
             </div>
 
@@ -144,7 +138,10 @@ export default function DevPreviewPage() {
             </div>
 
             <div className="rounded-xl bg-card shadow p-4 flex flex-col items-center gap-2">
-              <div className="h-16 w-16 rounded-full" style={{ backgroundColor: "#27AE60" }} />
+              <div
+                className="h-16 w-16 rounded-full"
+                style={{ backgroundColor: '#27AE60' }}
+              />
               <p className="text-sm font-semibold text-foreground">Green</p>
               <p className="text-xs text-muted-foreground">#27AE60</p>
             </div>
@@ -164,17 +161,19 @@ export default function DevPreviewPage() {
           </h2>
 
           <p className="text-sm text-muted-foreground">
-            4 columns on mobile (320–639px), 12 columns on tablet & desktop (640px+).
-            Resize viewport to see how cells rearrange.
+            4 columns on mobile (320–639px), 12 columns on tablet & desktop
+            (640px+). Resize viewport to see how cells rearrange.
           </p>
 
           <div className="grid grid-cols-4 gap-4 md:grid-cols-12">
-            {gridCells.map((cell) => (
+            {gridCells.map(cell => (
               <div
                 key={cell}
                 className="flex items-center justify-center h-16 rounded bg-muted border border-border"
               >
-                <span className="text-xs font-semibold text-foreground">{cell}</span>
+                <span className="text-xs font-semibold text-foreground">
+                  {cell}
+                </span>
               </div>
             ))}
           </div>
@@ -227,8 +226,8 @@ export default function DevPreviewPage() {
                 Body text — 14 / 21 (default)
               </p>
               <p>
-                The quick brown fox jumps over the lazy dog. The quick brown fox jumps
-                over the lazy dog.
+                The quick brown fox jumps over the lazy dog. The quick brown fox
+                jumps over the lazy dog.
               </p>
             </div>
 
@@ -237,8 +236,8 @@ export default function DevPreviewPage() {
                 Small text — 12 / 15
               </p>
               <small>
-                The quick brown fox jumps over the lazy dog. The quick brown fox jumps
-                over the lazy dog.
+                The quick brown fox jumps over the lazy dog. The quick brown fox
+                jumps over the lazy dog.
               </small>
             </div>
           </div>
@@ -246,10 +245,14 @@ export default function DevPreviewPage() {
 
         {/* FONT TEST */}
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-foreground">Font test (Manrope)</h2>
+          <h2 className="text-xl font-semibold text-foreground">
+            Font test (Manrope)
+          </h2>
 
           <div className="space-y-3 bg-card shadow p-4 rounded-xl">
-            <p className="text-sm text-muted-foreground">Перевірка різних ваг шрифту:</p>
+            <p className="text-sm text-muted-foreground">
+              Перевірка різних ваг шрифту:
+            </p>
 
             <p className="text-base font-normal text-foreground">
               400 Regular — The quick brown fox jumps over the lazy dog.

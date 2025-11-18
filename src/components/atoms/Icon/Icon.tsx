@@ -1,13 +1,15 @@
-import type { FC, ImgHTMLAttributes } from "react";
+import type { FC, ImgHTMLAttributes } from 'react';
 
-import ArrowDown from "../../../assets/icons/icon-arrow-down.svg";
-import ArrowUp from "../../../assets/icons/icon-arrow-up.svg";
-import BurgerMenu from "../../../assets/icons/icon-burger-menu.svg";
-import CloseIcon from "../../../assets/icons/icon-close.svg";
-import HeartIcon from "../../../assets/icons/icon-heart.svg";
-import SearchIcon from "../../../assets/icons/icon-search.svg";
-import UserIcon from "../../../assets/icons/icon-user.svg";
-import CartIcon from "../../../assets/icons/icon-cart.svg";
+import ArrowDown from '../../../assets/icons/icon-arrow-down.svg';
+import ArrowUp from '../../../assets/icons/icon-arrow-up.svg';
+import BurgerMenu from '../../../assets/icons/icon-burger-menu.svg';
+import CloseIcon from '../../../assets/icons/icon-close.svg';
+import HeartIcon from '../../../assets/icons/icon-heart.svg';
+import SearchIcon from '../../../assets/icons/icon-search.svg';
+import UserIcon from '../../../assets/icons/icon-user.svg';
+import CartIcon from '../../../assets/icons/icon-cart.svg';
+import HomeIcon from '../../../assets/icons/icon-home.svg';
+import ArrowRight from '../../../assets/icons/icon-arrow-right.svg';
 
 const iconMap = {
   arrowDown: ArrowDown,
@@ -18,13 +20,15 @@ const iconMap = {
   search: SearchIcon,
   user: UserIcon,
   cart: CartIcon,
+  home: HomeIcon,
+  arrowRight: ArrowRight,
 } as const;
 
 export type IconName = keyof typeof iconMap;
 
 type IconProps = {
   name: IconName;
-} & Omit<ImgHTMLAttributes<HTMLImageElement>, "src">;
+} & Omit<ImgHTMLAttributes<HTMLImageElement>, 'src'>;
 
 export const Icon: FC<IconProps> = ({ name, className, alt, ...rest }) => {
   const src = iconMap[name];
@@ -33,7 +37,7 @@ export const Icon: FC<IconProps> = ({ name, className, alt, ...rest }) => {
     <img
       src={src}
       alt={alt ?? name}
-      className={className ?? "h-4 w-4"}
+      className={className ?? 'h-4 w-4'}
       {...rest}
     />
   );
