@@ -9,7 +9,7 @@ import {
 } from '@/components/atoms/Pagination';
 
 export const CatalogPage = () => {
-  const currentPage = 3; // поки що захардкоджено, потім зробимо динамічним
+  const currentPage = 1; // поки що захардкоджено, потім зробимо динамічним
 
   return (
     <section className="container space-y-4">
@@ -34,7 +34,7 @@ export const CatalogPage = () => {
 
       <section className="pt-6 gap-y-10 mx-auto">
         <div className="grid gap-4 sm:grid-cols-2 gap-y-10 lg:grid-cols-4">
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/covers/fifth-discipline.jpg"
               alt="The Fifth Discipline"
@@ -58,7 +58,7 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/covers/fifth-discipline.jpg"
               alt="The Fifth Discipline"
@@ -82,7 +82,7 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/books/img/kindle/harry-potter-1.jpg"
               alt="Harry Potter and the Philosopher's Stone"
@@ -104,7 +104,7 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/books/img/kindle/harry-potter-1.jpg"
               alt="Harry Potter and the Philosopher's Stone"
@@ -127,7 +127,7 @@ export const CatalogPage = () => {
           </div>
 
           {/* Card 5 */}
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/covers/fifth-discipline.jpg"
               alt="The Fifth Discipline"
@@ -151,7 +151,7 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/covers/fifth-discipline.jpg"
               alt="The Fifth Discipline"
@@ -176,7 +176,7 @@ export const CatalogPage = () => {
           </div>
 
           {/* Card 3 */}
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/books/img/kindle/harry-potter-1.jpg"
               alt="Harry Potter and the Philosopher's Stone"
@@ -198,7 +198,7 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2">
+          <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/books/img/kindle/harry-potter-1.jpg"
               alt="Harry Potter and the Philosopher's Stone"
@@ -231,20 +231,29 @@ export const CatalogPage = () => {
               disabled={currentPage === 1}
             />
             <PaginationPage href="?page=1">1</PaginationPage>
-            <PaginationPage href="?page=2" isCurrent={currentPage === 2}>
+            <PaginationPage
+              href="?page=2"
+              isCurrent={currentPage === currentPage + 1}
+            >
               2
             </PaginationPage>
-            <PaginationPage href="?page=3" isCurrent={currentPage === 3}>
+            <PaginationPage
+              href="?page=3"
+              isCurrent={currentPage === currentPage + 2}
+            >
               3
             </PaginationPage>
-            <PaginationPage href="?page=4" isCurrent={currentPage === 4}>
+            <PaginationPage
+              href="?page=4"
+              isCurrent={currentPage === currentPage + 3}
+            >
               4
             </PaginationPage>
             <PaginationGap />
             <PaginationPage href="?page=10">10</PaginationPage>
             <PaginationNextButton
               href={`?page=${currentPage + 1}`}
-              disabled={currentPage === 10}
+              disabled={currentPage === currentPage + 9}
             />
           </PaginationList>
         </Pagination>
