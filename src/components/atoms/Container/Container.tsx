@@ -1,16 +1,16 @@
-import type { FC } from "react";
-import LogoSvg from "../../../assets/icons/logo-nice-book.svg";
+import type { FC, ReactNode } from "react";
 
-interface LogoProps {
+interface ContainerProps {
+  children: ReactNode;
   className?: string;
 }
 
-export const Logo: FC<LogoProps> = ({ className }) => {
+export const Container: FC<ContainerProps> = ({ children, className }) => {
   return (
-    <img
-      src={LogoSvg}
-      alt="Nice Boook Logo"
-      className={className ?? "h-6 w-auto"}
-    />
+    <div
+      className={`mx-auto w-full max-w-[1200px] px-4 ${className ?? ""}`}
+    >
+      {children}
+    </div>
   );
 };
