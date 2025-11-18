@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
-type SupabaseStatus = "checking" | "ok" | "error";
+type SupabaseStatus = 'checking' | 'ok' | 'error';
 
-type SupabaseHealthState = {
+interface SupabaseHealthState {
   status: SupabaseStatus;
   message: string | null;
-};
+}
 
 export const useSupabaseHealthCheck = (): SupabaseHealthState => {
   const [state, setState] = useState<SupabaseHealthState>({
-    status: "checking",
+    status: 'checking',
     message: null,
   });
 
@@ -22,54 +22,50 @@ export const useSupabaseHealthCheck = (): SupabaseHealthState => {
       // 1. Перевірка env-змінних
       if (!url || !anonKey) {
         const msg =
-          "Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.";
+          'Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.';
 
-        // eslint-disable-next-line no-console
-        console.error("[Supabase Health Check] ENV ERROR:", msg, {
+        console.error('[Supabase Health Check] ENV ERROR:', msg, {
           urlPresent: Boolean(url),
           anonKeyPresent: Boolean(anonKey),
         });
 
         setState({
-          status: "error",
+          status: 'error',
           message: msg,
         });
 
         return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log("[Supabase Health Check] Env OK:", {
+      console.log('[Supabase Health Check] Env OK:', {
         url,
         anonKeyPreview: `${anonKey.slice(0, 6)}...(${anonKey.length} chars)`,
       });
 
       setState({
-        status: "checking",
-        message: "Checking Supabase connection…",
+        status: 'checking',
+        message: 'Checking Supabase connection…',
       });
 
       // 2. Запит до Supabase
       const { data, error } = await supabase.auth.getSession();
 
       if (error) {
-        // eslint-disable-next-line no-console
-        console.error("[Supabase Health Check] ERROR:", error);
+        console.error('[Supabase Health Check] ERROR:', error);
 
         setState({
-          status: "error",
-          message: error.message || "Failed to get session from Supabase.",
+          status: 'error',
+          message: error.message || 'Failed to get session from Supabase.',
         });
 
         return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log("[Supabase Health Check] OK:", data);
+      console.log('[Supabase Health Check] OK:', data);
 
       setState({
-        status: "ok",
-        message: data?.session ? "Session active" : "Connected (no session)",
+        status: 'ok',
+        message: data?.session ? 'Session active' : 'Connected (no session)',
       });
     };
 
