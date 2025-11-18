@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BookImage } from '../../atoms/BookImage/BookImage';
 import { Badge } from '../../atoms/Badge/Badge';
 import { BookInfo } from '../../molecules/BookInfo/BookInfo';
@@ -41,29 +41,32 @@ export const BookCard: React.FC<BookCardProps> = ({
   book,
   onAddToCart,
   onToggleWishlist,
-  isInWishlist: initialIsInWishlist = false,
-  isInCart: initialIsInCart = false,
+  isInWishlist = false,
+  isInCart = false,
 }) => {
-  const [isInCart, setIsInCart] = useState(initialIsInCart);
-  const [isInWishlist, setIsInWishlist] = useState(initialIsInWishlist);
+  const [optimisticInCart, setOptimisticInCart] = useState(isInCart);
 
-  const hasDiscount = book.priceDiscount !== null;
+  useEffect(() => {
+    setOptimisticInCart(isInCart);
+  }, [isInCart]);
 
   const handleAddToCart = () => {
-    setIsInCart(true);
+    const newValue = !optimisticInCart;
+    setOptimisticInCart(newValue);
     onAddToCart?.(book.id);
   };
 
   const handleToggleWishlist = () => {
-    setIsInWishlist(!isInWishlist);
     onToggleWishlist?.(book.id);
   };
+
+  const inStock = book.inStock ?? true;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300">
       <div className="relative">
         <BookImage src={book.images[0]} alt={book.name} />
-        {hasDiscount && <Badge>Знижка</Badge>}
+        {book.priceDiscount !== null && <Badge>Знижка</Badge>}
       </div>
 
       <div className="space-y-3">
@@ -74,14 +77,14 @@ export const BookCard: React.FC<BookCardProps> = ({
           discountPrice={book.priceDiscount}
         />
 
-        <StockStatus inStock={book.inStock ?? false} />
+        <StockStatus inStock={inStock} />
 
         <BookActions
           onAddToCart={handleAddToCart}
           onToggleWishlist={handleToggleWishlist}
-          isInCart={isInCart}
+          isInCart={optimisticInCart}
           isInWishlist={isInWishlist}
-          inStock={book.inStock ?? false}
+          inStock={inStock}
         />
       </div>
     </div>

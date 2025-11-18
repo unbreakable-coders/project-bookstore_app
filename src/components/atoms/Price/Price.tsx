@@ -16,4 +16,6 @@ export const Price: React.FC<PriceProps> = ({
   };
 
   return <span className={styles[variant]}>₴{amount}</span>;
+  //return <span className={styles[variant]}>${amount}</span>;
+  //return <span className={styles[variant]}>₴{Math.round(amount*42)}</span>;
 };
