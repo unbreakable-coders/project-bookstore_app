@@ -1,45 +1,45 @@
-import { Button } from "@/components/atoms/Button";
-import { Input } from "@/components/atoms/Input";
+import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/molecules/BookPreview/Card";
+} from '@/components/molecules/BookPreview/Card';
 
-import { useSupabaseHealthCheck } from "@/hooks/useSupabaseHealthCheck";
+import { useSupabaseHealthCheck } from '@/hooks/useSupabaseHealthCheck';
 
 export default function DevPreviewPage() {
   const { status, message } = useSupabaseHealthCheck();
 
   const statusLabel =
-    status === "checking"
-      ? "Checking…"
-      : status === "ok"
-      ? "Connected"
-      : "Error";
+    status === 'checking'
+      ? 'Checking…'
+      : status === 'ok'
+        ? 'Connected'
+        : 'Error';
 
   const statusColorClass =
-    status === "ok"
-      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-      : status === "checking"
-      ? "bg-amber-50 text-amber-800 border-amber-200"
-      : "bg-red-50 text-red-800 border-red-200";
+    status === 'ok'
+      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+      : status === 'checking'
+        ? 'bg-amber-50 text-amber-800 border-amber-200'
+        : 'bg-red-50 text-red-800 border-red-200';
 
   const dotColorClass =
-    status === "ok"
-      ? "bg-emerald-500"
-      : status === "checking"
-      ? "bg-amber-500"
-      : "bg-red-500";
+    status === 'ok'
+      ? 'bg-emerald-500'
+      : status === 'checking'
+        ? 'bg-amber-500'
+        : 'bg-red-500';
 
   const description =
     message ??
-    (status === "checking"
-      ? "Running Supabase health check…"
-      : status === "ok"
-      ? "Supabase client initialized successfully."
-      : "Supabase connection failed.");
+    (status === 'checking'
+      ? 'Running Supabase health check…'
+      : status === 'ok'
+        ? 'Supabase client initialized successfully.'
+        : 'Supabase connection failed.');
 
   const gridCells = Array.from({ length: 12 }, (_, index) => index + 1);
 
@@ -74,14 +74,10 @@ export default function DevPreviewPage() {
 
         {/* FORM TEST */}
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-foreground">
-            Form check
-          </h2>
+          <h2 className="text-xl font-semibold text-foreground">Form check</h2>
 
           <div className="space-y-2 max-w-sm">
-            <p className="text-sm font-medium text-foreground">
-              Your name:
-            </p>
+            <p className="text-sm font-medium text-foreground">Your name:</p>
             <Input placeholder="Enter your name..." />
           </div>
 
@@ -138,9 +134,7 @@ export default function DevPreviewPage() {
             </div>
 
             <div className="rounded-xl bg-foreground shadow p-4 text-background space-y-2">
-              <p className="text-xs uppercase opacity-70">
-                Dark surface
-              </p>
+              <p className="text-xs uppercase opacity-70">Dark surface</p>
               <p className="text-sm">Testing contrast and padding</p>
             </div>
           </div>
@@ -161,9 +155,7 @@ export default function DevPreviewPage() {
 
             <div className="rounded-xl bg-card shadow p-4 flex flex-col items-center gap-2">
               <div className="h-16 w-16 rounded-full bg-secondary" />
-              <p className="text-sm font-semibold text-foreground">
-                Secondary
-              </p>
+              <p className="text-sm font-semibold text-foreground">Secondary</p>
               <p className="text-xs text-muted-foreground">#89939A</p>
             </div>
 
@@ -196,7 +188,7 @@ export default function DevPreviewPage() {
             <div className="rounded-xl bg-card shadow p-4 flex flex-col items-center gap-2">
               <div
                 className="h-16 w-16 rounded-full"
-                style={{ backgroundColor: "#27AE60" }}
+                style={{ backgroundColor: '#27AE60' }}
               />
               <p className="text-sm font-semibold text-foreground">Green</p>
               <p className="text-xs text-muted-foreground">#27AE60</p>
@@ -222,7 +214,7 @@ export default function DevPreviewPage() {
           </p>
 
           <div className="grid grid-cols-4 gap-4 md:grid-cols-12">
-            {gridCells.map((cell) => (
+            {gridCells.map(cell => (
               <div
                 key={cell}
                 className="flex items-center justify-center h-16 rounded bg-muted border border-border"
@@ -282,8 +274,8 @@ export default function DevPreviewPage() {
                 Body text — 14 / 21 (default)
               </p>
               <p>
-                The quick brown fox jumps over the lazy dog. The quick brown
-                fox jumps over the lazy dog.
+                The quick brown fox jumps over the lazy dog. The quick brown fox
+                jumps over the lazy dog.
               </p>
             </div>
 
@@ -292,8 +284,8 @@ export default function DevPreviewPage() {
                 Small text — 12 / 15
               </p>
               <small>
-                The quick brown fox jumps over the lazy dog. The quick brown
-                fox jumps over the lazy dog.
+                The quick brown fox jumps over the lazy dog. The quick brown fox
+                jumps over the lazy dog.
               </small>
             </div>
           </div>
