@@ -5,10 +5,12 @@ import ArrowUp from '../../../assets/icons/icon-arrow-up.svg';
 import BurgerMenu from '../../../assets/icons/icon-burger-menu.svg';
 import CloseIcon from '../../../assets/icons/icon-close.svg';
 import HeartIcon from '../../../assets/icons/icon-heart.svg';
-import HeartIconRed from '../../../assets/icons/icon-heart-red.svg';
 import SearchIcon from '../../../assets/icons/icon-search.svg';
-import UserIcon from '../../../assets/icons/icon-user.svg';
 import CartIcon from '../../../assets/icons/icon-cart.svg';
+import HomeIcon from '../../../assets/icons/icon-home.svg';
+import ArrowRight from '../../../assets/icons/icon-arrow-right.svg';
+import HeartIconRed from '../../../assets/icons/icon-heart-red.svg';
+import UserIcon from '../../../assets/icons/icon-user.svg';
 import TruckIcon from '../../../assets/icons/icon-truck.svg';
 
 const iconMap = {
@@ -21,6 +23,8 @@ const iconMap = {
   search: SearchIcon,
   user: UserIcon,
   cart: CartIcon,
+  home: HomeIcon,
+  arrowRight: ArrowRight,
   truck: TruckIcon,
 } as const;
 

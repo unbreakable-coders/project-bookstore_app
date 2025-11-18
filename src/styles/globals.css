@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /* ===========================
-   ЛОКАЛЬНІ ШРИФТИ
+  LOCAL FONTS
    =========================== */
 @font-face {
   font-family: 'Manrope';
@@ -28,7 +28,7 @@
 }
 
 /* ===========================
-   TAILWIND THEME TOKENS
+  TAILWIND THEME TOKENS
    =========================== */
 @theme inline {
   --font-sans: 'Manrope', system-ui, sans-serif;
@@ -48,11 +48,11 @@
 }
 
 /* ===========================
-   ROOT VARIABLES (Figma Palette)
+  ROOT VARIABLES (Figma Palette)
    =========================== */
 :root {
   --background: #fafbfc; /* Hover + BG */
-  --foreground: #313237; /* Primary */
+  --foreground: #313257; /* Primary */
 
   --card: #ffffff; /* White */
   --primary: #313237; /* Primary */
@@ -70,7 +70,7 @@
   --radius: 0.625rem;
 
   /* ===========================
-     Z-INDEX SCALE (Design Tokens)
+    Z-INDEX SCALE (Design Tokens)
      =========================== */
   --z-base: 1;
   --z-header: 10;
@@ -82,7 +82,7 @@
 }
 
 /* ===========================
-   BASE + RESET + TYPOGRAPHY
+  BASE + RESET + TYPOGRAPHY
    =========================== */
 @layer base {
   *,
@@ -142,7 +142,7 @@
 }
 
 /* ===========================
-   CONTAINER + GRID SHELL
+  CONTAINER + GRID SHELL
    =========================== */
 @layer utilities {
   .container {
@@ -159,7 +159,7 @@
     }
   }
 
-  /* Desktop: 1200px+ → fixed 1200px grid по центру */
+  /* Desktop: 1200px+ → fixed 1200px grid in the center */
   @media (min-width: 1200px) {
     .container {
       max-width: 1200px;
