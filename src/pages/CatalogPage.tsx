@@ -126,7 +126,6 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          {/* Card 5 */}
           <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/covers/fifth-discipline.jpg"
@@ -175,7 +174,6 @@ export const CatalogPage = () => {
             </button>
           </div>
 
-          {/* Card 3 */}
           <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
             <img
               src="/books/img/kindle/harry-potter-1.jpg"
@@ -222,7 +220,6 @@ export const CatalogPage = () => {
         </div>
       </section>
 
-      {/* Пагінація */}
       <section className="flex justify-center py-[64px] px-4">
         <Pagination>
           <PaginationList>
