@@ -134,6 +134,7 @@ export default function DevPreviewPage() {
             </div>
 
             <div className="rounded-xl bg-foreground shadow p-4 text-background space-y-2">
+              <p className="text-xs uppercase opacity-70">Dark surface</p>
               <p className="text-sm">Testing contrast and padding</p>
             </div>
           </div>
@@ -185,7 +186,10 @@ export default function DevPreviewPage() {
             </div>
 
             <div className="rounded-xl bg-card shadow p-4 flex flex-col items-center gap-2">
-              <div className="h-16 w-16 rounded-full" />
+              <div
+                className="h-16 w-16 rounded-full"
+                style={{ backgroundColor: '#27AE60' }}
+              />
               <p className="text-sm font-semibold text-foreground">Green</p>
               <p className="text-xs text-muted-foreground">#27AE60</p>
             </div>
@@ -269,14 +273,20 @@ export default function DevPreviewPage() {
               <p className="text-xs font-semibold text-muted-foreground uppercase">
                 Body text — 14 / 21 (default)
               </p>
-              <p></p>
+              <p>
+                The quick brown fox jumps over the lazy dog. The quick brown fox
+                jumps over the lazy dog.
+              </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase">
                 Small text — 12 / 15
               </p>
-              <small></small>
+              <small>
+                The quick brown fox jumps over the lazy dog. The quick brown fox
+                jumps over the lazy dog.
+              </small>
             </div>
           </div>
         </section>
