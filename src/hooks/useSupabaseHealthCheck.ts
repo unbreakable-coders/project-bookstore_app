@@ -1,0 +1,80 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
+type SupabaseStatus = "checking" | "ok" | "error";
+
+type SupabaseHealthState = {
+  status: SupabaseStatus;
+  message: string | null;
+};
+
+export const useSupabaseHealthCheck = (): SupabaseHealthState => {
+  const [state, setState] = useState<SupabaseHealthState>({
+    status: "checking",
+    message: null,
+  });
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      const url = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      // 1. Перевірка env-змінних
+      if (!url || !anonKey) {
+        const msg =
+          "Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.";
+
+        // eslint-disable-next-line no-console
+        console.error("[Supabase Health Check] ENV ERROR:", msg, {
+          urlPresent: Boolean(url),
+          anonKeyPresent: Boolean(anonKey),
+        });
+
+        setState({
+          status: "error",
+          message: msg,
+        });
+
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.log("[Supabase Health Check] Env OK:", {
+        url,
+        anonKeyPreview: `${anonKey.slice(0, 6)}...(${anonKey.length} chars)`,
+      });
+
+      setState({
+        status: "checking",
+        message: "Checking Supabase connection…",
+      });
+
+      // 2. Запит до Supabase
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.error("[Supabase Health Check] ERROR:", error);
+
+        setState({
+          status: "error",
+          message: error.message || "Failed to get session from Supabase.",
+        });
+
+        return;
+      }
+
+      // eslint-disable-next-line no-console
+      console.log("[Supabase Health Check] OK:", data);
+
+      setState({
+        status: "ok",
+        message: data?.session ? "Session active" : "Connected (no session)",
+      });
+    };
+
+    void checkConnection();
+  }, []);
+
+  return state;
+};
