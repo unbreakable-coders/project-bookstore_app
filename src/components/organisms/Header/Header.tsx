@@ -52,9 +52,10 @@ export const Header = () => {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* LEFT: logo + nav */}
           <div className="flex items-center gap-8">
-            <Link to="/" aria-label="Go to home page">
+            <Link to="/books/123" aria-label="Open book 123">
               <Logo className="h-7 w-auto" />
             </Link>
+
 
             {/* Desktop/tablet nav */}
             <nav className="hidden md:flex items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em]">
