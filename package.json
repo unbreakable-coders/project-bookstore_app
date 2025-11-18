@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "format": "prettier . --check",
     "fix-style": "eslint . --fix && prettier . --write",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
+    "@supabase/supabase-js": "^2.81.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.553.0",
@@ -20,7 +21,8 @@
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.6",
     "tailwind-merge": "^3.4.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -40,6 +42,7 @@
     "lint-staged": "^15.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
+    "sass-embedded": "^1.93.3",
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.3",

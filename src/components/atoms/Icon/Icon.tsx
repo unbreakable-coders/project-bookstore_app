@@ -12,6 +12,9 @@ import UserIcon from '../../../assets/icons/icon-user.svg';
 import CartIcon from '../../../assets/icons/icon-cart.svg';
 import UnderlineActive from '../../../assets/icons/icon-underlining-black.svg';
 import UnderlineDisabled from '../../../assets/icons/icon-underlining-gray.svg';
+import HomeIcon from '../../../assets/icons/icon-home.svg';
+import HeartIconRed from '../../../assets/icons/icon-heart-red.svg';
+import TruckIcon from '../../../assets/icons/icon-truck.svg';
 
 const iconMap = {
   arrowDown: ArrowDown,
@@ -21,11 +24,14 @@ const iconMap = {
   menu: BurgerMenu,
   close: CloseIcon,
   heart: HeartIcon,
+  heartRed: HeartIconRed,
   search: SearchIcon,
   user: UserIcon,
   cart: CartIcon,
   underlineActive: UnderlineActive,
   underlineDisabled: UnderlineDisabled,
+  home: HomeIcon,
+  truck: TruckIcon,
 } as const;
 
 export type IconName = keyof typeof iconMap;
