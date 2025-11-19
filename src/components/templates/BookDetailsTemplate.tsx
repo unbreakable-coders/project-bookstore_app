@@ -1,7 +1,7 @@
 import React from 'react';
 import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
 import { MainImageGallery } from '../molecules/ImageGallery';
-import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
+import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx'; 
 import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
 
 interface BookDetailsTemplateProps {
