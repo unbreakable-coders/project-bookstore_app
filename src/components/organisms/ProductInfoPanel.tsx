@@ -42,7 +42,7 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
   );
 
   return (
-    <div className="mt-8 max-w-[280px] sm:max-w-[267px] md:max-w-[320px] w-full">
+    <div className="mt-8 max-w-[280px] md:max-w-[267px] lg:max-w-[320px] w-full">
       {/* Category */}
       <div className="border-b border-border pb-4">
         <h5 className="font-bold text-secondary">Category</h5>
