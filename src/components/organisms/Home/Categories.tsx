@@ -5,17 +5,17 @@ export const Categories = () => {
     {
       title: 'Paper books',
       countOfBooks: '1,044 books',
-      videoSrc: 'public/books/img/categories/paper.mp4',
+      videoSrc: '/books/img/categories/paper.mp4',
     },
     {
       title: 'Audio books',
       countOfBooks: '344 books',
-      videoSrc: 'public/books/img/categories/audio.mp4',
+      videoSrc: '/books/img/categories/audio.mp4',
     },
     {
       title: 'Kindle books',
       countOfBooks: '265 books',
-      videoSrc: 'public/books/img/categories/kindlebook.mp4',
+      videoSrc: '/books/img/categories/kindlebook.mp4',
     },
   ];
 
