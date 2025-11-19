@@ -1,30 +1,24 @@
-import { Category } from '@/components/molecules/Category';
-import type { VideoName } from '@/components/atoms/Video';
-
-export interface CategoryType {
-  title: string;
-  countOfBooks: string;
-  video: VideoName;
-}
+import { Category, type CategoryType } from '@/components/molecules/Category';
 
 export const Categories = () => {
   const categories: CategoryType[] = [
     {
       title: 'Paper books',
       countOfBooks: '1,044 books',
-      video: 'videoPaperBooks',
+      videoSrc: '/books/img/categories/paper.mp4',
     },
     {
       title: 'Audio books',
       countOfBooks: '344 books',
-      video: 'videoAudioBooks',
+      videoSrc: '/books/img/categories/audio.mp4',
     },
     {
       title: 'Kindle books',
       countOfBooks: '265 books',
-      video: 'videoKindleBooks',
+      videoSrc: '/books/img/categories/kindlebook.mp4',
     },
   ];
+
   return (
     <div className="flex flex-col justify-center items-center px-4 w-full max-w-[1200px] m-auto">
       <h2 className="w-full mb-6 text-2xl font-bold text-center">

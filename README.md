@@ -71,6 +71,7 @@ export default defineConfig([
   },
 ]);
 ```
+
 ## Supabase Integration
 
 To run the project with Supabase, create a `.env.local` file in the project root:
@@ -78,3 +79,4 @@ To run the project with Supabase, create a `.env.local` file in the project root
 ```env
 VITE_SUPABASE_URL=your-project-url
 VITE_SUPABASE_ANON_KEY=your-anon-public-key
+```

@@ -1,37 +1,37 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ===========================
-   ЛОКАЛЬНІ ШРИФТИ
+  LOCAL FONTS
    =========================== */
 @font-face {
-  font-family: "Manrope";
-  src: url("/fonts/Manrope-Regular.otf") format("opentype");
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("/fonts/Manrope-SemiBold.otf") format("opentype");
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-SemiBold.otf') format('opentype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("/fonts/Manrope-Bold.otf") format("opentype");
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 /* ===========================
-   TAILWIND THEME TOKENS
+  TAILWIND THEME TOKENS
    =========================== */
 @theme inline {
-  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -45,21 +45,27 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* 🔽 кастомні брейкпоінти для Tailwind v4 */
+  --breakpoint-sm: 320px;
+  --breakpoint-md: 640px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1440px;
 }
 
 /* ===========================
-   ROOT VARIABLES (Figma Palette)
+  ROOT VARIABLES (Figma Palette)
    =========================== */
 :root {
-  --background: #fafbfc;        /* Hover + BG */
-  --foreground: #313257;        /* Primary */
+  --background: #fafbfc; /* Hover + BG */
+  --foreground: #313257; /* Primary */
 
-  --card: #ffffff;              /* White */
-  --primary: #313257;           /* Primary */
-  --secondary: #89939a;         /* Secondary */
-  --accent: #b4bdc3;            /* Icons */
+  --card: #ffffff; /* White */
+  --primary: #313237; /* Primary */
+  --secondary: #89939a; /* Secondary */
+  --accent: #b4bdc3; /* Icons */
 
-  --muted: #e2e6e9;             /* Elements */
+  --muted: #e2e6e9; /* Elements */
   --muted-foreground: #89939a;
 
   --destructive: #eb5757;
@@ -70,7 +76,7 @@
   --radius: 0.625rem;
 
   /* ===========================
-     Z-INDEX SCALE (Design Tokens)
+    Z-INDEX SCALE (Design Tokens)
      =========================== */
   --z-base: 1;
   --z-header: 10;
@@ -82,7 +88,7 @@
 }
 
 /* ===========================
-   BASE + RESET + TYPOGRAPHY
+  BASE + RESET + TYPOGRAPHY
    =========================== */
 @layer base {
   *,
@@ -142,13 +148,13 @@
 }
 
 /* ===========================
-   CONTAINER + GRID SHELL
+  CONTAINER + GRID SHELL
    =========================== */
 @layer utilities {
   .container {
     width: 100%;
     margin-inline: auto;
-    padding-inline: 16px; 
+    padding-inline: 16px;
     max-width: 100%;
   }
 
@@ -159,7 +165,7 @@
     }
   }
 
-  /* Desktop: 1200px+ → fixed 1200px grid по центру */
+  /* Desktop: 1200px+ → fixed 1200px grid in the center */
   @media (min-width: 1200px) {
     .container {
       max-width: 1200px;
