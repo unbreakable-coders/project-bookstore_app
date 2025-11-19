@@ -32,13 +32,11 @@ export const useCart = () => {
             const parsed = JSON.parse(saved) as CartMap;
             setCartMap(parsed);
           } catch (error) {
-            // eslint-disable-next-line no-console
             console.error('[Cart] Failed to parse cart from localStorage', error);
             setCartMap({});
           }
         }
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error('[Cart] Failed to load books:', err);
       } finally {
         setLoading(false);
@@ -54,8 +52,9 @@ export const useCart = () => {
   };
 
   const removeItem = (bookId: string) => {
-    const { [bookId]: _, ...rest } = cartMap;
-    saveCart(rest);
+    const nextCart = { ...cartMap };
+    delete nextCart[bookId];
+    saveCart(nextCart);
   };
 
   const changeQuantity = (bookId: string, delta: number) => {
