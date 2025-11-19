@@ -19,7 +19,7 @@ export const Category: FC<Props> = ({ category }) => {
         className="
           w-[368px] h-[289px] rounded-[16px] object-cover transition-all duration-300
           max-xl:w-[187px] max-xl:h-[187px] max-xl:rounded-[8px]
-          max-sm:w-[288px] max-sm:h-[288px] max-sm:rounded-[16px]
+          max-sm:w-[288px] max-sm:h-[288px] max-sm:rounded-2xl
         "
       />
       <h3 className="mt-4 text-lg font-semibold text-center">

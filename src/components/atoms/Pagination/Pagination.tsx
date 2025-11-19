@@ -1,5 +1,12 @@
 import React from 'react';
 
+// interface PaginationActionProps {
+//   href?: string; // Зроблено необов'язковим
+//   disabled?: boolean;
+//   onClick?: () => void; // ДОДАНО для клієнтської логіки
+//   children: React.ReactNode;
+// }
+
 export const Pagination = ({ children }: { children: React.ReactNode }) => (
   <nav aria-label="Pagination">{children}</nav>
 );
@@ -41,16 +48,23 @@ export const PaginationEllipsis = () => (
   </span>
 );
 
+export const PaginationGap = () => (
+  <PaginationItem>
+    <PaginationEllipsis />
+  </PaginationItem>
+);
+
 export const PaginationPreviousButton = ({
-  href,
   disabled,
+  onClick, // Приймаємо onClick
 }: {
-  href: string;
   disabled?: boolean;
+  onClick?: () => void; // Тип оновлено, href більше не обов'язковий
 }) => (
   <PaginationItem>
-    <a
-      href={disabled ? undefined : href}
+    <button // Змінено на <button> для onClick
+      onClick={disabled ? undefined : onClick}
+      // href={disabled ? undefined : href} // Видалено або зроблено необов'язковим
       aria-label="Previous"
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
@@ -61,20 +75,20 @@ export const PaginationPreviousButton = ({
       }`}
     >
       ‹
-    </a>
+    </button>
   </PaginationItem>
 );
 
 export const PaginationNextButton = ({
-  href,
   disabled,
+  onClick, // <--- ТЕПЕР ПРИЙМАЄМО onClick
 }: {
-  href: string;
   disabled?: boolean;
+  onClick?: () => void;
 }) => (
   <PaginationItem>
-    <a
-      href={disabled ? undefined : href}
+    <button // <--- ВИКОРИСТОВУЄМО КНОПКУ
+      onClick={disabled ? undefined : onClick}
       aria-label="Next"
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
@@ -85,7 +99,7 @@ export const PaginationNextButton = ({
       }`}
     >
       ›
-    </a>
+    </button>
   </PaginationItem>
 );
 
@@ -93,20 +107,44 @@ export const PaginationPage = ({
   href,
   children,
   isCurrent,
+  onClick,
 }: {
-  href: string;
+  href?: string;
   children: React.ReactNode;
   isCurrent?: boolean;
-}) => (
-  <PaginationItem>
-    <PaginationLink href={href} aria-current={isCurrent ? 'page' : undefined}>
-      {children}
-    </PaginationLink>
-  </PaginationItem>
-);
+  onClick?: () => void;
+}) => {
+  // Явно визначаємо, що це буде лише 'page' або undefined
+  const ariaCurrent = isCurrent ? 'page' : undefined;
 
-export const PaginationGap = () => (
-  <PaginationItem>
-    <PaginationEllipsis />
-  </PaginationItem>
-);
+  const className = `rounded-md px-3 py-2 transition ${
+    isCurrent ? 'bg-primary text-white' : 'hover:bg-muted text-muted-foreground'
+  }`;
+
+  // Спільні пропси, які не включають aria-current напряму
+  const commonProps = {
+    className,
+  };
+
+  return (
+    <PaginationItem>
+      {onClick ? (
+        <button
+          onClick={onClick}
+          aria-current={ariaCurrent} // Передаємо коректний тип сюди
+          {...commonProps}
+        >
+          {children}
+        </button>
+      ) : (
+        <PaginationLink
+          href={href}
+          aria-current={ariaCurrent} // І сюди
+          {...commonProps}
+        >
+          {children}
+        </PaginationLink>
+      )}
+    </PaginationItem>
+  );
+};
