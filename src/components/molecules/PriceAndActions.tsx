@@ -41,12 +41,14 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
         {/* ADD TO CART BUTTON */}
         <Button
           onClick={onAddToCart}
-          className="bg-primary text-white rounded-lg font-bold w-60 sm:w-[219px] md:w-[272px] h-10"
+          className="bg-primary text-white rounded-lg font-bold w-60 md:w-[219px] lg:w-[272px] h-10"
         >
           Add to cart
         </Button>
         {/* HEART BUTTON */}
         <Button
+          variant="outline"
+          size="icon"
           onClick={onToggleWishlist}
           className="w-10 h-10 border border-border rounded-lg flex items-center justify-center bg-background"
         >
