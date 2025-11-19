@@ -6,6 +6,7 @@ import type { Book } from '../types/book';
 export const WishlistPage: React.FC = () => {
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const [cart, setCart] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +42,22 @@ export const WishlistPage: React.FC = () => {
     });
   };
 
+  const handleAddToCart = (bookId: string) => {
+    setCart(prev => {
+      const newCart = { ...prev };
+
+      if (newCart[bookId]) {
+        delete newCart[bookId];
+      } else {
+        newCart[bookId] = 1;
+      }
+
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      return newCart;
+    });
+  };
+
+  //const favouriteBooks = allBooks;
   const favouriteBooks = allBooks.filter(book => wishlist.has(book.id));
 
   if (loading) {
@@ -70,8 +87,10 @@ export const WishlistPage: React.FC = () => {
             <BookCard
               key={book.id}
               book={book}
+              onAddToCart={handleAddToCart}
               onToggleWishlist={handleToggleWishlist}
               isInWishlist={true}
+              isInCart={!!cart[book.id]}
             />
           ))}
         </div>
