@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 interface MainImageGalleryProps {
   images: string[];
   alt: string;
@@ -10,10 +10,16 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
 }) => {
   const [mainImage, setMainImage] = useState(images[0]);
 
+  useEffect(() => {
+    if (images && images.length > 0) {
+      setMainImage(images[0]);
+    }
+  }, [images]);
+
   return (
     <>
       {/* DESKTOP/TABLET (VERTICAL THUMBS) */}
-      <div className="hidden sm:flex flex-col gap-2 mr-6">
+      <div className="hidden md:flex flex-col gap-2 mr-6">
         {images.map((imgSrc, index) => (
           <img
             key={index}
@@ -41,7 +47,7 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
       </div>
 
       {/* COLUMN 1 MOBILE — HORIZONTAL SCROLL */}
-      <div className="w-full overflow-x-auto p-2 sm:hidden mt-[41px]">
+      <div className="w-full overflow-x-auto p-2 md:hidden mt-[41px]">
         <div className="flex justify-center gap-2">
           {images.map((imgSrc, index) => (
             <img
