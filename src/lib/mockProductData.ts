@@ -36,7 +36,7 @@ export interface BookProduct {
 
 export const fetchBookProduct = async (
   namespaceId = 'chip-war',
-  targetLang = 'uk'
+  targetLang = 'uk',
 ): Promise<BookProduct | null> => {
   await new Promise(resolve => setTimeout(resolve, 300));
 
@@ -44,7 +44,7 @@ export const fetchBookProduct = async (
   const data = (await res.json()) as BackendBookProduct[];
 
   const selectedBook = data.find(
-    p => p.namespaceId === namespaceId && p.lang === targetLang
+    p => p.namespaceId === namespaceId && p.lang === targetLang,
   );
 
   if (!selectedBook) return null;
@@ -67,7 +67,10 @@ export const fetchBookProduct = async (
       { label: 'Year of publication', value: selectedBook.publicationYear },
       { label: 'Publication', value: selectedBook.publication },
       { label: 'Format', value: selectedBook.format },
-      { label: 'Illustrations', value: selectedBook.illustrations ? 'Yes' : 'No' }
-    ]
+      {
+        label: 'Illustrations',
+        value: selectedBook.illustrations ? 'Yes' : 'No',
+      },
+    ],
   };
 };
