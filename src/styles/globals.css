@@ -1,27 +1,24 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-/* ===========================
-  LOCAL FONTS
-   =========================== */
 @font-face {
-  font-family: "Manrope";
-  src: url("/fonts/Manrope-Regular.otf") format("opentype");
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("/fonts/Manrope-SemiBold.otf") format("opentype");
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-SemiBold.otf') format('opentype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Manrope";
-  src: url("/fonts/Manrope-Bold.otf") format("opentype");
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -31,7 +28,7 @@
   TAILWIND THEME TOKENS
    =========================== */
 @theme inline {
-  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -46,7 +43,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* 🔽 кастомні брейкпоінти для Tailwind v4 */
   --breakpoint-sm: 320px;
   --breakpoint-md: 640px;
   --breakpoint-lg: 1200px;
@@ -75,9 +71,6 @@
 
   --radius: 0.625rem;
 
-  /* ===========================
-    Z-INDEX SCALE (Design Tokens)
-     =========================== */
   --z-base: 1;
   --z-header: 10;
   --z-dropdown: 20;
@@ -87,9 +80,6 @@
   --z-toast: 60;
 }
 
-/* ===========================
-  BASE + RESET + TYPOGRAPHY
-   =========================== */
 @layer base {
   *,
   *::before,
@@ -147,9 +137,6 @@
   }
 }
 
-/* ===========================
-  CONTAINER + GRID SHELL
-   =========================== */
 @layer utilities {
   .container {
     width: 100%;
@@ -158,14 +145,12 @@
     max-width: 100%;
   }
 
-  /* Tablet: 640–1199px → padding 24px, full-width grid */
   @media (min-width: 640px) {
     .container {
       padding-inline: 24px;
     }
   }
 
-  /* Desktop: 1200px+ → fixed 1200px grid in the center */
   @media (min-width: 1200px) {
     .container {
       max-width: 1200px;

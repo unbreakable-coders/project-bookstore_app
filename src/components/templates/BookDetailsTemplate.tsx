@@ -1,7 +1,7 @@
 import React from 'react';
 import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
 import { MainImageGallery } from '../molecules/ImageGallery';
-import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx'; 
+import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
 import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
 
 interface BookDetailsTemplateProps {
@@ -52,7 +52,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
 
       <div className="px-4 md:px-6 lg:px-8 mt-[5px] md:mt-8 lg:mt-10">
         {/* GRID: Main Content (Gallery + Info Panel) */}
-        <div className="sm:grid sm:grid-cols-[auto_1fr_1fr] flex flex-col items-center sm:flex-none sm:flex-row sm:items-start">
+        <div className="md:grid md:grid-cols-[auto_1fr_1fr] flex flex-col items-center md:flex-none md:flex-row md:items-start">
           {/* Column 1 & 2: Image Gallery (Molecule) */}
           <MainImageGallery
             images={book.images}
