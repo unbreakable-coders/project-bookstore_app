@@ -15,6 +15,13 @@ const navItems: { label: string; to: string }[] = [
   { label: 'Audiobook', to: '/catalog' },
 ];
 
+const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
+const HEADER_ICONS_LG: IconName[] = ['heart', 'cart', 'user'];
+const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart', 'user'];
+
+const ICON_BUTTON_CLASS =
+  'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]';
+
 export const Header = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
@@ -22,6 +29,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // lock scroll when mobile menu is open
   useEffect(() => {
     if (isMobileOpen) {
       document.body.style.overflow = 'hidden';
@@ -34,6 +42,11 @@ export const Header = () => {
     };
   }, [isMobileOpen]);
 
+  // close mobile menu on route change (якщо навігація ззовні)
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [location.pathname]);
+
   const toggleMobile = () => setIsMobileOpen(prev => !prev);
   const closeMobile = () => setIsMobileOpen(false);
 
@@ -45,6 +58,54 @@ export const Header = () => {
     return location.pathname.startsWith(to);
   };
 
+  const renderHeaderIcon = (iconName: IconName) => {
+    const icon = <Icon name={iconName} className="h-4 w-4" />;
+
+    // HEART + CART → wishlist
+    if (iconName === 'heart' || iconName === 'cart') {
+      return (
+        <Link
+          key={iconName}
+          to="/wishlist"
+          aria-label="Open wishlist"
+          className={ICON_BUTTON_CLASS}
+        >
+          {icon}
+        </Link>
+      );
+    }
+
+    // USER → dev preview
+    if (iconName === 'user') {
+      return (
+        <Link
+          key={iconName}
+          to="/dev/preview"
+          aria-label="Open dev preview"
+          className={ICON_BUTTON_CLASS}
+        >
+          {icon}
+        </Link>
+      );
+    }
+
+    // SEARCH (md only) → поки що просто кнопка
+    if (iconName === 'search') {
+      return (
+        <button
+          key={iconName}
+          type="button"
+          className={ICON_BUTTON_CLASS}
+          aria-label="Open search"
+        >
+          {icon}
+        </button>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <header className="border-b bg-white">
       <div className="mx-auto max-w-6xl px-4">
@@ -52,7 +113,7 @@ export const Header = () => {
         <div className="flex h-16 items-center justify-between gap-4">
           {/* LEFT: logo + nav */}
           <div className="flex items-center gap-8">
-            <Link to="/books/123" aria-label="Open book 123">
+            <Link to="/" aria-label="Go to home page">
               <Logo className="h-7 w-auto" />
             </Link>
 
@@ -94,99 +155,20 @@ export const Header = () => {
 
             {/* Tablet icons (md–lg): search + heart + cart + user */}
             <div className="hidden md:flex lg:hidden items-center gap-2">
-              {(['search', 'heart', 'cart', 'user'] as IconName[]).map(
-                iconName => {
-                  const content = (
-                    <div className="flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]">
-                      <Icon name={iconName} className="h-4 w-4" />
-                    </div>
-                  );
-
-                  // HEART + CART → wishlist
-                  if (iconName === 'heart' || iconName === 'cart') {
-                    return (
-                      <Link
-                        key={iconName}
-                        to="/wishlist"
-                        aria-label="Go to wishlist"
-                      >
-                        {content}
-                      </Link>
-                    );
-                  }
-
-                  // USER → dev preview
-                  if (iconName === 'user') {
-                    return (
-                      <Link
-                        key={iconName}
-                        to="/dev/preview"
-                        aria-label="Open dev preview"
-                      >
-                        {content}
-                      </Link>
-                    );
-                  }
-
-                  // SEARCH → просто кнопка (поки без маршруту)
-                  return (
-                    <button
-                      key={iconName}
-                      type="button"
-                      className="flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]"
-                    >
-                      <Icon name={iconName} className="h-4 w-4" />
-                    </button>
-                  );
-                },
-              )}
+              {HEADER_ICONS_MD.map(renderHeaderIcon)}
             </div>
 
             {/* Desktop icons (lg+): heart + cart + user */}
             <div className="hidden lg:flex items-center gap-2">
-              {(['heart', 'cart', 'user'] as IconName[]).map(iconName => {
-                const content = (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]">
-                    <Icon name={iconName} className="h-4 w-4" />
-                  </div>
-                );
-
-                // HEART + CART → wishlist
-                if (iconName === 'heart' || iconName === 'cart') {
-                  return (
-                    <Link
-                      key={iconName}
-                      to="/wishlist"
-                      aria-label="Go to wishlist"
-                    >
-                      {content}
-                    </Link>
-                  );
-                }
-
-                // USER → dev preview
-                if (iconName === 'user') {
-                  return (
-                    <Link
-                      key={iconName}
-                      to="/dev/preview"
-                      aria-label="Open dev preview"
-                    >
-                      {content}
-                    </Link>
-                  );
-                }
-
-                return null;
-              })}
+              {HEADER_ICONS_LG.map(renderHeaderIcon)}
             </div>
 
             {/* Burger (mobile only) */}
             <button
               type="button"
               onClick={toggleMobile}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white md:hidden"
-              aria-label="Toggle navigation"
+              className={ICON_BUTTON_CLASS + ' md:hidden'}
+              aria-label="Toggle menu"
             >
               <Icon
                 name={isMobileOpen ? 'close' : 'menu'}
@@ -239,7 +221,7 @@ export const Header = () => {
             {/* bottom icon bar (heart + cart + user) */}
             <div className="border-t">
               <div className="grid grid-cols-3">
-                {(['heart', 'cart', 'user'] as MobileIcon[]).map(name => {
+                {MOBILE_BOTTOM_ICONS.map(name => {
                   const isActive = activeMobileIcon === name;
 
                   const handleClick = () => {
@@ -247,13 +229,11 @@ export const Header = () => {
 
                     if (name === 'heart' || name === 'cart') {
                       navigate('/wishlist');
-                      closeMobile();
                       return;
                     }
 
                     if (name === 'user') {
                       navigate('/dev/preview');
-                      closeMobile();
                     }
                   };
 
@@ -263,6 +243,11 @@ export const Header = () => {
                       type="button"
                       onClick={handleClick}
                       className="flex h-14 flex-col items-center justify-center"
+                      aria-label={
+                        name === 'user'
+                          ? 'Open profile preview'
+                          : 'Open wishlist'
+                      }
                     >
                       <Icon name={name} className="h-5 w-5" />
                       <span
