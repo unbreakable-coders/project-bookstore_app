@@ -45,12 +45,19 @@ export const WishlistPage: React.FC = () => {
   const handleAddToCart = (bookId: string) => {
     setCart(prev => {
       const newCart = { ...prev };
-      newCart[bookId] = (newCart[bookId] || 0) + 1;
+
+      if (newCart[bookId]) {
+        delete newCart[bookId];
+      } else {
+        newCart[bookId] = 1;
+      }
+
       localStorage.setItem('cart', JSON.stringify(newCart));
       return newCart;
     });
   };
 
+  //const favouriteBooks = allBooks;
   const favouriteBooks = allBooks.filter(book => wishlist.has(book.id));
 
   if (loading) {

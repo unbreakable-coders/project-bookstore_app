@@ -61,7 +61,8 @@ export const CartPage: React.FC = () => {
 
   const totalPrice = cartItems.reduce((sum, item) => {
     const price = item.book.priceDiscount ?? item.book.priceRegular;
-    return sum + price * item.quantity;
+    const priceInUAH = Math.ceil(price * 42);
+    return sum + priceInUAH * item.quantity;
   }, 0);
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -108,86 +109,95 @@ export const CartPage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
-              {cartItems.map(({ book, quantity }) => (
-                <div
-                  key={book.id}
-                  className="bg-card rounded-xl border border-border p-6 flex items-center gap-6"
-                >
-                  <button
-                    onClick={() => handleRemove(book.id)}
-                    className="text-accent hover:text-destructive transition-colors"
-                    aria-label="Remove item"
+              {cartItems.map(({ book, quantity }) => {
+                const price = book.priceDiscount ?? book.priceRegular;
+                const priceInUAH = Math.ceil(price * 42);
+                const discountPriceInUAH = book.priceDiscount
+                  ? Math.ceil(book.priceDiscount * 42)
+                  : null;
+                const regularPriceInUAH = Math.ceil(book.priceRegular * 42);
+
+                return (
+                  <div
+                    key={book.id}
+                    className="bg-card rounded-xl border border-border p-6 flex items-center gap-6"
                   >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <button
+                      onClick={() => handleRemove(book.id)}
+                      className="text-accent hover:text-destructive transition-colors"
+                      aria-label="Remove item"
                     >
-                      <path
-                        d="M18 6L6 18M6 6L18 18"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M18 6L6 18M6 6L18 18"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+
+                    <div className="flex-shrink-0">
+                      <img
+                        src={book.images[0]}
+                        alt={book.name}
+                        className="w-16 h-24 object-cover rounded"
                       />
-                    </svg>
-                  </button>
+                    </div>
 
-                  <div className="flex-shrink-0">
-                    <img
-                      src={book.images[0]}
-                      alt={book.name}
-                      className="w-16 h-24 object-cover rounded"
-                    />
-                  </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-foreground mb-1 truncate">
+                        {book.name}
+                      </h4>
+                      <p className="text-sm text-secondary">{book.author}</p>
+                    </div>
 
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-foreground mb-1 truncate">
-                      {book.name}
-                    </h4>
-                    <p className="text-sm text-secondary">{book.author}</p>
-                  </div>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleQuantityChange(book.id, -1)}
+                        className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors"
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+                      <span className="text-foreground font-semibold w-8 text-center">
+                        {quantity}
+                      </span>
+                      <button
+                        onClick={() => handleQuantityChange(book.id, 1)}
+                        className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors"
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
 
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => handleQuantityChange(book.id, -1)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors"
-                      aria-label="Decrease quantity"
-                    >
-                      −
-                    </button>
-                    <span className="text-foreground font-semibold w-8 text-center">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => handleQuantityChange(book.id, 1)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors"
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div className="text-right flex-shrink-0">
-                    {book.priceDiscount ? (
-                      <div className="space-y-1">
+                    <div className="text-right flex-shrink-0">
+                      {book.priceDiscount ? (
+                        <div className="space-y-1">
+                          <p className="text-lg font-bold text-foreground">
+                            ₴{discountPriceInUAH}
+                          </p>
+                          <p className="text-sm text-secondary line-through">
+                            ₴{regularPriceInUAH}
+                          </p>
+                        </div>
+                      ) : (
                         <p className="text-lg font-bold text-foreground">
-                          ₴{book.priceDiscount}
+                          ₴{priceInUAH}
                         </p>
-                        <p className="text-sm text-secondary line-through">
-                          ₴{book.priceRegular}
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="text-lg font-bold text-foreground">
-                        ₴{book.priceRegular}
-                      </p>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="lg:col-span-1">
