@@ -5,10 +5,10 @@ export interface BackendBookProduct {
   name: string;
   slug: string;
   priceRegular: number;
-  priceDiscount: number | null; // null, якщо немає знижки
+  priceDiscount: number | null;
   images: string[];
-  langAvailable: string[]; // Доступні мови
-  lang: string; // Поточна мова цього варіанту
+  langAvailable: string[];
+  lang: string;
   author: string;
   coverType: string;
   numberOfPages: number;
@@ -16,8 +16,8 @@ export interface BackendBookProduct {
   publication: string;
   format: string;
   illustrations: boolean;
-  category: string[]; // Масив категорій
-  description: string[]; // Масив параграфів для опису
+  category: string[];
+  description: string[];
 }
 
 export interface BookProduct {
@@ -26,7 +26,7 @@ export interface BookProduct {
   author: string;
   price: number;
   oldPrice: number | null;
-  category: string; // Основна категорія (перший елемент масиву)
+  category: string;
   language: string;
   availableLanguages: string[];
   images: string[];
@@ -34,38 +34,28 @@ export interface BookProduct {
   details: { label: string; value: string | number }[];
 }
 
-// Припускаємо, що файл paperback.json доступний для імпорту/завантаження
-import mockJson from '../../public/books/paperback.json';
-
-// У реальному додатку ця функція використовувалася б для отримання даних з fetch
-// Тут вона імітує це, використовуючи імпортований JSON.
 export const fetchBookProduct = async (
   namespaceId = 'chip-war',
-  targetLang = 'uk',
+  targetLang = 'uk'
 ): Promise<BookProduct | null> => {
-  // Імітуємо затримку мережі
   await new Promise(resolve => setTimeout(resolve, 300));
 
-  const data: BackendBookProduct[] = mockJson as BackendBookProduct[];
+  const res = await fetch('/books/paperback.json');
+  const data = (await res.json()) as BackendBookProduct[];
 
-  // Знаходимо продукт за namespaceId та цільовою мовою
   const selectedBook = data.find(
-    p => p.namespaceId === namespaceId && p.lang === targetLang,
+    p => p.namespaceId === namespaceId && p.lang === targetLang
   );
 
-  if (!selectedBook) {
-    return null; // Продукт не знайдено
-  }
+  if (!selectedBook) return null;
 
-  // Трансформуємо BackendBookData у Book, який використовується в компонентах
-  const transformedData: BookProduct = {
+  return {
     id: selectedBook.id,
     title: selectedBook.name,
     author: selectedBook.author,
     price: selectedBook.priceRegular,
     oldPrice: selectedBook.priceDiscount,
-    category:
-      selectedBook.category.length > 0 ? selectedBook.category[0] : 'General',
+    category: selectedBook.category[0] ?? 'General',
     language: selectedBook.lang,
     availableLanguages: selectedBook.langAvailable,
     images: selectedBook.images,
@@ -77,12 +67,7 @@ export const fetchBookProduct = async (
       { label: 'Year of publication', value: selectedBook.publicationYear },
       { label: 'Publication', value: selectedBook.publication },
       { label: 'Format', value: selectedBook.format },
-      {
-        label: 'Illustrations',
-        value: selectedBook.illustrations ? 'Yes' : 'No',
-      },
-    ],
+      { label: 'Illustrations', value: selectedBook.illustrations ? 'Yes' : 'No' }
+    ]
   };
-
-  return transformedData;
 };
