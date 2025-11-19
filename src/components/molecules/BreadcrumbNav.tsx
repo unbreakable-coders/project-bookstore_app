@@ -19,41 +19,39 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
   const [first, second] = items;
 
   return (
-    <div className="flex items-center gap-1 uppercase font-bold text-[14px] leading-[21px] tracking-[0.01em] truncate whitespace-nowrap">
+    <div className="flex items-center gap-1 uppercase font-bold tracking-[0.01em] truncate whitespace-nowrap">
       {/* Home icon */}
-      <Link to="/" aria-label="Go to home page">
-        <Icon name="home" className="h-4 w-4" />
-      </Link>
+      <Icon name="home" />
 
       {/* Стрілка після home */}
-      <Icon name="arrowRight" className="h-3 w-3" />
+      <Icon name="arrowRight" />
 
       {/* Мобілка показує ... */}
-      <span className="block sm:hidden">...</span>
+      <span className="block md:hidden">...</span>
 
       {/* Breadcrumb #1 */}
       {first && (
         <>
-          <Link to={first.href} className="hidden sm:inline hover:underline">
+          <Link to={first.href} className="hidden md:inline hover:underline">
             {first.label}
           </Link>
 
           {/* Стрілка після першого елемента */}
-          <Icon name="arrowRight" className="hidden sm:inline h-3 w-3" />
+          <Icon name="arrowRight" className="hidden md:inline h-4 w-4" />
         </>
       )}
 
       {/* Breadcrumb #2 */}
       {second && (
         <>
-          <Link to={second.href} className="hidden sm:inline hover:underline">
+          <Link to={second.href} className="hidden md:inline hover:underline">
             {second.label}
           </Link>
         </>
       )}
 
       {/* Поточна книга */}
-      <Icon name="arrowRight" className="h-3 w-3" />
+      <Icon name="arrowRight" className="h-4 w-4" />
 
       <span className="uppercase text-secondary truncate">{currentTitle}</span>
     </div>
