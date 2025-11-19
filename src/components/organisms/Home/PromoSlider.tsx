@@ -1,32 +1,37 @@
-import { Icon } from '../../atoms/Icon';
-import { Image, type ImageName } from '../../atoms/Image';
-import { useEffect, useRef, useState } from 'react';
+import { type FC, useEffect, useRef, useState } from 'react';
+import { Image } from '@/components/atoms/Image';
+import { Icon } from '@/components/atoms/Icon';
+
+interface Banner {
+  src: string;
+  alt: string;
+}
+
+const banners: Banner[] = [
+  { src: '/books/img/banner/bannerTablet1.webp', alt: 'Banner Constitution' },
+  { src: '/books/img/banner/bannerTablet2.webp', alt: 'UA Authors' },
+  { src: '/books/img/banner/bannerTablet3.webp', alt: 'Best Sellers' },
+];
 
 type Click = 'left' | 'right';
 
-export const PromoSlider = () => {
+export const PromoSlider: FC = () => {
   const [bannerSelected, setBannerSelected] = useState<number>(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const bannersTypes: ImageName[] = [
-    'bannerConstitution',
-    'bannerBestSellers',
-    'bannerUAAuthors',
-  ];
 
   const handleClick = (clickType: Click) => {
     setBannerSelected(prev => {
       if (clickType === 'left')
-        return prev === 0 ? bannersTypes.length - 1 : prev - 1;
-      return prev === bannersTypes.length - 1 ? 0 : prev + 1;
+        return prev === 0 ? banners.length - 1 : prev - 1;
+      return prev === banners.length - 1 ? 0 : prev + 1;
     });
-    startAutoSlide(); // скидаємо таймер після кліку
+    startAutoSlide();
   };
 
   const startAutoSlide = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
-      setBannerSelected(prev => (prev + 1) % bannersTypes.length);
+      setBannerSelected(prev => (prev + 1) % banners.length);
     }, 5000);
   };
 
@@ -35,12 +40,11 @@ export const PromoSlider = () => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  });
+  }, []);
 
   return (
     <main className="mt-16 flex flex-col items-center justify-center">
       <div className="flex items-center justify-center gap-4 px-4 w-full">
-        {/* Кнопка вліво */}
         <button
           className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14"
           onClick={() => handleClick('left')}
@@ -48,24 +52,25 @@ export const PromoSlider = () => {
           <Icon name="arrowLeft" />
         </button>
 
-        {/* Слайдер */}
         <div className="relative w-full max-w-[1040px] h-96 rounded-3xl overflow-hidden bg-black transition-all duration-300">
-          {bannersTypes.map((banner, i) => (
+          {banners.map(banner => (
             <div
-              key={i}
+              key={banner.src}
               className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-                i === bannerSelected ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                banners.indexOf(banner) === bannerSelected
+                  ? 'opacity-100 z-10'
+                  : 'opacity-0 z-0'
               }`}
             >
               <Image
-                name={banner}
-                className="absolute inset-0 w-full w-max=[1040px] h-full object-cover"
+                src={banner.src}
+                alt={banner.alt}
+                className="absolute inset-0 max-w-[1040px] w-full h-full object-cover"
               />
             </div>
           ))}
         </div>
 
-        {/* Кнопка вправо */}
         <button
           className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14"
           onClick={() => handleClick('right')}
@@ -74,11 +79,10 @@ export const PromoSlider = () => {
         </button>
       </div>
 
-      {/* Підкреслення */}
       <div className="flex items-center justify-center gap-2 mt-4">
-        {bannersTypes.map((_, i) => (
+        {banners.map((banner, i) => (
           <Icon
-            key={i}
+            key={banner.src}
             name={
               i === bannerSelected ? 'underlineActive' : 'underlineDisabled'
             }
