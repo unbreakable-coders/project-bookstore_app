@@ -25,3 +25,11 @@ export interface Book {
 
   inStock?: boolean;
 }
+
+export interface CatalogFilters {
+  search: string;
+  category?: string; // ТІЛЬКИ ОДНА категорія
+  bookType?: string; // ТІЛЬКИ ОДИН тип
+  sortBy: 'date' | 'price' | 'title';
+  sortOrder: 'asc' | 'desc';
+}

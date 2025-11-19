@@ -46,7 +46,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b border-border bg-gradient-to-r from-[#eeeade] to-[#ded8de]">
       <div className="mx-auto max-w-6xl px-4">
         {/* TOP BAR (logo + nav + right block) */}
         <div className="flex h-16 items-center justify-between gap-4">
@@ -55,7 +55,6 @@ export const Header = () => {
             <Link to="/books/123" aria-label="Open book 123">
               <Logo className="h-7 w-auto" />
             </Link>
-
 
             {/* Desktop/tablet nav */}
             <nav className="hidden md:flex items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em]">
@@ -281,4 +280,4 @@ export const Header = () => {
       )}
     </header>
   );
-}
+};

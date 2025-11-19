@@ -1,17 +1,17 @@
-import { Logo } from "../../atoms/Logo";
-import { Icon } from "../../atoms/Icon";
+import { Logo } from '../../atoms/Logo';
+import { Icon } from '../../atoms/Icon';
 
-const footerLinks = ["Github", "Contacts", "Rights"];
+const footerLinks = ['Github', 'Contacts', 'Rights'];
 
 const scrollToTop = () => {
-  if (typeof window !== "undefined") {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  if (typeof window !== 'undefined') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 };
 
 export const Footer = () => {
   return (
-    <footer className="mt-10 border-t bg-white">
+    <footer className="mt-10 border-t border-border bg-gradient-to-r from-[#eeeade] to-[#ded8de]">
       <div className="mx-auto max-w-6xl px-4 py-6">
         {/* Desktop / tablet версія */}
         <div className="hidden md:flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
@@ -21,11 +21,7 @@ export const Footer = () => {
           {/* Центр меню */}
           <nav className="flex items-center gap-10">
             {footerLinks.map(link => (
-              <button
-                key={link}
-                type="button"
-                className="hover:text-[#050505]"
-              >
+              <button key={link} type="button" className="hover:text-[#050505]">
                 {link}
               </button>
             ))}

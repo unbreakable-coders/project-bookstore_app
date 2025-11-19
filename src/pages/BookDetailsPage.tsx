@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
 import { BookDetailsTemplate } from '../components/templates/BookDetailsTemplate';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 const BOOK_NAMESPACE_ID = 'chip-war';
 
@@ -9,35 +10,30 @@ type LanguageCode = 'uk' | 'en' | string;
 export const BookDetailsPage: React.FC = () => {
   const [product, setProduct] = useState<BookProduct | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentLanguage, setCurrentLanguage] =
-    useState<LanguageCode>('uk');
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('uk');
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  const loadProductData = useCallback(
-    async (lang: LanguageCode) => {
-      try {
-        setLoading(true);
+  const loadProductData = useCallback(async (lang: LanguageCode) => {
+    try {
+      setLoading(true);
 
-        const data = await fetchBookProduct(BOOK_NAMESPACE_ID, lang);
+      const data = await fetchBookProduct(BOOK_NAMESPACE_ID, lang);
+      await new Promise(resolve => setTimeout(resolve, 3500)); // імітація затримки
 
-        if (!data) {
-          console.error(
-            `Product variant for language ${lang} not found.`,
-          );
-          setProduct(null);
-          return;
-        }
-
-        setProduct(data);
-      } catch (error) {
-        console.error('Failed to fetch product data:', error);
+      if (!data) {
+        console.error(`Product variant for language ${lang} not found.`);
         setProduct(null);
-      } finally {
-        setLoading(false);
+        return;
       }
-    },
-    [],
-  );
+
+      setProduct(data);
+    } catch (error) {
+      console.error('Failed to fetch product data:', error);
+      setProduct(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   // вантажимо дані кожного разу, коли змінюється мова
   useEffect(() => {
@@ -54,14 +50,13 @@ export const BookDetailsPage: React.FC = () => {
   };
 
   const handleLanguageChange = (lang: LanguageCode) => {
-    // лише міняємо мову — useEffect сам підвантажить дані
     setCurrentLanguage(lang);
   };
 
-  if (loading && !product) {
+  if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-xl">
-        Завантаження деталей продукту...
+        <Loader />
       </div>
     );
   }
@@ -103,8 +98,6 @@ export const BookDetailsPage: React.FC = () => {
 
   return <BookDetailsTemplate {...templateData} />;
 };
-
-
 
 // import { Button } from '@/components/atoms/Button';
 // import { Icon } from '../../src/components/atoms/Icon';
