@@ -1,1 +1,1 @@
-export { Logo } from './Container';
+export { Container } from './Container';
