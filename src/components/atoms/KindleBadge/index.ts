@@ -1,0 +1,1 @@
+export { KindleBadge } from './KindleBadge';
