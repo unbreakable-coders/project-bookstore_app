@@ -46,7 +46,7 @@ export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
   }[itemsPerPage];
 
   return (
-    <section className="w-full flex justify-center items-center mt-12 mb-16 mx-8">
+    <section className="w-full flex justify-center items-center mt-12 mb-16">
       <div className="max-w-6xl w-full">
         <div className="flex justify-between items-center">
           <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
