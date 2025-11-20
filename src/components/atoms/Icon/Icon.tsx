@@ -15,6 +15,7 @@ import UnderlineDisabled from '../../../assets/icons/icon-underlining-gray.svg';
 import HomeIcon from '../../../assets/icons/icon-home.svg';
 import HeartIconRed from '../../../assets/icons/icon-heart-red.svg';
 import TruckIcon from '../../../assets/icons/icon-truck.svg';
+import IconEarphones from '../../../assets/icons/icon-earphones.svg';
 
 const iconMap = {
   arrowDown: ArrowDown,
@@ -32,6 +33,7 @@ const iconMap = {
   underlineDisabled: UnderlineDisabled,
   home: HomeIcon,
   truck: TruckIcon,
+  earphones: IconEarphones,
 } as const;
 
 export type IconName = keyof typeof iconMap;
