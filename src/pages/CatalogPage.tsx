@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { booksData } from '@/books/data/books';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
 
-import { Dropdown } from '@/components/atoms/Dropdown';
+import { SortCategory } from '@/components/SortBy';
 import { SortPages } from '@/components/SortPages';
 import {
   Pagination,
@@ -21,6 +21,7 @@ export const CatalogPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
+  const [sortBy, setSortBy] = useState('name-asc');
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -40,25 +41,63 @@ export const CatalogPage = () => {
     load();
   }, []);
 
-  // Розрахунок пагінації
-  const totalPages = Math.ceil(books.length / itemsPerPage);
+  const sortedBooks = useMemo(() => {
+    const sorted = [...books];
+
+    switch (sortBy) {
+      case 'name-asc':
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name-desc':
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'price-asc':
+        sorted.sort((a, b) => {
+          const priceA = a.priceDiscount ?? a.priceRegular;
+          const priceB = b.priceDiscount ?? b.priceRegular;
+          return priceA - priceB;
+        });
+        break;
+      case 'price-desc':
+        sorted.sort((a, b) => {
+          const priceA = a.priceDiscount ?? a.priceRegular;
+          const priceB = b.priceDiscount ?? b.priceRegular;
+          return priceB - priceA;
+        });
+        break;
+      case 'year-asc':
+        sorted.sort((a, b) => a.publicationYear - b.publicationYear);
+        break;
+      case 'year-desc':
+        sorted.sort((a, b) => b.publicationYear - a.publicationYear);
+        break;
+      default:
+        break;
+    }
+
+    return sorted;
+  }, [books, sortBy]);
+
+  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentBooks = books.slice(startIndex, endIndex);
+  const currentBooks = sortedBooks.slice(startIndex, endIndex);
 
-  // Зміна сторінки
   const handlePageChange = (page: number) => {
     setSearchParams({ page: String(page) });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Зміна кількості items на сторінці
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
     setSearchParams({ page: '1' });
   };
 
-  // Генерація номерів сторінок для відображення
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    setSearchParams({ page: '1' });
+  };
+
   const getPageNumbers = () => {
     const pages: (number | 'gap')[] = [];
 
@@ -109,7 +148,7 @@ export const CatalogPage = () => {
         <div className="pt-10 flex gap-4 items-start">
           <div className="w-44">
             <p className="text-sm text-muted-foreground mb-1">Sort by</p>
-            <Dropdown label="Categories" />
+            <SortCategory value={sortBy} onChange={handleSortChange} />
           </div>
 
           <div className="w-32">

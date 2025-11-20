@@ -1,17 +1,29 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FC } from 'react';
-import { DropdownPages } from '@/components/atoms/DropdownPages';
+import { DropdownSortBy } from '@/components/atoms/DropdownSortBy';
 
-interface SortPagesProps {
-  options: number[];
-  value: number;
-  onChange: (value: number) => void;
+export interface SortOption {
+  value: string;
+  label: string;
+}
+
+const SORT_OPTIONS: SortOption[] = [
+  { value: 'name-asc', label: 'Name (A-Z)' },
+  { value: 'name-desc', label: 'Name (Z-A)' },
+  { value: 'price-asc', label: 'Price (Low to High)' },
+  { value: 'price-desc', label: 'Price (High to Low)' },
+  { value: 'year-asc', label: 'Year (Oldest)' },
+  { value: 'year-desc', label: 'Year (Newest)' },
+];
+
+interface SortCategoryProps {
+  value: string;
+  onChange: (value: string) => void;
   fullWidth?: boolean;
   className?: string;
 }
 
-export const SortPages: FC<SortPagesProps> = ({
-  options,
+export const SortCategory: FC<SortCategoryProps> = ({
   value,
   onChange,
   fullWidth,
@@ -49,15 +61,18 @@ export const SortPages: FC<SortPagesProps> = ({
     setIsOpen(prev => !prev);
   };
 
-  const handleSelect = (option: number) => {
-    onChange(option);
+  const handleSelect = (optionValue: string) => {
+    onChange(optionValue);
     setIsOpen(false);
   };
 
+  const currentLabel =
+    SORT_OPTIONS.find(opt => opt.value === value)?.label || 'Sort by';
+
   return (
     <div ref={containerRef} className="relative">
-      <DropdownPages
-        value={value}
+      <DropdownSortBy
+        label={currentLabel}
         isOpen={isOpen}
         onToggle={handleToggle}
         fullWidth={fullWidth}
@@ -69,25 +84,25 @@ export const SortPages: FC<SortPagesProps> = ({
           role="listbox"
           className={[
             'absolute z-10 mt-1',
-            fullWidth ? 'w-full' : 'w-32',
+            fullWidth ? 'w-full' : 'w-44',
             'rounded-md border border-[#DADADA] bg-white',
             'shadow-lg',
             'py-1',
           ].join(' ')}
         >
-          {options.map(option => (
+          {SORT_OPTIONS.map(option => (
             <li
-              key={option}
+              key={option.value}
               role="option"
-              aria-selected={value === option}
-              onClick={() => handleSelect(option)}
+              aria-selected={value === option.value}
+              onClick={() => handleSelect(option.value)}
               className={[
                 'px-4 py-2 text-sm cursor-pointer',
                 'hover:bg-gray-100',
-                value === option ? 'bg-gray-50 font-medium' : '',
+                value === option.value ? 'bg-gray-50 font-medium' : '',
               ].join(' ')}
             >
-              {option}
+              {option.label}
             </li>
           ))}
         </ul>
