@@ -15,9 +15,7 @@ const resolveImage = (imgPath: string): string => {
     return imgPath;
   }
 
-  const normalized = imgPath
-    .replace(/^img\//, '')      
-    .replace(/^\.?\//, '');    
+  const normalized = imgPath.replace(/^img\//, '').replace(/^\.?\//, '');
 
   const directKey = `../img/${normalized}`;
 
@@ -29,7 +27,7 @@ const resolveImage = (imgPath: string): string => {
     key.endsWith(`/${normalized}`),
   );
 
-  return foundKey ? imageModules[foundKey] : imgPath; 
+  return foundKey ? imageModules[foundKey] : imgPath;
 };
 
 export const booksData = async (): Promise<Book[]> => {
