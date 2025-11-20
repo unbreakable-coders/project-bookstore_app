@@ -8,11 +8,17 @@ import { Dropdown } from '../../atoms/Dropdown';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
-const navItems: { label: string; to: string }[] = [
+type CatalogType = 'paper' | 'kindle' | 'audiobook';
+
+const navItems: {
+  label: string;
+  to: string;
+  type?: CatalogType;
+}[] = [
   { label: 'Home', to: '/' },
-  { label: 'Paper', to: '/catalog' },
-  { label: 'Kindle', to: '/catalog' },
-  { label: 'Audiobook', to: '/catalog' },
+  { label: 'Paper', to: '/catalog', type: 'paper' },
+  { label: 'Kindle', to: '/catalog', type: 'kindle' },
+  { label: 'Audiobook', to: '/catalog', type: 'audiobook' },
 ];
 
 const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
@@ -30,6 +36,10 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // поточний type з урли: /catalog?type=paper
+  const searchParams = new URLSearchParams(location.search);
+  const currentType = searchParams.get('type') as CatalogType | null;
+
   // lock scroll when mobile menu is open
   useEffect(() => {
     if (isMobileOpen) {
@@ -46,14 +56,27 @@ export const Header = () => {
   // close mobile menu on route change (якщо навігація ззовні)
   useEffect(() => {
     setIsMobileOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   const toggleMobile = () => setIsMobileOpen(prev => !prev);
   const closeMobile = () => setIsMobileOpen(false);
 
-  const isNavItemActive = (to: string) => {
+  const isNavItemActive = (to: string, type?: CatalogType) => {
     if (to === '/') {
       return location.pathname === '/';
+    }
+
+    if (to === '/catalog') {
+      // якщо не переданий type — просто активний на будь-якому /catalog
+      if (!type) {
+        return location.pathname === '/catalog';
+      }
+
+      // для Paper / Kindle / Audiobook — дивимось ще на ?type=
+      return (
+        location.pathname === '/catalog' &&
+        currentType === type
+      );
     }
 
     return location.pathname.startsWith(to);
@@ -121,12 +144,20 @@ export const Header = () => {
             {/* Desktop/tablet nav */}
             <nav className="hidden md:flex items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em]">
               {navItems.map(item => {
-                const active = isNavItemActive(item.to);
+                const active = isNavItemActive(item.to, item.type);
+
+                const toProp =
+                  item.to === '/catalog' && item.type
+                    ? {
+                        pathname: item.to,
+                        search: `?type=${item.type}`,
+                      }
+                    : item.to;
 
                 return (
                   <Link
                     key={item.label}
-                    to={item.to}
+                    to={toProp}
                     className={`relative pb-1 transition-colors ${
                       active
                         ? 'text-[#050505]'
@@ -188,12 +219,20 @@ export const Header = () => {
             <div className="flex-1 overflow-auto px-4 pt-6 pb-4">
               <nav className="space-y-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
                 {navItems.map(item => {
-                  const active = isNavItemActive(item.to);
+                  const active = isNavItemActive(item.to, item.type);
+
+                  const toProp =
+                    item.to === '/catalog' && item.type
+                      ? {
+                          pathname: item.to,
+                          search: `?type=${item.type}`,
+                        }
+                      : item.to;
 
                   return (
                     <Link
                       key={item.label}
-                      to={item.to}
+                      to={toProp}
                       onClick={closeMobile}
                       className={`block w-full text-left ${
                         active ? 'text-[#050505]' : 'hover:text-[#050505]'
