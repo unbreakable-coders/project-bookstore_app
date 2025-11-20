@@ -25,8 +25,7 @@ const ICON_BUTTON_CLASS =
 
 export const Header = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMobileIcon, setActiveMobileIcon] =
-    useState<MobileIcon>('heart');
+  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const navigate = useNavigate();
