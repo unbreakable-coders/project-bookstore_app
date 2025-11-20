@@ -1,37 +1,50 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
-import { BookDetailsTemplate } from '../components/templates/BookDetailsTemplate';
-
-const BOOK_NAMESPACE_ID = 'chip-war';
+import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
 
 type LanguageCode = 'uk' | 'en' | string;
 
 export const BookDetailsPage = () => {
+  const { namespaceId } = useParams<{ namespaceId: string }>();
+
   const [product, setProduct] = useState<BookProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('uk');
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  const loadProductData = useCallback(async (lang: LanguageCode) => {
-    try {
-      setLoading(true);
-
-      const data = await fetchBookProduct(BOOK_NAMESPACE_ID, lang);
-
-      if (!data) {
-        console.error(`Product variant for language ${lang} not found.`);
+  const loadProductData = useCallback(
+    async (lang: LanguageCode) => {
+      if (!namespaceId) {
+        console.error('No namespaceId in route params');
         setProduct(null);
+        setLoading(false);
         return;
       }
 
-      setProduct(data);
-    } catch (error) {
-      console.error('Failed to fetch product data:', error);
-      setProduct(null);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      try {
+        setLoading(true);
+
+        const data = await fetchBookProduct(namespaceId, lang);
+
+        if (!data) {
+          console.error(
+            `Product variant for ns="${namespaceId}" and lang="${lang}" not found.`,
+          );
+          setProduct(null);
+          return;
+        }
+
+        setProduct(data);
+      } catch (error) {
+        console.error('Failed to fetch product data:', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [namespaceId],
+  );
 
   useEffect(() => {
     void loadProductData(currentLanguage);
@@ -50,6 +63,14 @@ export const BookDetailsPage = () => {
     setCurrentLanguage(lang);
   };
 
+  if (!namespaceId) {
+    return (
+      <div className="flex h-screen items-center justify-center text-xl text-red-600">
+        Помилка: не передано ідентифікатор книги в URL.
+      </div>
+    );
+  }
+
   if (loading && !product) {
     return (
       <div className="flex h-screen items-center justify-center text-xl">
@@ -66,6 +87,18 @@ export const BookDetailsPage = () => {
     );
   }
 
+  const detailsList = [
+    { label: 'Cover type', value: product.details.coverType },
+    { label: 'Pages', value: product.details.numberOfPages },
+    { label: 'Publication year', value: product.details.publicationYear },
+    { label: 'Publisher', value: product.details.publication },
+    { label: 'Format', value: product.details.format },
+    {
+      label: 'Illustrations',
+      value: product.details.illustrations ? 'Yes' : 'No',
+    },
+  ];
+
   const breadcrumbs = [
     { label: 'Paper books', href: '/books' },
     { label: 'Tech/business', href: '/books/tech-business' },
@@ -79,10 +112,10 @@ export const BookDetailsPage = () => {
       category: product.category,
       price: product.price,
       oldPrice: product.oldPrice,
-      details: product.details,
+      details: detailsList,
       aboutTitle: product.about[0] || 'About this book',
       aboutContent: product.about.slice(1),
-      characteristics: product.details,
+      characteristics: detailsList,
     },
     breadcrumbs,
     selectedLanguage: currentLanguage,
