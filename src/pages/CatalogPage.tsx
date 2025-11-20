@@ -18,7 +18,7 @@ export const CatalogPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
 
-const currentPage: number = 1;
+  const currentPage = 1;
 
   useEffect(() => {
     const load = async () => {
@@ -46,9 +46,7 @@ const currentPage: number = 1;
       <section className="container space-y-4">
         <div className="pt-16">
           <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
-          <p className="text-muted-foreground">
-            {paperbackBooks.length} books
-          </p>
+          <p className="text-muted-foreground">{paperbackBooks.length} books</p>
         </div>
 
         <div className="pt-[40px] flex gap-4 items-start">
@@ -69,8 +67,7 @@ const currentPage: number = 1;
         <section className="pt-6 gap-y-10 mx-auto justify-center">
           <div className="grid gap-4 justify-center sm:grid-cols-2 gap-y-10 lg:grid-cols-4">
             {paperbackBooks.map(book => {
-              const currentPrice =
-                book.priceDiscount ?? book.priceRegular;
+              const currentPrice = book.priceDiscount ?? book.priceRegular;
               const hasDiscount = book.priceDiscount !== null;
 
               const inStock = book.inStock ?? true;
@@ -91,9 +88,7 @@ const currentPage: number = 1;
                     {book.name}
                   </h3>
 
-                  <p className="text-sm text-muted-foreground">
-                    {book.author}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{book.author}</p>
 
                   {hasDiscount ? (
                     <div className="flex items-center gap-2">

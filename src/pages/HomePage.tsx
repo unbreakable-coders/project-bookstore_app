@@ -3,21 +3,26 @@ import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
 import { Categories } from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
+import { booksData } from '@/books/data/books.ts';
 
 export const HomePage = () => {
-  const [booksRecommended, setBooksRecommended] = useState<Book[]>([]);
+  const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
 
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const res = await fetch('/books/paperback.json');
-        const data: Book[] = await res.json();
+        const allBooks = await booksData();
 
-        const shuffled = [...data].sort(() => Math.random() - 0.5);
+        setNewBooks(
+          [...allBooks]
+            .sort((a, b) => a.publicationYear - b.publicationYear)
+            .slice(1, 9),
+        );
 
-        setBooksRecommended(shuffled.slice(0, 8));
-        setBooksMightLike(shuffled.slice(8, 16));
+        setBooksMightLike(
+          [...allBooks].sort(() => Math.random() - 0.5).slice(0, 16),
+        );
       } catch (error) {
         console.error('[HomePage] Failed to load books:', error);
       }
@@ -31,7 +36,7 @@ export const HomePage = () => {
       <div className="w-full max-w-[1136px] px-4 flex flex-col gap-16">
         <PromoSlider />
 
-        <ProductCardsBlock title="New books" listOfBooks={booksRecommended} />
+        <ProductCardsBlock title="New books" listOfBooks={newBooks} />
 
         <Categories />
 

@@ -1,33 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { BookImage } from '../../atoms/BookImage/BookImage';
 import { Badge } from '../../atoms/Badge/Badge';
+import { AudioBadge } from '../../atoms/AudioBadge/AudioBadge';
+import { KindleBadge } from '../../atoms/KindleBadge/KindleBadge';
 import { BookInfo } from '../../molecules/BookInfo/BookInfo';
 import { PriceDisplay } from '../../molecules/PriceDisplay/PriceDisplay';
 import { StockStatus } from '../../molecules/StockStatus/StockStatus';
 import { BookActions } from '../../molecules/BookActions/BookActions';
+import type { Book } from '@/types/book';
 
-interface Book {
-  id: string;
-  type: string;
-  namespaceId: string;
-  name: string;
-  slug: string;
-  priceRegular: number;
-  priceDiscount: number | null;
-  images: string[];
-  langAvailable: string[];
-  lang: string;
-  author: string;
-  coverType: string;
-  numberOfPages: number;
-  publicationYear: number;
-  publication: string;
-  format: string;
-  illustrations: boolean;
-  category: string[];
-  description: string[];
-  inStock?: boolean;
-}
+import {
+  toastWishlistAdded,
+  toastWishlistRemoved,
+  toastCartAdded,
+  toastCartRemoved,
+} from '../../atoms/Toasts';
 
 interface BookCardProps {
   book: Book;
@@ -51,22 +38,45 @@ export const BookCard: React.FC<BookCardProps> = ({
   }, [isInCart]);
 
   const handleAddToCart = () => {
-    const newValue = !optimisticInCart;
-    setOptimisticInCart(newValue);
+    const willBeInCart = !optimisticInCart;
+    setOptimisticInCart(willBeInCart);
     onAddToCart?.(book.id);
+
+    if (willBeInCart) {
+      toastCartAdded();
+    } else {
+      toastCartRemoved();
+    }
   };
 
   const handleToggleWishlist = () => {
+    const willBeInWishlist = !isInWishlist;
     onToggleWishlist?.(book.id);
+
+    if (willBeInWishlist) {
+      toastWishlistAdded();
+    } else {
+      toastWishlistRemoved();
+    }
   };
 
   const inStock = book.inStock ?? true;
+  const isAudiobook = book.type === 'audiobook';
+  const isKindle = book.type === 'kindle';
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300">
       <div className="relative">
         <BookImage src={book.images[0]} alt={book.name} />
-        {book.priceDiscount !== null && <Badge>Знижка</Badge>}
+
+        {isKindle && <KindleBadge />}
+
+        <div className="absolute inset-0 pointer-events-none z-20">
+          <div className="flex justify-between p-3">
+            {book.priceDiscount !== null && <Badge>Знижка</Badge>}
+            {isAudiobook && <AudioBadge />}
+          </div>
+        </div>
       </div>
 
       <div className="space-y-3">
