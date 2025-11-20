@@ -5,9 +5,6 @@ interface ProductDetailLabelProps {
   value: string | number;
 }
 
-/**
- * Atom for a row of characteristics in a list
- */
 export const ProductDetailLabel: React.FC<ProductDetailLabelProps> = ({
   label,
   value,
