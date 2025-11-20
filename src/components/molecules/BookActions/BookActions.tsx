@@ -18,7 +18,6 @@ export const BookActions: React.FC<BookActionsProps> = ({
   inStock,
 }) => {
   const heartIconName = isInWishlist ? 'heartRed' : 'heart';
-
   const canAddToCart = inStock || isInCart;
 
   return (
@@ -35,7 +34,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
           font-bold 
           rounded-lg 
           transition-all duration-200
-          ${!canAddToCart && 'opacity-60 cursor-not-allowed'}
+          ${canAddToCart ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'}
         `}
       >
         {isInCart ? 'Added' : inStock ? 'Add to cart' : 'Out of stock'}
@@ -45,11 +44,13 @@ export const BookActions: React.FC<BookActionsProps> = ({
         onClick={onToggleWishlist}
         variant="outline"
         size="icon"
-        className="rounded-lg h-10 w-10 shrink-0 border border-input hover:bg-accent/50 transition-colors"
+        className="rounded-lg h-10 w-10 shrink-0 border border-input hover:bg-accent/50 transition-colors cursor-pointer"
       >
         <Icon
           name={heartIconName}
-          className={`w-5 h-5 ${isInWishlist ? 'text-red-500' : 'text-gray-500'} transition-colors`}
+          className={`w-5 h-5 ${
+            isInWishlist ? 'text-red-500' : 'text-gray-500'
+          } transition-colors`}
         />
       </Button>
     </div>

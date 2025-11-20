@@ -65,7 +65,7 @@ export const BookCard: React.FC<BookCardProps> = ({
   const isKindle = book.type === 'kindle';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
       <div className="relative">
         <BookImage src={book.images[0]} alt={book.name} />
 

@@ -16,7 +16,7 @@ const scrollToTop = () => {
 
 export const Footer = () => {
   return (
-    <footer className="mt-10 border-t bg-white">
+    <footer className="border-t bg-linear-to-r from-[#eeeade] to-[#ded8de] border-border">
       <div className="mx-auto max-w-6xl px-4 py-6">
         {/* Desktop */}
         <div className="hidden md:flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">

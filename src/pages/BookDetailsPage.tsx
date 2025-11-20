@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
+import { Loader } from '@/components/atoms/Loader/Loader';
+// import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 
 type LanguageCode = 'uk' | 'en' | string;
 
@@ -26,6 +28,7 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
+        await new Promise(resolve => setTimeout(resolve, 5500)); // імітація затримки
 
         if (!data) {
           console.error(
@@ -71,10 +74,10 @@ export const BookDetailsPage = () => {
     );
   }
 
-  if (loading && !product) {
+  if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-xl">
-        Завантаження деталей продукту...
+        <Loader />
       </div>
     );
   }
@@ -88,13 +91,15 @@ export const BookDetailsPage = () => {
   }
 
   const detailsList = [
+    { label: 'Author', value: product.author },
     { label: 'Cover type', value: product.details.coverType },
-    { label: 'Pages', value: product.details.numberOfPages },
-    { label: 'Publication year', value: product.details.publicationYear },
-    { label: 'Publisher', value: product.details.publication },
+    { label: 'Number of pages', value: product.details.numberOfPages },
+    { label: 'Year of publication', value: product.details.publicationYear },
+    { label: 'Publication', value: product.details.publication },
     { label: 'Format', value: product.details.format },
+    { label: 'LangLanguage', value: product.lang },
     {
-      label: 'Illustrations',
+      label: 'illustrations',
       value: product.details.illustrations ? 'Yes' : 'No',
     },
   ];
@@ -126,5 +131,13 @@ export const BookDetailsPage = () => {
     availableLanguages: product.availableLanguages,
   };
 
-  return <BookDetailsTemplate {...templateData} />;
+  return (
+    <div>
+      <BookDetailsTemplate {...templateData} />
+      {/* <ProductCardsBlock
+        title="Also you might like it!"
+        listOfBooks={booksMightLike}
+      /> */}
+    </div>
+  );
 };
