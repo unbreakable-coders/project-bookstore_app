@@ -44,13 +44,16 @@ export const PaginationEllipsis = () => (
 export const PaginationPreviousButton = ({
   href,
   disabled,
+  onClick,
 }: {
   href: string;
   disabled?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) => (
   <PaginationItem>
     <a
       href={disabled ? undefined : href}
+      onClick={disabled ? undefined : onClick}
       aria-label="Previous"
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
@@ -68,13 +71,16 @@ export const PaginationPreviousButton = ({
 export const PaginationNextButton = ({
   href,
   disabled,
+  onClick,
 }: {
   href: string;
   disabled?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) => (
   <PaginationItem>
     <a
       href={disabled ? undefined : href}
+      onClick={disabled ? undefined : onClick}
       aria-label="Next"
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : 0}
@@ -93,13 +99,19 @@ export const PaginationPage = ({
   href,
   children,
   isCurrent,
+  onClick,
 }: {
   href: string;
   children: React.ReactNode;
   isCurrent?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) => (
   <PaginationItem>
-    <PaginationLink href={href} aria-current={isCurrent ? 'page' : undefined}>
+    <PaginationLink
+      href={href}
+      onClick={onClick}
+      aria-current={isCurrent ? 'page' : undefined}
+    >
       {children}
     </PaginationLink>
   </PaginationItem>

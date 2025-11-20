@@ -17,11 +17,11 @@ export const Category: FC<Props> = ({ category }) => {
       <div
         className="
         w-full
-        aspect-[368/289]
+        aspect-368/289
         max-xl:aspect-[1/1]
         max-sm:aspect-[1/1]
         overflow-hidden
-        rounded-[16px]
+        rounded-2xl
         max-xl:rounded-[8px]
       "
       >
