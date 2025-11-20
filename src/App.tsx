@@ -18,11 +18,12 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        <Route index element={<DevPreviewPage />} />
+        {/* HOME — index */}
+        <Route index element={<HomePage />} />
 
-        <Route path="home" element={<HomePage />} />
+        {/* MAIN ROUTES */}
         <Route path="catalog" element={<CatalogPage />} />
-        <Route path="books/:bookIdb" element={<BookDetailsPage />} />
+        <Route path="books/:namespaceId" element={<BookDetailsPage />} />
         <Route path="wishlist" element={<WishlistPage />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="about" element={<AboutPage />} />
@@ -30,7 +31,10 @@ export default function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
+        {/* DEV */}
         <Route path="dev/preview" element={<DevPreviewPage />} />
+
+        {/* 404 */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>

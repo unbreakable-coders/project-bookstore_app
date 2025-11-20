@@ -1,3 +1,9 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import type { Book } from '@/types/book';
+import { booksData } from '@/books/data/books';
+
 import { Dropdown } from '@/components/atoms/Dropdown';
 import {
   Pagination,
@@ -9,14 +15,38 @@ import {
 } from '@/components/atoms/Pagination';
 
 export const CatalogPage = () => {
-  const currentPage = 1; // поки що захардкоджено, потім зробимо динамічним
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const currentPage = 1;
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await booksData();
+      setBooks(data);
+      setLoading(false);
+    };
+
+    void load();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen justify-center items-center text-xl">
+        Loading catalog…
+      </div>
+    );
+  }
+
+  // Поки що показуємо лише паперові книги
+  const paperbackBooks = books.filter(book => book.type === 'paperback');
 
   return (
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
           <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
-          <p className="text-muted-foreground">10,305 books</p>
+          <p className="text-muted-foreground">{paperbackBooks.length} books</p>
         </div>
 
         <div className="pt-[40px] flex gap-4 items-start">
@@ -33,194 +63,67 @@ export const CatalogPage = () => {
           </div>
         </div>
 
+        {/* GRID з реальними даними з JSON */}
         <section className="pt-6 gap-y-10 mx-auto justify-center">
           <div className="grid gap-4 justify-center sm:grid-cols-2 gap-y-10 lg:grid-cols-4">
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/covers/fifth-discipline.jpg"
-                alt="The Fifth Discipline"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Fifth Discipline
-              </h3>
-              <p className="text-sm text-muted-foreground">Peter M. Senge</p>
-              <p className="text-base font-semibold text-foreground">€450</p>
-              <p className="text-xs text-green-600 flex items-center">
-                <img
-                  src="/icons/icon-in-stock.svg"
-                  alt="In stock"
-                  className="inline h-3 w-3 mr-1"
-                />
-                In stock
-              </p>
-              <button className="mt-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
-                Add to cart
-              </button>
-            </div>
+            {paperbackBooks.map(book => {
+              const currentPrice = book.priceDiscount ?? book.priceRegular;
+              const hasDiscount = book.priceDiscount !== null;
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/covers/fifth-discipline.jpg"
-                alt="The Fifth Discipline"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Fifth Discipline
-              </h3>
-              <p className="text-sm text-muted-foreground">Peter M. Senge</p>
-              <p className="text-base font-semibold text-foreground">€450</p>
-              <p className="text-xs text-green-600 flex items-center">
-                <img
-                  src="/icons/icon-in-stock.svg"
-                  alt="In stock"
-                  className="inline h-3 w-3 mr-1"
-                />
-                In stock
-              </p>
-              <button className="mt-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
-                Add to cart
-              </button>
-            </div>
+              const inStock = book.inStock ?? true;
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/books/img/kindle/harry-potter-1.jpg"
-                alt="Harry Potter and the Philosopher's Stone"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Intelligent Investor
-              </h3>
-              <p className="text-sm text-muted-foreground">Benjamin Graham</p>
-              <div className="flex items-center gap-2">
-                <p className="text-base font-semibold text-foreground">€258</p>
-                <p className="text-base line-through text-muted-foreground">
-                  €400
-                </p>
-              </div>
-              <p className="text-xs text-green-600">In stock</p>
-              <button className="mt-auto px-4 py-2 bg-muted text-muted-foreground rounded-md cursor-default">
-                Added
-              </button>
-            </div>
+              return (
+                <Link
+                  key={book.id}
+                  to={`/books/${book.namespaceId}`}
+                  className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69 hover:shadow-md transition"
+                >
+                  <img
+                    src={book.images[0]}
+                    alt={book.name}
+                    className="w-full h-[263px] object-cover rounded-md"
+                  />
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/books/img/kindle/harry-potter-1.jpg"
-                alt="Harry Potter and the Philosopher's Stone"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Intelligent Investor
-              </h3>
-              <p className="text-sm text-muted-foreground">Benjamin Graham</p>
-              <div className="flex items-center gap-2">
-                <p className="text-base font-semibold text-foreground">€258</p>
-                <p className="text-base line-through text-muted-foreground">
-                  €400
-                </p>
-              </div>
-              <p className="text-xs text-green-600">In stock</p>
-              <button className="mt-auto px-4 py-2 bg-muted text-muted-foreground rounded-md cursor-default">
-                Added
-              </button>
-            </div>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    {book.name}
+                  </h3>
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/covers/fifth-discipline.jpg"
-                alt="The Fifth Discipline"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Fifth Discipline
-              </h3>
-              <p className="text-sm text-muted-foreground">Peter M. Senge</p>
-              <p className="text-base font-semibold text-foreground">€450</p>
-              <p className="text-xs text-green-600 flex items-center">
-                <img
-                  src="/icons/icon-in-stock.svg"
-                  alt="In stock"
-                  className="inline h-3 w-3 mr-1"
-                />
-                In stock
-              </p>
-              <button className="mt-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
-                Add to cart
-              </button>
-            </div>
+                  <p className="text-sm text-muted-foreground">{book.author}</p>
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/covers/fifth-discipline.jpg"
-                alt="The Fifth Discipline"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Fifth Discipline
-              </h3>
-              <p className="text-sm text-muted-foreground">Peter M. Senge</p>
-              <p className="text-base font-semibold text-foreground">€450</p>
-              <p className="text-xs text-green-600 flex items-center">
-                <img
-                  src="/icons/icon-in-stock.svg"
-                  alt="In stock"
-                  className="inline h-3 w-3 mr-1"
-                />
-                In stock
-              </p>
-              <button className="mt-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
-                Add to cart
-              </button>
-            </div>
+                  {hasDiscount ? (
+                    <div className="flex items-center gap-2">
+                      <p className="text-base font-semibold text-foreground">
+                        €{currentPrice}
+                      </p>
+                      <p className="text-base line-through text-muted-foreground">
+                        €{book.priceRegular}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-base font-semibold text-foreground">
+                      €{currentPrice}
+                    </p>
+                  )}
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/books/img/kindle/harry-potter-1.jpg"
-                alt="Harry Potter and the Philosopher's Stone"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Intelligent Investor
-              </h3>
-              <p className="text-sm text-muted-foreground">Benjamin Graham</p>
-              <div className="flex items-center gap-2">
-                <p className="text-base font-semibold text-foreground">€258</p>
-                <p className="text-base line-through text-muted-foreground">
-                  €400
-                </p>
-              </div>
-              <p className="text-xs text-green-600">In stock</p>
-              <button className="mt-auto px-4 py-2 bg-muted text-muted-foreground rounded-md cursor-default">
-                Added
-              </button>
-            </div>
+                  <p className="text-xs text-green-600 flex items-center">
+                    <img
+                      src="/icons/icon-in-stock.svg"
+                      alt="In stock"
+                      className="inline h-3 w-3 mr-1"
+                    />
+                    {inStock ? 'In stock' : 'Out of stock'}
+                  </p>
 
-            <div className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69">
-              <img
-                src="/books/img/kindle/harry-potter-1.jpg"
-                alt="Harry Potter and the Philosopher's Stone"
-                className="w-full h-[263px] object-cover rounded-md"
-              />
-              <h3 className="text-lg font-semibold text-foreground">
-                The Intelligent Investor
-              </h3>
-              <p className="text-sm text-muted-foreground">Benjamin Graham</p>
-              <div className="flex items-center gap-2">
-                <p className="text-base font-semibold text-foreground">€258</p>
-                <p className="text-base line-through text-muted-foreground">
-                  €400
-                </p>
-              </div>
-              <p className="text-xs text-green-600">In stock</p>
-              <button className="mt-auto px-4 py-2 bg-muted text-muted-foreground rounded-md cursor-default">
-                Added
-              </button>
-            </div>
+                  <button className="mt-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
+                    Add to cart
+                  </button>
+                </Link>
+              );
+            })}
           </div>
         </section>
 
+        {/* Пагінація (поки що статична, але з виправленою логікою isCurrent) */}
         <section className="flex justify-center py-[64px] px-4">
           <Pagination>
             <PaginationList>
@@ -228,30 +131,29 @@ export const CatalogPage = () => {
                 href={`?page=${currentPage - 1}`}
                 disabled={currentPage === 1}
               />
-              <PaginationPage href="?page=1">1</PaginationPage>
-              <PaginationPage
-                href="?page=2"
-                isCurrent={currentPage === currentPage + 1}
-              >
+
+              <PaginationPage href="?page=1" isCurrent={currentPage === 1}>
+                1
+              </PaginationPage>
+              <PaginationPage href="?page=2" isCurrent={currentPage === 2}>
                 2
               </PaginationPage>
-              <PaginationPage
-                href="?page=3"
-                isCurrent={currentPage === currentPage + 2}
-              >
+              <PaginationPage href="?page=3" isCurrent={currentPage === 3}>
                 3
               </PaginationPage>
-              <PaginationPage
-                href="?page=4"
-                isCurrent={currentPage === currentPage + 3}
-              >
+              <PaginationPage href="?page=4" isCurrent={currentPage === 4}>
                 4
               </PaginationPage>
+
               <PaginationGap />
-              <PaginationPage href="?page=10">10</PaginationPage>
+
+              <PaginationPage href="?page=10" isCurrent={currentPage === 10}>
+                10
+              </PaginationPage>
+
               <PaginationNextButton
                 href={`?page=${currentPage + 1}`}
-                disabled={currentPage === currentPage + 9}
+                disabled={false} // TODO: підвʼязати до totalPages
               />
             </PaginationList>
           </Pagination>
