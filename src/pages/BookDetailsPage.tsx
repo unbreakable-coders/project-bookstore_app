@@ -18,7 +18,7 @@ export const BookDetailsPage: React.FC = () => {
       setLoading(true);
 
       const data = await fetchBookProduct(BOOK_NAMESPACE_ID, lang);
-      await new Promise(resolve => setTimeout(resolve, 3500)); // імітація затримки
+      await new Promise(resolve => setTimeout(resolve, 5500)); // імітація затримки
 
       if (!data) {
         console.error(`Product variant for language ${lang} not found.`);

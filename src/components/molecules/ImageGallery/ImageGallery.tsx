@@ -62,7 +62,7 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
         <div className="flex justify-center gap-2">
           {images.map((imgSrc, index) => (
             <img
-              key={index}
+              key={imgSrc}
               src={imgSrc}
               onClick={() => setMainImage(imgSrc)}
               className={`w-16 h-16 p-2 cursor-pointer border rounded shrink-0 ${mainImage === imgSrc ? 'border-primary' : 'border-border'}`}
