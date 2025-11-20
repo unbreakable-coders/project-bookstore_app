@@ -53,7 +53,7 @@
   ROOT VARIABLES (Figma Palette)
    =========================== */
 :root {
-  --background: #fafbfc; /* Hover + BG */
+  --background: #fefdfb; /* Hover + BG */
   --foreground: #313237; /* Primary */
 
   --card: #ffffff; /* White */
