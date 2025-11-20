@@ -5,6 +5,7 @@ import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
 import { Dropdown } from '../../atoms/Dropdown';
+import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -178,6 +179,8 @@ export const Header = () => {
           </div>
         </div>
       </div>
+
+      <GlobalLanguageSwitcher />
 
       {/* MOBILE OVERLAY MENU (320–639) */}
       {isMobileOpen && (

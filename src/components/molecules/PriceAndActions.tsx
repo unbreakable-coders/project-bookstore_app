@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../atoms/Button';
 import { Icon } from '../atoms/Icon/Icon';
 
@@ -17,6 +18,8 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   onToggleWishlist,
   isInWishlist,
 }) => {
+  const { t } = useTranslation();
+
   const hasDiscount = oldPrice !== null && oldPrice !== undefined;
   const currentPrice = hasDiscount ? oldPrice : price;
   const shouldShowOldPrice = hasDiscount && oldPrice !== price;
@@ -43,7 +46,7 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
           onClick={onAddToCart}
           className="bg-primary text-white rounded-lg font-bold w-60 md:w-[219px] lg:w-[272px] h-10"
         >
-          Add to cart
+          {t('Add to cart')}
         </Button>
         {/* HEART BUTTON */}
         <Button

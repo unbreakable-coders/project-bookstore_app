@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../atoms/Button';
 
 interface LanguageSelectorProps {
@@ -12,23 +13,22 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguage,
   onLanguageChange,
 }) => {
+  const { t } = useTranslation();
+
   const handleLanguageSelect = async (lang: string) => {
     onLanguageChange(lang);
   };
 
   return (
     <div className="border-b border-border py-8">
-      <h5 className="font-bold text-secondary mb-2">Select language</h5>
+      <h5 className="font-bold text-secondary mb-2">{t('Select language')}</h5>
       <div className="flex gap-2">
         {/* Кнопка UA */}
         {languages.includes('uk') && (
           <Button
             onClick={() => handleLanguageSelect('uk')}
-            className={`px-2.5 py-[5.5px] rounded-[5px] uppercase ${
-              selectedLanguage === 'uk'
-                ? 'bg-primary text-white'
-                : 'border border-border bg-background'
-            }`}
+            variant={selectedLanguage === 'uk' ? 'languageActive' : 'language'}
+            size="language"
           >
             UA
           </Button>
@@ -38,11 +38,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         {languages.includes('en') && (
           <Button
             onClick={() => handleLanguageSelect('en')}
-            className={`px-2.5 py-[5.5px] rounded-[5px] uppercase ${
-              selectedLanguage === 'en'
-                ? 'bg-primary text-white'
-                : 'border border-border bg-background'
-            }`}
+            variant={selectedLanguage === 'en' ? 'languageActive' : 'language'}
+            size="language"
           >
             ENG
           </Button>

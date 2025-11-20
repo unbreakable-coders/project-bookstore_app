@@ -1,6 +1,6 @@
 export interface Book {
   id: string;
-  type: string;
+  type: 'paperback' | 'audiobook' | 'ebook';
   namespaceId: string;
   name: string;
   slug: string;

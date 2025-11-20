@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../molecules/LanguageSelector.tsx';
 import { PriceAndActions } from '../molecules/PriceAndActions.tsx';
 import { ProductDetailLabel } from '../molecules/ProductDetailLabel.tsx';
@@ -16,9 +17,6 @@ interface ProductInfoPanelProps {
   visibleLabels?: string[];
 }
 
-/**
- * Організм правої панелі зі всією інформацією про покупку та деталями.
- */
 export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
   category,
   price,
@@ -37,15 +35,17 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
     'Year of publication',
   ],
 }) => {
+  const { t } = useTranslation();
+
   const filteredDetails = details.filter(detail =>
-    visibleLabels.includes(detail.label),
+    visibleLabels.some(labelKey => detail.label === t(labelKey)),
   );
 
   return (
     <div className="mt-8 max-w-[280px] md:max-w-[267px] lg:max-w-[320px] w-full">
       {/* Category */}
       <div className="border-b border-border pb-4">
-        <h5 className="font-bold text-secondary">Category</h5>
+        <h5 className="font-bold text-secondary">{t('Category')}</h5>
         <div className="inline-block mt-2 px-[10.5px] py-[5.5px] border border-border rounded-[5px]">
           {category}
         </div>

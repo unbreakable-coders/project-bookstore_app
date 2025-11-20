@@ -26,9 +26,6 @@ interface BookDetailsTemplateProps {
   availableLanguages: string[];
 }
 
-/**
- * Шаблон сторінки: скелет з розміщенням основних організмів.
- */
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   book,
   breadcrumbs,
