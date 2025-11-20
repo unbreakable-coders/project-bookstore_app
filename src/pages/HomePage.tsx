@@ -32,8 +32,8 @@ export const HomePage = () => {
   }, []);
 
   return (
-    <main className="w-full flex justify-center">
-      <div className="w-full max-w-[1136px] px-4 flex flex-col gap-16">
+    <main className="w-full flex justify-center container">
+      <div className="w-full max-w-[1136px] px-4 flex flex-col">
         <PromoSlider />
 
         <ProductCardsBlock title="New books" listOfBooks={newBooks} />
