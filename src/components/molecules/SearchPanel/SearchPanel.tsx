@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '@/components/atoms/Icon';
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { booksData } from '@/books/data/books';
 import type { Book } from '@/types/book';
 import { useNavigate } from 'react-router-dom';
