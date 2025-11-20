@@ -1,33 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BookImage } from '../../atoms/BookImage/BookImage';
 import { Badge } from '../../atoms/Badge/Badge';
+import { AudioBadge } from '../../atoms/AudioBadge/AudioBadge';
 import { BookInfo } from '../../molecules/BookInfo/BookInfo';
 import { PriceDisplay } from '../../molecules/PriceDisplay/PriceDisplay';
 import { StockStatus } from '../../molecules/StockStatus/StockStatus';
 import { BookActions } from '../../molecules/BookActions/BookActions';
-
-interface Book {
-  id: string;
-  type: string;
-  namespaceId: string;
-  name: string;
-  slug: string;
-  priceRegular: number;
-  priceDiscount: number | null;
-  images: string[];
-  langAvailable: string[];
-  lang: string;
-  author: string;
-  coverType: string;
-  numberOfPages: number;
-  publicationYear: number;
-  publication: string;
-  format: string;
-  illustrations: boolean;
-  category: string[];
-  description: string[];
-  inStock?: boolean;
-}
+import type { Book } from '@/types/book';
 
 interface BookCardProps {
   book: Book;
@@ -61,10 +40,12 @@ export const BookCard: React.FC<BookCardProps> = ({
   };
 
   const inStock = book.inStock ?? true;
+  const isAudiobook = book.type === 'audiobook';
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300">
       <div className="relative">
+        {isAudiobook && <AudioBadge />}
         <BookImage src={book.images[0]} alt={book.name} />
         {book.priceDiscount !== null && <Badge>Знижка</Badge>}
       </div>

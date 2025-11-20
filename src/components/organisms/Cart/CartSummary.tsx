@@ -27,7 +27,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
         type="button"
         onClick={() => {
           // тимчасовий плейсхолдер
-          // eslint-disable-next-line no-alert
+
           alert('Checkout functionality coming soon!');
         }}
       >

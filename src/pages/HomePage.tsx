@@ -31,10 +31,7 @@ export const HomePage = () => {
       <div className="w-full max-w-[1136px] px-4 flex flex-col gap-16">
         <PromoSlider />
 
-        <ProductCardsBlock
-          title="New books"
-          listOfBooks={booksRecommended}
-        />
+        <ProductCardsBlock title="New books" listOfBooks={booksRecommended} />
 
         <Categories />
 

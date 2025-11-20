@@ -42,7 +42,7 @@ export interface BookProduct {
     format: string;
     illustrations: boolean;
   };
-  about: string[]; 
+  about: string[];
 }
 
 const rawProducts: BackendBookProduct[] = [
@@ -55,10 +55,8 @@ export const fetchBookProduct = async (
   namespaceId: string,
   lang: string,
 ): Promise<BookProduct | null> => {
-  let variant =
-    rawProducts.find(
-      p => p.namespaceId === namespaceId && p.lang === lang,
-    ) ??
+  const variant =
+    rawProducts.find(p => p.namespaceId === namespaceId && p.lang === lang) ??
     rawProducts.find(p => p.namespaceId === namespaceId) ??
     null;
 
@@ -66,9 +64,7 @@ export const fetchBookProduct = async (
     return null;
   }
 
-  const siblings = rawProducts.filter(
-    p => p.namespaceId === namespaceId,
-  );
+  const siblings = rawProducts.filter(p => p.namespaceId === namespaceId);
 
   const availableLanguages = siblings.map(p => p.lang);
 
