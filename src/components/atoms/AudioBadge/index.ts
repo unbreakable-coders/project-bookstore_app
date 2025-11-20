@@ -1,0 +1,1 @@
+export { AudioBadge } from './AudioBadge';

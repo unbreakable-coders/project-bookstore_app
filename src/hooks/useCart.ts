@@ -32,7 +32,10 @@ export const useCart = () => {
             const parsed = JSON.parse(saved) as CartMap;
             setCartMap(parsed);
           } catch (error) {
-            console.error('[Cart] Failed to parse cart from localStorage', error);
+            console.error(
+              '[Cart] Failed to parse cart from localStorage',
+              error,
+            );
             setCartMap({});
           }
         }

@@ -10,8 +10,7 @@ export const BookDetailsPage = () => {
 
   const [product, setProduct] = useState<BookProduct | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentLanguage, setCurrentLanguage] =
-    useState<LanguageCode>('uk');
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('uk');
   const [isInWishlist, setIsInWishlist] = useState(false);
 
   const loadProductData = useCallback(
