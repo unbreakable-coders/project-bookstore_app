@@ -141,7 +141,7 @@ export const CatalogPage = () => {
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">All books</h1>
+          <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
           <p className="text-muted-foreground">{books.length} books</p>
         </div>
 
@@ -166,7 +166,9 @@ export const CatalogPage = () => {
         <section className="pt-6 gap-y-10 mx-auto justify-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
             {currentBooks.map(book => (
-              <BookCard key={book.id} book={book} />
+              <div key={book.id} className="w-full max-w-[272px]">
+                <BookCard book={book} />
+              </div>
             ))}
           </div>
         </section>
