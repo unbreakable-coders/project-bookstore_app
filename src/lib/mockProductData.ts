@@ -1,3 +1,7 @@
+import audiobook from '@/books/data/audiobook.json';
+import kindle from '@/books/data/kindle.json';
+import paperback from '@/books/data/paperback.json';
+
 export interface BackendBookProduct {
   id: string;
   type: string;
@@ -27,50 +31,69 @@ export interface BookProduct {
   price: number;
   oldPrice: number | null;
   category: string;
-  language: string;
-  availableLanguages: string[];
   images: string[];
-  about: string[];
-  details: { label: string; value: string | number }[];
+  lang: string;
+  availableLanguages: string[];
+  details: {
+    coverType: string;
+    numberOfPages: number;
+    publicationYear: number;
+    publication: string;
+    format: string;
+    illustrations: boolean;
+  };
+  about: string[]; 
 }
 
+const rawProducts: BackendBookProduct[] = [
+  ...(audiobook as unknown as BackendBookProduct[]),
+  ...(kindle as unknown as BackendBookProduct[]),
+  ...(paperback as unknown as BackendBookProduct[]),
+];
+
 export const fetchBookProduct = async (
-  namespaceId = 'chip-war',
-  targetLang = 'uk',
+  namespaceId: string,
+  lang: string,
 ): Promise<BookProduct | null> => {
-  await new Promise(resolve => setTimeout(resolve, 300));
+  let variant =
+    rawProducts.find(
+      p => p.namespaceId === namespaceId && p.lang === lang,
+    ) ??
+    rawProducts.find(p => p.namespaceId === namespaceId) ??
+    null;
 
-  const res = await fetch('/books/paperback.json');
-  const data = (await res.json()) as BackendBookProduct[];
+  if (!variant) {
+    return null;
+  }
 
-  const selectedBook = data.find(
-    p => p.namespaceId === namespaceId && p.lang === targetLang,
+  const siblings = rawProducts.filter(
+    p => p.namespaceId === namespaceId,
   );
 
-  if (!selectedBook) return null;
+  const availableLanguages = siblings.map(p => p.lang);
 
-  return {
-    id: selectedBook.id,
-    title: selectedBook.name,
-    author: selectedBook.author,
-    price: selectedBook.priceRegular,
-    oldPrice: selectedBook.priceDiscount,
-    category: selectedBook.category[0] ?? 'General',
-    language: selectedBook.lang,
-    availableLanguages: selectedBook.langAvailable,
-    images: selectedBook.images,
-    about: selectedBook.description,
-    details: [
-      { label: 'Author', value: selectedBook.author },
-      { label: 'Cover type', value: selectedBook.coverType },
-      { label: 'Number of pages', value: selectedBook.numberOfPages },
-      { label: 'Year of publication', value: selectedBook.publicationYear },
-      { label: 'Publication', value: selectedBook.publication },
-      { label: 'Format', value: selectedBook.format },
-      {
-        label: 'Illustrations',
-        value: selectedBook.illustrations ? 'Yes' : 'No',
-      },
-    ],
+  const details = {
+    coverType: variant.coverType,
+    numberOfPages: variant.numberOfPages,
+    publicationYear: variant.publicationYear,
+    publication: variant.publication,
+    format: variant.format,
+    illustrations: variant.illustrations,
   };
+
+  const product: BookProduct = {
+    id: variant.id,
+    title: variant.name,
+    author: variant.author,
+    images: variant.images,
+    category: variant.category[0] ?? '',
+    price: variant.priceDiscount ?? variant.priceRegular,
+    oldPrice: variant.priceDiscount ? variant.priceRegular : null,
+    details,
+    about: variant.description,
+    lang: variant.lang,
+    availableLanguages,
+  };
+
+  return product;
 };
