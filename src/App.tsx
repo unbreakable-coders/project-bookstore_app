@@ -22,7 +22,10 @@ export default function App() {
       <Route path="/" element={<AppLayout />}>
         <Route index element={<HomePage />} />
 
+        {/* CATALOG */}
         <Route path="catalog" element={<CatalogPage />} />
+        <Route path="catalog/:bookType" element={<CatalogPage />} />
+
         <Route path="books/:namespaceId" element={<BookDetailsPage />} />
         <Route path="wishlist" element={<WishlistPage />} />
         <Route path="cart" element={<CartPage />} />

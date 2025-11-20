@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 
 import type { Book } from '@/types/book';
 import { booksData } from '@/books/data/books';
@@ -14,11 +14,16 @@ import {
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
 
+const ITEMS_PER_PAGE = 10;
+
 export const CatalogPage = () => {
+  const { bookType } = useParams<{ bookType?: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const currentPage = 1;
+  const currentPage = Number(searchParams.get('page') || '1');
 
   useEffect(() => {
     const load = async () => {
@@ -38,15 +43,60 @@ export const CatalogPage = () => {
     );
   }
 
-  // Поки що показуємо лише паперові книги
-  const paperbackBooks = books.filter(book => book.type === 'paperback');
+  const normalizedType = (bookType || '').toLowerCase();
+
+  const typeBackendMap: Record<string, string> = {
+    paper: 'paperback',
+    kindle: 'kindle',
+    audiobook: 'audiobook',
+  };
+
+  const backendType =
+    normalizedType && typeBackendMap[normalizedType]
+      ? typeBackendMap[normalizedType]
+      : normalizedType || null;
+
+  const filteredBooks = backendType
+    ? books.filter(book => book.type.toLowerCase() === backendType)
+    : books;
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredBooks.length / ITEMS_PER_PAGE),
+  );
+
+  const safePage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
+  const paginatedBooks = filteredBooks.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
+
+  const handlePageChange = (page: number) => {
+    const nextPage = Math.min(Math.max(1, page), totalPages);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', String(nextPage));
+    setSearchParams(newParams);
+  };
+
+  const titleMap: Record<string, string> = {
+    paper: 'Paper books',
+    kindle: 'Kindle books',
+    audiobook: 'Audiobooks',
+  };
+
+  const pageTitle =
+    (normalizedType && titleMap[normalizedType]) || 'All books';
 
   return (
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
-          <p className="text-muted-foreground">{paperbackBooks.length} books</p>
+          <h1 className="text-4xl font-bold text-foreground">{pageTitle}</h1>
+          <p className="text-muted-foreground">
+            {filteredBooks.length} books
+          </p>
         </div>
 
         <div className="pt-[40px] flex gap-4 items-start">
@@ -59,17 +109,15 @@ export const CatalogPage = () => {
             <p className="text-sm w-32 text-muted-foreground mb-1">
               Items on page
             </p>
-            <Dropdown label="10" />
+            <Dropdown label={String(ITEMS_PER_PAGE)} />
           </div>
         </div>
 
-        {/* GRID з реальними даними з JSON */}
         <section className="pt-6 gap-y-10 mx-auto justify-center">
           <div className="grid gap-4 justify-center sm:grid-cols-2 gap-y-10 lg:grid-cols-4">
-            {paperbackBooks.map(book => {
+            {paginatedBooks.map(book => {
               const currentPrice = book.priceDiscount ?? book.priceRegular;
               const hasDiscount = book.priceDiscount !== null;
-
               const inStock = book.inStock ?? true;
 
               return (
@@ -88,7 +136,9 @@ export const CatalogPage = () => {
                     {book.name}
                   </h3>
 
-                  <p className="text-sm text-muted-foreground">{book.author}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {book.author}
+                  </p>
 
                   {hasDiscount ? (
                     <div className="flex items-center gap-2">
@@ -123,37 +173,79 @@ export const CatalogPage = () => {
           </div>
         </section>
 
-        {/* Пагінація (поки що статична, але з виправленою логікою isCurrent) */}
         <section className="flex justify-center py-[64px] px-4">
           <Pagination>
             <PaginationList>
               <PaginationPreviousButton
-                href={`?page=${currentPage - 1}`}
-                disabled={currentPage === 1}
+                href={`?page=${safePage - 1}`}
+                disabled={safePage === 1}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(safePage - 1);
+                }}
               />
 
-              <PaginationPage href="?page=1" isCurrent={currentPage === 1}>
+              <PaginationPage
+                href="?page=1"
+                isCurrent={safePage === 1}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(1);
+                }}
+              >
                 1
               </PaginationPage>
-              <PaginationPage href="?page=2" isCurrent={currentPage === 2}>
+              <PaginationPage
+                href="?page=2"
+                isCurrent={safePage === 2}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(2);
+                }}
+              >
                 2
               </PaginationPage>
-              <PaginationPage href="?page=3" isCurrent={currentPage === 3}>
+              <PaginationPage
+                href="?page=3"
+                isCurrent={safePage === 3}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(3);
+                }}
+              >
                 3
               </PaginationPage>
-              <PaginationPage href="?page=4" isCurrent={currentPage === 4}>
+              <PaginationPage
+                href="?page=4"
+                isCurrent={safePage === 4}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(4);
+                }}
+              >
                 4
               </PaginationPage>
 
               <PaginationGap />
 
-              <PaginationPage href="?page=10" isCurrent={currentPage === 10}>
-                10
+              <PaginationPage
+                href={`?page=${totalPages}`}
+                isCurrent={safePage === totalPages}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(totalPages);
+                }}
+              >
+                {totalPages}
               </PaginationPage>
 
               <PaginationNextButton
-                href={`?page=${currentPage + 1}`}
-                disabled={false} // TODO: підвʼязати до totalPages
+                href={`?page=${safePage + 1}`}
+                disabled={safePage === totalPages}
+                onClick={e => {
+                  e.preventDefault();
+                  handlePageChange(safePage + 1);
+                }}
               />
             </PaginationList>
           </Pagination>
