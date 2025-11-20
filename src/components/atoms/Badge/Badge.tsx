@@ -16,7 +16,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded ${styles[variant]}`}
+      className={`absolute top-2 left-2 text-xs font-bold px-2 py-1 rounded ${styles[variant]}`}
     >
       {children}
     </span>

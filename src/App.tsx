@@ -10,31 +10,32 @@ import { CartPage } from './pages/CartPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
+import { ContactsPage } from './pages/system/ContactsPage';
 import { PageNotFound } from './pages/NotFoundPage';
 import DevPreviewPage from './pages/DevPreviewPage';
+import { GithubPage } from './pages/system/GithubPage';
+import { RightsPage } from './pages/system/RightsPage';
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        {/* HOME — index */}
         <Route index element={<HomePage />} />
 
-        {/* MAIN ROUTES */}
         <Route path="catalog" element={<CatalogPage />} />
         <Route path="books/:namespaceId" element={<BookDetailsPage />} />
         <Route path="wishlist" element={<WishlistPage />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="about" element={<AboutPage />} />
-        <Route path="contact" element={<ContactPage />} />
+        <Route path="contacts" element={<ContactsPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
 
-        {/* DEV */}
+        <Route path="github" element={<GithubPage />} />
+        <Route path="rights" element={<RightsPage />} />
+
         <Route path="dev/preview" element={<DevPreviewPage />} />
 
-        {/* 404 */}
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
