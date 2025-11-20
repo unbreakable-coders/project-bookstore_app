@@ -120,7 +120,7 @@ export const Header = () => {
 
   return (
     <>
-      <header className="border-b bg-white">
+      <header className="border-b border-border bg-linear-to-r from-[#eeeade] to-[#ded8de]">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">

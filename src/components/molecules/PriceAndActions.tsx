@@ -53,8 +53,10 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
           className="w-10 h-10 border border-border rounded-lg flex items-center justify-center bg-background"
         >
           <Icon
-            name="heart"
-            className={`h-4 w-4 ${isInWishlist ? 'text-red-500 fill-red-500' : 'text-gray-400'}`}
+            name={isInWishlist ? 'heartRed' : 'heart'}
+            className={`h-5 w-5 transition-all duration-300 ${
+              isInWishlist ? 'scale-110' : 'scale-100'
+            }`}
           />
         </Button>
       </div>

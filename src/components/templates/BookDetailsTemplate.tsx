@@ -1,6 +1,6 @@
 import React from 'react';
 import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
-import { MainImageGallery } from '../molecules/ImageGallery';
+import { MainImageGallery } from '../molecules/ImageGallery/ImageGallery.tsx';
 import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
 import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
 
@@ -26,9 +26,6 @@ interface BookDetailsTemplateProps {
   availableLanguages: string[];
 }
 
-/**
- * Шаблон сторінки: скелет з розміщенням основних організмів.
- */
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   book,
   breadcrumbs,
