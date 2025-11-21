@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { booksData } from '@/books/data/books';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
-
 import { SortCategory } from '@/components/SortBy';
 import { SortPages } from '@/components/SortPages';
 import {
