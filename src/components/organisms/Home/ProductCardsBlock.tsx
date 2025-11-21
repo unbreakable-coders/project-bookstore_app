@@ -58,6 +58,25 @@ export const ProductCardsBlock = ({
     4: 'grid-cols-4',
   }[itemsPerPage];
 
+  // 🔒 Захисні обгортки — якщо батько раптом передав не функцію
+  const safeIsInCart = (bookId: string) =>
+    typeof isInCart === 'function' ? isInCart(bookId) : false;
+
+  const safeIsInWishlist = (bookId: string) =>
+    typeof isInWishlist === 'function' ? isInWishlist(bookId) : false;
+
+  const handleAddToCart = (bookId: string) => {
+    if (typeof onAddToCart === 'function') {
+      onAddToCart(bookId);
+    }
+  };
+
+  const handleToggleWishlist = (bookId: string) => {
+    if (typeof onToggleWishlist === 'function') {
+      onToggleWishlist(bookId);
+    }
+  };
+
   return (
     <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20 mx-8">
       <div className="max-w-6xl w-full">
@@ -90,10 +109,10 @@ export const ProductCardsBlock = ({
             <div key={book.id} className="w-[272px]">
               <BookCard
                 book={book}
-                onAddToCart={() => onAddToCart(book.id)}
-                onToggleWishlist={() => onToggleWishlist(book.id)}
-                isInCart={isInCart(book.id)}
-                isInWishlist={isInWishlist(book.id)}
+                onAddToCart={() => handleAddToCart(book.id)}
+                onToggleWishlist={() => handleToggleWishlist(book.id)}
+                isInCart={safeIsInCart(book.id)}
+                isInWishlist={safeIsInWishlist(book.id)}
               />
             </div>
           ))}
