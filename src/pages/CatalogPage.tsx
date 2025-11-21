@@ -163,7 +163,7 @@ export const CatalogPage = () => {
         </div>
 
         <section className="pt-6 gap-y-10 mx-auto justify-center">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {currentBooks.map(book => (
               <div key={book.id} className="w-full max-w-[272px]">
                 <BookCard book={book} />
