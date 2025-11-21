@@ -4,77 +4,169 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
   type ReactNode,
 } from 'react';
+import type { Book } from '@/types/book';
+import { fetchBooks } from '@/lib/booksApi';
 
 type CartMap = Record<string, number>;
 
+export interface CartItem {
+  book: Book;
+  quantity: number;
+}
+
 interface CartContextValue {
-  cart: CartMap;
+  loading: boolean;
+  cartItems: CartItem[];
+  totalItems: number;
+  totalPriceUAH: number;
+  changeQuantity: (bookId: string, delta: number) => void;
+  removeItem: (bookId: string) => void;
   toggleCart: (bookId: string) => void;
   isInCart: (bookId: string) => boolean;
 }
 
+const CART_STORAGE_KEY = 'cart';
+const USD_TO_UAH_RATE = 42;
+
+const toUAH = (amount: number) => Math.ceil(amount * USD_TO_UAH_RATE);
+
 const CartContext = createContext<CartContextValue | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  console.log('%c[CartProvider] mounted', 'color: #00bfff');
-
-  // ініціалізація зі storage один раз
-  const [cart, setCart] = useState<CartMap>(() => {
+  const [allBooks, setAllBooks] = useState<Book[]>([]);
+  const [cartMap, setCartMap] = useState<CartMap>(() => {
     try {
-      const saved = localStorage.getItem('cart');
-
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
       if (!saved) {
-        console.log('[CartProvider] No cart in LS, using empty object');
         return {};
       }
-
       const parsed = JSON.parse(saved) as CartMap;
-
-      console.log('[CartProvider] Loaded from LS:', parsed);
       return parsed;
-    } catch (error) {
-      console.error('[CartProvider] Failed to parse cart from LS:', error);
+    } catch {
       return {};
     }
   });
+  const [loading, setLoading] = useState(true);
 
-  // просто лог, щоб бачити зміни
   useEffect(() => {
-    console.log('[CartProvider] cart changed →', cart);
-  }, [cart]);
-
-  const toggleCart = useCallback((bookId: string) => {
-    console.log('%c[toggleCart] CLICKED →', 'color: #ff9800', bookId);
-
-    setCart(prev => {
-      const next: CartMap = { ...prev };
-
-      if (next[bookId]) {
-        console.log('[toggleCart] Removing from cart:', bookId);
-        delete next[bookId];
-      } else {
-        console.log('[toggleCart] Adding to cart:', bookId);
-        next[bookId] = 1;
+    const load = async () => {
+      try {
+        const books = await fetchBooks();
+        setAllBooks(books);
+      } catch (error) {
+        console.error('[CartProvider] Failed to load books:', error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      localStorage.setItem('cart', JSON.stringify(next));
-      console.log('%c[CartProvider] Saved to LS →', 'color: #4caf50', next);
-
-      return next;
-    });
+    void load();
   }, []);
 
+  const persistCart = useCallback((next: CartMap) => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
+  }, []);
+
+  const changeQuantity = useCallback(
+    (bookId: string, delta: number) => {
+      setCartMap(prev => {
+        const current = prev[bookId] ?? 0;
+        const nextQuantity = current + delta;
+        const next: CartMap = { ...prev };
+
+        if (nextQuantity <= 0) {
+          delete next[bookId];
+        } else {
+          next[bookId] = nextQuantity;
+        }
+
+        persistCart(next);
+        return next;
+      });
+    },
+    [persistCart],
+  );
+
+  const removeItem = useCallback(
+    (bookId: string) => {
+      setCartMap(prev => {
+        if (!prev[bookId]) {
+          return prev;
+        }
+        const next: CartMap = { ...prev };
+        delete next[bookId];
+        persistCart(next);
+        return next;
+      });
+    },
+    [persistCart],
+  );
+
+  const toggleCart = useCallback(
+    (bookId: string) => {
+      setCartMap(prev => {
+        const next: CartMap = { ...prev };
+
+        if (next[bookId]) {
+          delete next[bookId];
+        } else {
+          next[bookId] = 1;
+        }
+
+        persistCart(next);
+        return next;
+      });
+    },
+    [persistCart],
+  );
+
   const isInCart = useCallback(
-    (bookId: string) => Boolean(cart[bookId]),
-    [cart],
+    (bookId: string) => Boolean(cartMap[bookId]),
+    [cartMap],
+  );
+
+  const cartItems: CartItem[] = useMemo(() => {
+    if (!allBooks.length) {
+      return [];
+    }
+
+    return Object.entries(cartMap)
+      .map(([bookId, quantity]) => {
+        const book = allBooks.find(b => b.id === bookId);
+        if (!book) {
+          return null;
+        }
+        return { book, quantity };
+      })
+      .filter((item): item is CartItem => item !== null);
+  }, [allBooks, cartMap]);
+
+  const totalItems = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems],
+  );
+
+  const totalPriceUAH = useMemo(
+    () =>
+      cartItems.reduce((sum, item) => {
+        const price = item.book.priceDiscount ?? item.book.priceRegular;
+        return sum + toUAH(price * item.quantity);
+      }, 0),
+    [cartItems],
   );
 
   return (
     <CartContext.Provider
       value={{
-        cart,
+        loading,
+        cartItems,
+        totalItems,
+        totalPriceUAH,
+        changeQuantity,
+        removeItem,
         toggleCart,
         isInCart,
       }}
@@ -93,3 +185,4 @@ export const useCart = () => {
 
   return ctx;
 };
+

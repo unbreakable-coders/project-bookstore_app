@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
+import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
@@ -88,7 +88,6 @@ export const BookDetailsPage = () => {
     );
   }
 
-  // 👇 ВАЖЛИВО: використовуємо саме product.id, а не namespaceId
   const bookId = product.id;
 
   const handleToggleWishlist = () => {
@@ -127,7 +126,7 @@ export const BookDetailsPage = () => {
       title: product.title,
       author: product.author,
       images: product.images,
-      category: product.category,
+      category: product.category[0] ?? '',
       price: product.price,
       oldPrice: product.oldPrice,
       details: detailsList,

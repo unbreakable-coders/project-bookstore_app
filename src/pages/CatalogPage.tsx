@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useLocation } from 'react-router-dom';
-import { booksData } from '@/books/data/books';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
 import { SortCategory } from '@/components/SortBy';
@@ -13,6 +12,7 @@ import {
   PaginationPreviousButton,
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
+import { fetchBooks } from '@/lib/booksApi';
 
 const ITEMS_PER_PAGE_OPTIONS = [4, 16, 32];
 
@@ -21,6 +21,7 @@ export const CatalogPage = () => {
   const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
   const [sortBy, setSortBy] = useState('name-asc');
+  const [error, setError] = useState<string | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -45,10 +46,12 @@ export const CatalogPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await booksData();
+        const data = await fetchBooks();
         setBooks(data);
       } catch (err) {
-        console.error('Failed to load books:', err);
+        // eslint-disable-next-line no-console
+        console.error('Failed to load books from Supabase:', err);
+        setError('Failed to load books. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -175,6 +178,14 @@ export const CatalogPage = () => {
     return (
       <div className="flex h-screen justify-center items-center text-xl">
         Loading catalog…
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen justify-center items-center text-xl text-red-600">
+        {error}
       </div>
     );
   }
