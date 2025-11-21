@@ -16,7 +16,7 @@ const scrollToTop = () => {
 
 export const Footer = () => {
   return (
-    <footer className="border-t bg-linear-to-r from-[#eeeade] to-[#ded8de] border-border">
+    <footer className="border-t bg-gradient-to-r from-[#fef9e7] to-[#fdebd0] border-border">
       <div className="mx-auto max-w-6xl px-4 py-6">
         {/* Desktop */}
         <div className="hidden md:flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
@@ -63,7 +63,7 @@ export const Footer = () => {
           <button
             type="button"
             onClick={scrollToTop}
-            className="mt-6 flex items-center  mx-auto justify-center  gap-1 text-[11px] font-semibold  tracking-[0.18em] text-[#9F9F9F] hover:text-[#050505]"
+            className="mt-6 flex items-center  mx-auto justify-center  gap-1 text-[11px] font-semibold  tracking-[0.18em] text-[#898888] hover:text-[#050505]"
           >
             <span>Back to top</span>
             <Icon name="arrowUp" className="h-3 w-3" />
