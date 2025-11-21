@@ -44,15 +44,19 @@ export const PromoSlider: FC = () => {
 
   return (
     <main className="mt-16 flex flex-col items-center justify-center">
-      <div className="flex items-center justify-center gap-4 px-4 w-full">
+      <div className="flex items-center justify-center gap-4 w-full">
         <button
-          className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14 cursor-pointer"
+          className="flex justify-center items-center rounded-2xl  cursor-pointer
+          hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10
+          md:w-12
+          lg:w-14
+          max-md:hidden"
           onClick={() => handleClick('left')}
         >
           <Icon name="arrowLeft" />
         </button>
 
-        <div className="relative w-full max-w-[1040px] h-96 rounded-3xl overflow-hidden bg-black transition-all duration-300">
+        <div className="relative w-full max-w-[1040px] h-96 rounded-3xl overflow-hidden bg-black transition duration-300">
           {banners.map(banner => (
             <div
               key={banner.src}
@@ -65,14 +69,21 @@ export const PromoSlider: FC = () => {
               <Image
                 src={banner.src}
                 alt={banner.alt}
-                className="absolute inset-0 max-w-[1040px] w-full h-full object-cover"
+                className="absolute max-w-[1040px] object-cover
+                w-full h-full
+                "
               />
             </div>
           ))}
         </div>
 
         <button
-          className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14 cursor-pointer"
+          className="flex justify-center items-center rounded-2xl cursor-pointer h-96 w-10
+          hover:shadow-xl hover:bg-gray-200 transition-all duration-300
+          md:w-12
+          lg:w-14
+          max-md:hidden
+          "
           onClick={() => handleClick('right')}
         >
           <Icon name="arrowRight" />
