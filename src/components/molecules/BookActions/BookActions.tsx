@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
+import { useRef } from 'react';
+import { useMoveHeart } from '@/components/MoveHeard';
 
 interface BookActionsProps {
   onAddToCart: () => void;
@@ -20,6 +22,20 @@ export const BookActions: React.FC<BookActionsProps> = ({
   const heartIconName = isInWishlist ? 'heartRed' : 'heart';
   const canAddToCart = inStock || isInCart;
 
+  const heartButtonRef = useRef<HTMLButtonElement>(null);
+  const { flyToWishlist } = useMoveHeart();
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // Анімація тільки при додаванні
+    if (!isInWishlist && heartButtonRef.current) {
+      flyToWishlist(heartButtonRef.current);
+    }
+
+    onToggleWishlist();
+  };
+
   return (
     <div className="flex gap-3 pt-2">
       <Button
@@ -38,10 +54,12 @@ export const BookActions: React.FC<BookActionsProps> = ({
       </Button>
 
       <Button
-        onClick={e => {
-          e.stopPropagation();
-          onToggleWishlist();
-        }}
+        ref={heartButtonRef}
+        onClick={handleWishlistClick}
+        // onClick={e => {
+        //   e.stopPropagation();
+        //   onToggleWishlist();
+        // }}
         variant="outline"
         size="icon"
         className="rounded-lg h-10 w-10 shrink-0 border border-input hover:bg-accent/50 transition-colors cursor-pointer"

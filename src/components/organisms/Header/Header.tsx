@@ -6,6 +6,7 @@ import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
 import { Dropdown } from '../../atoms/Dropdown';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
+import { useMoveHeart } from '@/components/MoveHeard';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -30,6 +31,7 @@ export const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { headerHeartRef } = useMoveHeart();
 
   useEffect(() => {
     if (isMobileOpen) {
@@ -67,7 +69,7 @@ export const Header = () => {
         <Link
           key={iconName}
           to="/wishlist"
-          aria-label="Open wishlist"
+          ref={headerHeartRef as React.Ref<HTMLAnchorElement>} // <-- додай це
           className={ICON_BUTTON_CLASS}
         >
           {icon}

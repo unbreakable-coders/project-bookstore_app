@@ -8,12 +8,12 @@ export interface SortOption {
 }
 
 const SORT_OPTIONS: SortOption[] = [
-  { value: 'name-asc', label: 'Name (A-Z)' },
-  { value: 'name-desc', label: 'Name (Z-A)' },
-  { value: 'price-asc', label: 'Price (Low to High)' },
-  { value: 'price-desc', label: 'Price (High to Low)' },
-  { value: 'year-asc', label: 'Year (Oldest)' },
-  { value: 'year-desc', label: 'Year (Newest)' },
+  { value: 'name-asc', label: 'Name ▲' },
+  { value: 'name-desc', label: 'Name ▼' },
+  { value: 'price-asc', label: 'Price ▼' },
+  { value: 'price-desc', label: 'Price ▲' },
+  { value: 'year-asc', label: 'Year ▼' },
+  { value: 'year-desc', label: 'Year ▲' },
 ];
 
 interface SortCategoryProps {
