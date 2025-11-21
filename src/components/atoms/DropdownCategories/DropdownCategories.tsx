@@ -10,6 +10,7 @@ interface DropdownCategoriesProps {
   options: DropdownOption[];
   onSelect: (value: string) => void;
   fullWidth?: boolean;
+  value?: string;
 }
 
 export const DropdownCategories: FC<DropdownCategoriesProps> = ({
@@ -17,26 +18,22 @@ export const DropdownCategories: FC<DropdownCategoriesProps> = ({
   options,
   onSelect,
   fullWidth,
+  value,
 }) => {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
-
-    if (value) {
-      onSelect(value);
-    }
+    onSelect(value);
   };
 
   return (
     <select
-      defaultValue=""
+      value={value ?? ''}
       onChange={handleChange}
       className={`h-9 rounded-md border border-[#DADADA] bg-white px-3 text-sm outline-none cursor-pointer ${
         fullWidth ? 'w-full' : 'w-[180px]'
       }`}
     >
-      <option value="" disabled>
-        {placeholder}
-      </option>
+      <option value="">{placeholder}</option>
 
       {options.map(option => (
         <option key={option.value} value={option.value}>

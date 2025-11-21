@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { booksData } from '@/books/data/books';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
@@ -23,7 +23,24 @@ export const CatalogPage = () => {
   const [sortBy, setSortBy] = useState('name-asc');
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
   const currentPage = Number(searchParams.get('page')) || 1;
+  const selectedCategory = searchParams.get('category') || 'all';
+  const searchTerm = (searchParams.get('search') || '').trim().toLowerCase();
+
+  const catalogType = useMemo(() => {
+    if (location.pathname.startsWith('/catalog/kindle')) return 'kindle';
+    if (location.pathname.startsWith('/catalog/audiobook')) return 'audiobook';
+    return 'paperback';
+  }, [location.pathname]);
+
+  const slugifyCategory = (cat: string) =>
+    cat
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^\w]+/g, '-')
+      .replace(/(^-|-$)/g, '');
 
   useEffect(() => {
     const load = async () => {
@@ -37,11 +54,31 @@ export const CatalogPage = () => {
       }
     };
 
-    load();
+    void load();
   }, []);
 
+  const filteredBooks = useMemo(() => {
+    let base = books.filter(book => book.type === catalogType);
+
+    if (selectedCategory !== 'all') {
+      base = base.filter(book =>
+        book.category.some(cat => slugifyCategory(cat) === selectedCategory),
+      );
+    }
+
+    if (searchTerm) {
+      base = base.filter(book => {
+        const name = book.name.toLowerCase();
+        const author = book.author.toLowerCase();
+        return name.includes(searchTerm) || author.includes(searchTerm);
+      });
+    }
+
+    return base;
+  }, [books, catalogType, selectedCategory, searchTerm]);
+
   const sortedBooks = useMemo(() => {
-    const sorted = [...books];
+    const sorted = [...filteredBooks];
 
     switch (sortBy) {
       case 'name-asc':
@@ -75,26 +112,32 @@ export const CatalogPage = () => {
     }
 
     return sorted;
-  }, [books, sortBy]);
+  }, [filteredBooks, sortBy]);
 
-  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentBooks = sortedBooks.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
-    setSearchParams({ page: String(page) });
+    const params = new URLSearchParams(searchParams);
+    params.set('page', String(page));
+    setSearchParams(params);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
-    setSearchParams({ page: '1' });
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    setSearchParams(params);
   };
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
-    setSearchParams({ page: '1' });
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    setSearchParams(params);
   };
 
   const getPageNumbers = () => {
@@ -136,12 +179,22 @@ export const CatalogPage = () => {
     );
   }
 
+  const titleByType: Record<string, string> = {
+    paperback: 'paperback',
+    kindle: 'kindle',
+    audiobook: 'audiobook',
+  };
+
+  const catalogTitle = titleByType[catalogType] ?? 'paperback';
+
   return (
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
-          <p className="text-muted-foreground">{books.length} books</p>
+          <h1 className="text-4xl font-bold text-foreground">
+            {catalogTitle}
+          </h1>
+          <p className="text-muted-foreground">{filteredBooks.length} books</p>
         </div>
 
         <div className="pt-10 flex gap-4 items-start">
