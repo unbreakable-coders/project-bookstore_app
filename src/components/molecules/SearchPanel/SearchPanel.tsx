@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '@/components/atoms/Icon';
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { booksData } from '@/books/data/books';
 import type { Book } from '@/types/book';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +28,13 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
     load();
   }, []);
 
+  // 🔹 очищаємо інпут при закритті діалогу
+  useEffect(() => {
+    if (!open) {
+      setSearchQuery('');
+    }
+  }, [open]);
+
   const filtered =
     searchQuery.trim() === ''
       ? []
@@ -53,13 +56,13 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
       <DialogContent className="sm:max-w-3xl border-none bg-transparent shadow-none top-1 translate-y-0 p-0">
         <div className="relative w-full rounded-xl border border-[#E3E3E3] bg-white px-6 py-4 shadow-lg">
           <DialogClose
-            className="absolute right-4 top-4 text-[#9F9F9F] hover:text-[#050505] focus:outline-none"
+            className="absolute right-4 top-4 text-[#9F9F9F] hover:text-[#050505] focus:outline-none cursor-pointer"
             aria-label="Close search"
           >
             <Icon name="close" className="h-4 w-4" />
           </DialogClose>
 
-          <div className="flex items-center gap-3 rounded-xl bg-[#F8F9FB] px-4 py-2">
+          <div className="flex items-center gap-3 rounded-xl bg-[#F8F9FB] px-4 py-2 mr-4">
             <Icon name="search" className="h-4 w-4 text-[#9F9F9F]" />
             <input
               autoFocus

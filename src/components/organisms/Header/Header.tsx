@@ -11,9 +11,9 @@ type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
 const navItems: { label: string; to: string }[] = [
   { label: 'Home', to: '/' },
-  { label: 'Paper', to: '/catalog' },
-  { label: 'Kindle', to: '/catalog' },
-  { label: 'Audiobook', to: '/catalog' },
+  { label: 'Paper', to: '/catalog/paper' },
+  { label: 'Kindle', to: '/catalog/kindle' },
+  { label: 'Audiobook', to: '/catalog/audiobook' },
 ];
 
 const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
