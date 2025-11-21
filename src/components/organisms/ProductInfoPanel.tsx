@@ -67,7 +67,7 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
         isInWishlist={isInWishlist}
       />
 
-      {/* Product details (List of Atoms) */}
+      {/* Product details */}
       <div className="mt-6">
         {filteredDetails.map((detail, index) => (
           <ProductDetailLabel

@@ -23,23 +23,23 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <div className="border-b border-border py-8">
       <h5 className="font-bold text-secondary mb-2">{t('Select language')}</h5>
       <div className="flex gap-2">
-        {/* Кнопка UA */}
         {languages.includes('uk') && (
           <Button
             onClick={() => handleLanguageSelect('uk')}
             variant={selectedLanguage === 'uk' ? 'languageActive' : 'language'}
             size="language"
+            className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
             UA
           </Button>
         )}
 
-        {/* Кнопка ENG */}
         {languages.includes('en') && (
           <Button
             onClick={() => handleLanguageSelect('en')}
             variant={selectedLanguage === 'en' ? 'languageActive' : 'language'}
             size="language"
+            className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
             ENG
           </Button>

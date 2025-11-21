@@ -13,15 +13,27 @@ interface Props {
 
 export const Category: FC<Props> = ({ category }) => {
   return (
-    <div className="flex flex-col items-center">
-      <Video
-        src={category.videoSrc}
+    <div
+      className="flex flex-col items-center w-full rounded-xl cursor-pointer
+
+    hover:shadow-2xl hover:scale-105
+    transition duration-200
+    "
+    >
+      <div
         className="
-          w-[368px] h-[289px] rounded-[16px] object-cover transition-all duration-300
-          max-xl:w-[187px] max-xl:h-[187px] max-xl:rounded-[8px]
-          max-sm:w-[288px] max-sm:h-[288px] max-sm:rounded-[16px]
-        "
-      />
+        w-full
+        aspect-368/289
+        max-xl:aspect-[1/1]
+        max-sm:aspect-[1/1]
+        overflow-hidden
+        rounded-2xl
+        max-xl:rounded-[8px]
+      "
+      >
+        <Video src={category.videoSrc} className="w-full h-full object-cover" />
+      </div>
+
       <h3 className="mt-4 text-lg font-semibold text-center">
         {category.title}
       </h3>

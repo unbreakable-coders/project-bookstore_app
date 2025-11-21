@@ -2,62 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { BookCard } from '../components/organisms/BookCard';
 import { booksData } from '../books/data/books';
 import type { Book } from '../types/book';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 export const WishlistPage: React.FC = () => {
   const [allBooks, setAllBooks] = useState<Book[]>([]);
-  const [wishlist, setWishlist] = useState<Set<string>>(new Set());
-  const [cart, setCart] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+
+  const { toggleCart, isInCart } = useCart();
+  const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const load = async () => {
       try {
         const books = await booksData();
         setAllBooks(books);
-
-        const saved = localStorage.getItem('wishlist');
-        if (saved) setWishlist(new Set(JSON.parse(saved)));
-      } catch (err) {
-        console.error('Failed to load books:', err);
+      } catch (error) {
+        console.error('[WishlistPage] Failed to load books:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    load();
+    void load();
   }, []);
 
-  const handleToggleWishlist = (bookId: string) => {
-    setWishlist(prev => {
-      const next = new Set(prev);
-
-      if (next.has(bookId)) {
-        next.delete(bookId);
-      } else {
-        next.add(bookId);
-      }
-
-      localStorage.setItem('wishlist', JSON.stringify([...next]));
-      return next;
-    });
-  };
-
-  const handleAddToCart = (bookId: string) => {
-    setCart(prev => {
-      const newCart = { ...prev };
-
-      if (newCart[bookId]) {
-        delete newCart[bookId];
-      } else {
-        newCart[bookId] = 1;
-      }
-
-      localStorage.setItem('cart', JSON.stringify(newCart));
-      return newCart;
-    });
-  };
-
-  //const favouriteBooks = allBooks;
   const favouriteBooks = allBooks.filter(book => wishlist.has(book.id));
 
   if (loading) {
@@ -76,21 +45,19 @@ export const WishlistPage: React.FC = () => {
       </div>
 
       {favouriteBooks.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-gray-500 text-lg">
-            У вас поки немає улюблених книжок
-          </p>
+        <div className="text-center py-16 text-gray-500 text-lg">
+          У вас поки немає улюблених книжок
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4 justify-items-center">
           {favouriteBooks.map(book => (
             <BookCard
               key={book.id}
               book={book}
-              onAddToCart={handleAddToCart}
-              onToggleWishlist={handleToggleWishlist}
-              isInWishlist={true}
-              isInCart={!!cart[book.id]}
+              onAddToCart={() => toggleCart(book.id)}
+              onToggleWishlist={() => toggleWishlist(book.id)}
+              isInWishlist={isInWishlist(book.id)}
+              isInCart={isInCart(book.id)}
             />
           ))}
         </div>

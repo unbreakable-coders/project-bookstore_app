@@ -3,17 +3,24 @@ import { useParams } from 'react-router-dom';
 import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
+import { useRecommendedBooks } from '@/hooks/useRecommendedBooks';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 type LanguageCode = 'uk' | 'en' | string;
 
 export const BookDetailsPage = () => {
   const { namespaceId } = useParams<{ namespaceId: string }>();
   const { t, i18n } = useTranslation();
+  const { books: recommendedBooks } = useRecommendedBooks(16);
 
   const [product, setProduct] = useState<BookProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('uk');
-  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  const { toggleCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   const loadProductData = useCallback(
     async (lang: LanguageCode) => {
@@ -28,6 +35,7 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
+        await new Promise(resolve => setTimeout(resolve, 5500)); // імітація затримки
 
         if (!data) {
           console.error(
@@ -52,15 +60,6 @@ export const BookDetailsPage = () => {
     void loadProductData(currentLanguage);
   }, [loadProductData, currentLanguage, i18n.language]);
 
-  const handleToggleWishlist = () => {
-    setIsInWishlist(prev => !prev);
-    console.log('[BookDetails] Toggle wishlist');
-  };
-
-  const handleAddToCart = () => {
-    console.log('[BookDetails] Add to cart');
-  };
-
   const handleLanguageChange = (lang: LanguageCode) => {
     setCurrentLanguage(lang);
   };
@@ -73,10 +72,10 @@ export const BookDetailsPage = () => {
     );
   }
 
-  if (loading && !product) {
+  if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-xl">
-        Завантаження деталей продукту...
+        <Loader />
       </div>
     );
   }
@@ -88,6 +87,19 @@ export const BookDetailsPage = () => {
       </div>
     );
   }
+
+  // 👇 ВАЖЛИВО: використовуємо саме product.id, а не namespaceId
+  const bookId = product.id;
+
+  const handleToggleWishlist = () => {
+    console.log('[BookDetails] Toggle wishlist', bookId);
+    toggleWishlist(bookId);
+  };
+
+  const handleAddToCart = () => {
+    console.log('[BookDetails] Add to cart', bookId);
+    toggleCart(bookId);
+  };
 
   const detailsList = [
     { label: t('Author'), value: product.author },
@@ -126,8 +138,9 @@ export const BookDetailsPage = () => {
     onSelectLanguage: handleLanguageChange,
     onAddToCart: handleAddToCart,
     onToggleWishlist: handleToggleWishlist,
-    isInWishlist,
+    isInWishlist: isInWishlist(bookId),
     availableLanguages: product.availableLanguages,
+    recommendedBooks,
   };
 
   return (

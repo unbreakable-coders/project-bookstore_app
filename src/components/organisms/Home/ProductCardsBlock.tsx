@@ -6,15 +6,27 @@ import { Icon } from '@/components/atoms/Icon';
 interface Props {
   listOfBooks: Book[] | null;
   title: string;
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
+  isInCart: (bookId: string) => boolean;
+  isInWishlist: (bookId: string) => boolean;
 }
 
-export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
+export const ProductCardsBlock = ({
+  title,
+  listOfBooks,
+  onAddToCart,
+  onToggleWishlist,
+  isInCart,
+  isInWishlist,
+}: Props) => {
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
     const updateLayout = () => {
       const w = window.innerWidth;
+
       if (w < 620) setItemsPerPage(1);
       else if (w < 870) setItemsPerPage(2);
       else if (w < 1200) setItemsPerPage(3);
@@ -23,6 +35,7 @@ export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
 
     updateLayout();
     window.addEventListener('resize', updateLayout);
+
     return () => window.removeEventListener('resize', updateLayout);
   }, []);
 
@@ -45,37 +58,72 @@ export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
     4: 'grid-cols-4',
   }[itemsPerPage];
 
+  // 🔒 Захисні обгортки — якщо батько раптом передав не функцію
+  const safeIsInCart = (bookId: string) =>
+    typeof isInCart === 'function' ? isInCart(bookId) : false;
+
+  const safeIsInWishlist = (bookId: string) =>
+    typeof isInWishlist === 'function' ? isInWishlist(bookId) : false;
+
+  const handleAddToCart = (bookId: string) => {
+    if (typeof onAddToCart === 'function') {
+      onAddToCart(bookId);
+    }
+  };
+
+  const handleToggleWishlist = (bookId: string) => {
+    if (typeof onToggleWishlist === 'function') {
+      onToggleWishlist(bookId);
+    }
+  };
+
   return (
-    <section className="w-full flex justify-center items-center mt-12 mb-16 mx-8">
+    <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20 mx-8">
       <div className="max-w-6xl w-full">
         <div className="flex justify-between items-center">
           <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
 
           <div className="flex mr-4 gap-5">
-            <Icon
-              name="arrowLeft"
-              className={`h-8 w-8 ${
-                page === 0 ? 'opacity-30 cursor-default' : 'cursor-pointer'
+            <div
+              className={`p-1 rounded-sm ${
+                page === 0
+                  ? 'opacity-30 cursor-default'
+                  : 'cursor-pointer hover:bg-gray-300 transition duration-300'
               }`}
-              onClick={page === 0 ? undefined : prevPage}
-            />
+            >
+              <Icon
+                name="arrowLeft"
+                className="h-8 w-8"
+                onClick={page === 0 ? undefined : prevPage}
+              />
+            </div>
 
-            <Icon
-              name="arrowRight"
-              className={`h-8 w-8 ${
+            <div
+              className={`p-1 rounded-sm  ${
                 page === maxPage
                   ? 'opacity-30 cursor-default'
-                  : 'cursor-pointer'
+                  : 'cursor-pointer hover:bg-gray-300 transition duration-300'
               }`}
-              onClick={page === maxPage ? undefined : nextPage}
-            />
+            >
+              <Icon
+                name="arrowRight"
+                className="h-8 w-8"
+                onClick={page === maxPage ? undefined : nextPage}
+              />
+            </div>
           </div>
         </div>
 
-        <div className={`grid gap-4 justify-items-center ${gridCols}`}>
+        <div className={`grid justify-items-center ${gridCols}`}>
           {visibleBooks.map(book => (
             <div key={book.id} className="w-[272px]">
-              <BookCard book={book} />
+              <BookCard
+                book={book}
+                onAddToCart={() => handleAddToCart(book.id)}
+                onToggleWishlist={() => handleToggleWishlist(book.id)}
+                isInCart={safeIsInCart(book.id)}
+                isInWishlist={safeIsInWishlist(book.id)}
+              />
             </div>
           ))}
         </div>

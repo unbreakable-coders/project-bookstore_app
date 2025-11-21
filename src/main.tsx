@@ -6,6 +6,10 @@ import App from './App';
 
 import './i18next';
 
+import { ToastsContainer } from './components/atoms/Toasts';
+import './styles/globals.css';
+import App from './App';
+
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
     <BrowserRouter>
@@ -13,3 +17,5 @@ createRoot(document.getElementById('root') as HTMLElement).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+createRoot(document.getElementById('toast-root')!)?.render(<ToastsContainer />);

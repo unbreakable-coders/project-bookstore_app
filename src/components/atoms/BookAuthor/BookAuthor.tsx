@@ -5,5 +5,5 @@ interface BookAuthorProps {
 }
 
 export const BookAuthor: React.FC<BookAuthorProps> = ({ children }) => {
-  return <p className="text-muted-foreground">{children}</p>;
+  return <p className="text-sm text-muted-foreground truncate">{children}</p>;
 };

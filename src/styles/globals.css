@@ -53,19 +53,24 @@
   ROOT VARIABLES (Figma Palette)
    =========================== */
 :root {
-  --background: #fafbfc; /* Hover + BG */
+  --background-gradient: linear-gradient(
+    135deg,
+    #fffbf5 0%,
+    #fff5e6 50%,
+    #fffbf5 100%
+  ); /* Hover + BG */
   --foreground: #313237; /* Primary */
 
   --card: #ffffff; /* White */
-  --primary: #313237; /* Primary */
-  --secondary: #89939a; /* Secondary */
+  --primary: #421a0a; /* Primary */
+  --secondary: #74787b; /* Secondary */
   --accent: #b4bdc3; /* Icons */
 
   --muted: #e2e6e9; /* Elements */
   --muted-foreground: #89939a;
 
   --destructive: #eb5757;
-  --border: #e2e6e9;
+  --border: #bebb94;
   --input: #e2e6e9;
   --ring: #27ae60;
 
@@ -88,7 +93,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans text-[14px] leading-[21px];
+    @apply min-h-screen text-foreground font-sans text-[14px] leading-[21px];
+    background: var(--background-gradient);
     -webkit-font-smoothing: antialiased;
   }
 
