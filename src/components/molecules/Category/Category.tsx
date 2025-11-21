@@ -13,7 +13,13 @@ interface Props {
 
 export const Category: FC<Props> = ({ category }) => {
   return (
-    <div className="flex flex-col items-center w-full">
+    <div
+      className="flex flex-col items-center w-full rounded-xl cursor-pointer
+
+    hover:shadow-2xl hover:scale-105
+    transition duration-200
+    "
+    >
       <div
         className="
         w-full

@@ -58,6 +58,25 @@ export const ProductCardsBlock = ({
     4: 'grid-cols-4',
   }[itemsPerPage];
 
+  // 🔒 Захисні обгортки — якщо батько раптом передав не функцію
+  const safeIsInCart = (bookId: string) =>
+    typeof isInCart === 'function' ? isInCart(bookId) : false;
+
+  const safeIsInWishlist = (bookId: string) =>
+    typeof isInWishlist === 'function' ? isInWishlist(bookId) : false;
+
+  const handleAddToCart = (bookId: string) => {
+    if (typeof onAddToCart === 'function') {
+      onAddToCart(bookId);
+    }
+  };
+
+  const handleToggleWishlist = (bookId: string) => {
+    if (typeof onToggleWishlist === 'function') {
+      onToggleWishlist(bookId);
+    }
+  };
+
   return (
     <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20 mx-8">
       <div className="max-w-6xl w-full">
@@ -65,35 +84,45 @@ export const ProductCardsBlock = ({
           <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
 
           <div className="flex mr-4 gap-5">
-            <Icon
-              name="arrowLeft"
-              className={`h-8 w-8 ${
-                page === 0 ? 'opacity-30 cursor-default' : 'cursor-pointer'
+            <div
+              className={`p-1 rounded-sm ${
+                page === 0
+                  ? 'opacity-30 cursor-default'
+                  : 'cursor-pointer hover:bg-gray-300 transition duration-300'
               }`}
-              onClick={page === 0 ? undefined : prevPage}
-            />
+            >
+              <Icon
+                name="arrowLeft"
+                className="h-8 w-8"
+                onClick={page === 0 ? undefined : prevPage}
+              />
+            </div>
 
-            <Icon
-              name="arrowRight"
-              className={`h-8 w-8 ${
+            <div
+              className={`p-1 rounded-sm  ${
                 page === maxPage
                   ? 'opacity-30 cursor-default'
-                  : 'cursor-pointer'
+                  : 'cursor-pointer hover:bg-gray-300 transition duration-300'
               }`}
-              onClick={page === maxPage ? undefined : nextPage}
-            />
+            >
+              <Icon
+                name="arrowRight"
+                className="h-8 w-8"
+                onClick={page === maxPage ? undefined : nextPage}
+              />
+            </div>
           </div>
         </div>
 
-        <div className={`grid gap-4 justify-items-center ${gridCols}`}>
+        <div className={`grid justify-items-center ${gridCols}`}>
           {visibleBooks.map(book => (
             <div key={book.id} className="w-[272px]">
               <BookCard
                 book={book}
-                onAddToCart={() => onAddToCart(book.id)}
-                onToggleWishlist={() => onToggleWishlist(book.id)}
-                isInCart={isInCart(book.id)}
-                isInWishlist={isInWishlist(book.id)}
+                onAddToCart={() => handleAddToCart(book.id)}
+                onToggleWishlist={() => handleToggleWishlist(book.id)}
+                isInCart={safeIsInCart(book.id)}
+                isInWishlist={safeIsInWishlist(book.id)}
               />
             </div>
           ))}
