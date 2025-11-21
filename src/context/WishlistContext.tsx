@@ -6,11 +6,11 @@ import {
   type ReactNode,
 } from 'react';
 
-type WishlistContextValue = {
+interface WishlistContextValue {
   wishlist: Set<string>;
   toggleWishlist: (bookId: string) => void;
   isInWishlist: (bookId: string) => boolean;
-};
+}
 
 const WishlistContext = createContext<WishlistContextValue | null>(null);
 

@@ -9,11 +9,11 @@ import {
 
 type CartMap = Record<string, number>;
 
-type CartContextValue = {
+interface CartContextValue {
   cart: CartMap;
   toggleCart: (bookId: string) => void;
   isInCart: (bookId: string) => boolean;
-};
+}
 
 const CartContext = createContext<CartContextValue | null>(null);
 

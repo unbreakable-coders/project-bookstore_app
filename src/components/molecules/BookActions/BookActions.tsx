@@ -31,9 +31,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
         variant={isInCart ? 'added' : 'default'}
         size="default"
         className={`flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200 ${
-          canAddToCart
-            ? 'cursor-pointer'
-            : 'opacity-60 cursor-not-allowed'
+          canAddToCart ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'
         }`}
       >
         {isInCart ? 'Added' : inStock ? 'Add to cart' : 'Out of stock'}
