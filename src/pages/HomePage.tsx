@@ -6,9 +6,15 @@ import type { Book } from '@/types/book';
 import { booksData } from '@/books/data/books.ts';
 import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButton.tsx';
 
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+
 export const HomePage = () => {
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
+
+  const { toggleCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -33,11 +39,18 @@ export const HomePage = () => {
   }, []);
 
   return (
-    <main className="w-full flex justify-center">
-      <div className="w-full max-w-[1136px] px-4 flex flex-col gap-16">
+    <main className="w-full flex justify-center container">
+      <div className="w-full max-w-[1136px] px-4 flex flex-col">
         <PromoSlider />
 
-        <ProductCardsBlock title="New books" listOfBooks={newBooks} />
+        <ProductCardsBlock
+          title="New books"
+          listOfBooks={newBooks}
+          onAddToCart={toggleCart}
+          onToggleWishlist={toggleWishlist}
+          isInCart={isInCart}
+          isInWishlist={isInWishlist}
+        />
 
         <Categories />
 
@@ -48,6 +61,10 @@ export const HomePage = () => {
         <ProductCardsBlock
           title="Also you might like it!"
           listOfBooks={booksMightLike}
+          onAddToCart={toggleCart}
+          onToggleWishlist={toggleWishlist}
+          isInCart={isInCart}
+          isInWishlist={isInWishlist}
         />
       </div>
     </main>
