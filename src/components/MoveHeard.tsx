@@ -1,23 +1,28 @@
+// src/components/MoveHeart.tsx
 import {
   createContext,
   useContext,
   useRef,
   useCallback,
+  useState,
   type ReactNode,
   type RefObject,
 } from 'react';
 import gsap from 'gsap';
-import HeartIcon from '@/assets/icons/icon-heart.svg';
+import HeartIconRed from '@/assets/icons/icon-heart-red.svg';
 
 interface MoveHeartContextValue {
   headerHeartRef: RefObject<HTMLElement | null>;
   flyToWishlist: (sourceElement: HTMLElement) => void;
+  isWishlistActive: boolean;
+  setWishlistActive: (active: boolean) => void;
 }
 
 const MoveHeartContext = createContext<MoveHeartContextValue | null>(null);
 
 export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
   const headerHeartRef = useRef<HTMLElement | null>(null);
+  const [isWishlistActive, setWishlistActive] = useState(false);
 
   const flyToWishlist = useCallback((sourceElement: HTMLElement) => {
     const targetEl = headerHeartRef.current;
@@ -29,8 +34,18 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
     const sourceRect = sourceElement.getBoundingClientRect();
     const targetRect = targetEl.getBoundingClientRect();
 
+    const deltaX =
+      targetRect.left +
+      targetRect.width / 2 -
+      (sourceRect.left + sourceRect.width / 2);
+    const deltaY =
+      targetRect.top +
+      targetRect.height / 2 -
+      (sourceRect.top + sourceRect.height / 2);
+
+    // Створюємо ЧЕРВОНЕ літаюче серце
     const flyingHeart = document.createElement('img');
-    flyingHeart.src = HeartIcon;
+    flyingHeart.src = HeartIconRed;
     flyingHeart.style.cssText = `
       position: fixed;
       width: 20px;
@@ -43,20 +58,24 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
     document.body.appendChild(flyingHeart);
 
     gsap.to(flyingHeart, {
-      duration: 0.6,
-      left: targetRect.left + targetRect.width / 2 - 10,
-      top: targetRect.top + targetRect.height / 2 - 10,
-      scale: 0.5,
+      duration: 2,
+      x: deltaX,
+      y: deltaY,
+      scale: 0.6,
       ease: 'power2.inOut',
       onComplete: () => {
         flyingHeart.remove();
 
+        // Встановлюємо активний стан (червона іконка в хедері)
+        setWishlistActive(true);
+
+        // Пульсація в хедері
         gsap.fromTo(
           targetEl,
           { scale: 1 },
           {
             scale: 1.3,
-            duration: 0.15,
+            duration: 0.2,
             yoyo: true,
             repeat: 1,
             ease: 'power2.out',
@@ -67,7 +86,14 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <MoveHeartContext.Provider value={{ headerHeartRef, flyToWishlist }}>
+    <MoveHeartContext.Provider
+      value={{
+        headerHeartRef,
+        flyToWishlist,
+        isWishlistActive,
+        setWishlistActive,
+      }}
+    >
       {children}
     </MoveHeartContext.Provider>
   );

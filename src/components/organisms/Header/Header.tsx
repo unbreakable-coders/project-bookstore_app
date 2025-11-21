@@ -31,7 +31,7 @@ export const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { headerHeartRef } = useMoveHeart();
+  const { headerHeartRef, isWishlistActive } = useMoveHeart();
 
   useEffect(() => {
     if (isMobileOpen) {
@@ -69,10 +69,14 @@ export const Header = () => {
         <Link
           key={iconName}
           to="/wishlist"
-          ref={headerHeartRef as React.Ref<HTMLAnchorElement>} // <-- додай це
+          aria-label="Open wishlist"
           className={ICON_BUTTON_CLASS}
+          ref={headerHeartRef as React.Ref<HTMLAnchorElement>}
         >
-          {icon}
+          <Icon
+            name={isWishlistActive ? 'heartRed' : 'heart'} // <-- динамічна іконка
+            className="h-4 w-4"
+          />
         </Link>
       );
     }
