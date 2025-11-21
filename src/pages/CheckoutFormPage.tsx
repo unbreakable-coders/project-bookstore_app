@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useState } from 'react';
 import { useCart } from '@/hooks/useCart';
+import { Button } from '@/components/atoms/Button';
 // import { Icon } from '@/components/atoms/Icon'
 
 export const CheckoutPage: FC = () => {
@@ -351,12 +352,13 @@ export const CheckoutPage: FC = () => {
                   </div>
                 </div>
 
-                <button
+                <Button
                   onClick={handleSubmit}
+                  size="lg"
                   className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
                 >
                   I confirm the order
-                </button>
+                </Button>
               </div>
 
               {/* Товари в замовленні */}

@@ -24,7 +24,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
 
       <Link to="/checkout">
         <Button
-          className="w-full bg-foreground text-background hover:bg-primary"
+          className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
           size="lg"
           type="button"
           // onClick={() => {
