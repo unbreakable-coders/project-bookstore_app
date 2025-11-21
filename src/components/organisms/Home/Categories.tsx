@@ -35,11 +35,7 @@ export const Categories = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
         {categories.map(({ to, ...category }) => (
-          <Link
-            to={to}
-            key={category.title}
-            className="cursor-pointer block"
-          >
+          <Link to={to} key={category.title} className="cursor-pointer block">
             <Category category={category} />
           </Link>
         ))}
