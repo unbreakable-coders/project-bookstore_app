@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
+import type { Book } from '@/types/book';
 import { Icon } from '@/components/atoms/Icon';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
-import { booksData } from '@/books/data/books';
-import type { Book } from '@/types/book';
 import { useNavigate } from 'react-router-dom';
+import { fetchBooks } from '@/lib/booksApi';
 
 interface SearchPanelProps {
   open: boolean;
@@ -19,16 +19,20 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
 
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
-      const data = await booksData();
-      setAllBooks(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const data = await fetchBooks();
+        setAllBooks(data);
+      } catch (error) {
+        console.error('Failed to load books for search:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    load();
+    void load();
   }, []);
 
-  // 🔹 очищаємо інпут при закритті діалогу
   useEffect(() => {
     if (!open) {
       setSearchQuery('');

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
+import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useRecommendedBooks } from '@/hooks/useRecommendedBooks';
@@ -33,7 +33,6 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
-        await new Promise(resolve => setTimeout(resolve, 5500)); // імітація затримки
 
         if (!data) {
           console.error(
@@ -86,16 +85,13 @@ export const BookDetailsPage = () => {
     );
   }
 
-  // 👇 ВАЖЛИВО: використовуємо саме product.id, а не namespaceId
   const bookId = product.id;
 
   const handleToggleWishlist = () => {
-    console.log('[BookDetails] Toggle wishlist', bookId);
     toggleWishlist(bookId);
   };
 
   const handleAddToCart = () => {
-    console.log('[BookDetails] Add to cart', bookId);
     toggleCart(bookId);
   };
 
@@ -123,12 +119,12 @@ export const BookDetailsPage = () => {
       title: product.title,
       author: product.author,
       images: product.images,
-      category: product.category,
+      category: product.category[0] ?? '',
       price: product.price,
       oldPrice: product.oldPrice,
       details: detailsList,
-      aboutTitle: product.about[0] || 'About this book',
-      aboutContent: product.about.slice(1),
+      aboutTitle: product.description[0] || 'About this book',
+      aboutContent: product.description.slice(1),
       characteristics: detailsList,
     },
     breadcrumbs,
