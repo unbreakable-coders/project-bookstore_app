@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
+import { Link } from 'react-router-dom';
 
 interface CartSummaryProps {
   totalPriceUAH: number;
@@ -21,18 +22,20 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </p>
       </div>
 
-      <Button
-        className="w-full bg-foreground text-background hover:bg-primary"
-        size="lg"
-        type="button"
-        onClick={() => {
-          // тимчасовий плейсхолдер
+      <Link to="/checkout">
+        <Button
+          className="w-full bg-foreground text-background hover:bg-primary"
+          size="lg"
+          type="button"
+          // onClick={() => {
+          //   // тимчасовий плейсхолдер
 
-          alert('Checkout functionality coming soon!');
-        }}
-      >
-        Checkout
-      </Button>
+          //   alert('Checkout functionality coming soon!');
+          // }}
+        >
+          Checkout
+        </Button>
+      </Link>
     </div>
   );
 };
