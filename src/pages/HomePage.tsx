@@ -4,6 +4,7 @@ import { Categories } from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
 import { booksData } from '@/books/data/books.ts';
+import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButton.tsx';
 
 export const HomePage = () => {
   const [newBooks, setNewBooks] = useState<Book[]>([]);
@@ -39,6 +40,10 @@ export const HomePage = () => {
         <ProductCardsBlock title="New books" listOfBooks={newBooks} />
 
         <Categories />
+
+        <div className="p-8">
+          <PaymentButton />
+        </div>
 
         <ProductCardsBlock
           title="Also you might like it!"
