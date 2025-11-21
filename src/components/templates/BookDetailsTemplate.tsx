@@ -1,8 +1,10 @@
 import React from 'react';
 import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
-import { MainImageGallery } from '../molecules/ImageGallery';
+import { MainImageGallery } from '../molecules/ImageGallery/ImageGallery.tsx';
 import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
 import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
+import type { Book } from '@/types/book/book.ts';
+import { ProductCardsBlock } from '../organisms/Home/ProductCardsBlock.tsx';
 
 interface BookDetailsTemplateProps {
   book: {
@@ -24,11 +26,9 @@ interface BookDetailsTemplateProps {
   onToggleWishlist: () => void;
   isInWishlist: boolean;
   availableLanguages: string[];
+  recommendedBooks?: Book[];
 }
 
-/**
- * Шаблон сторінки: скелет з розміщенням основних організмів.
- */
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   book,
   breadcrumbs,
@@ -38,6 +38,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   onToggleWishlist,
   isInWishlist,
   availableLanguages,
+  recommendedBooks = [],
 }) => {
   return (
     <div className="container pt-6">
@@ -81,6 +82,13 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
         aboutContent={book.aboutContent}
         characteristics={book.characteristics}
       />
+
+      {recommendedBooks.length > 0 && (
+        <ProductCardsBlock
+          title="You may also like"
+          listOfBooks={recommendedBooks}
+        />
+      )}
     </div>
   );
 };

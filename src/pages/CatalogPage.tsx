@@ -18,6 +18,9 @@ import {
 const ITEMS_PER_PAGE_OPTIONS = [4, 16, 32];
 
 export const CatalogPage = () => {
+  const { bookType } = useParams<{ bookType?: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
