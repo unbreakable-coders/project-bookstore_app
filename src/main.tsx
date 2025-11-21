@@ -5,6 +5,8 @@ import { ToastsContainer } from './components/atoms/Toasts';
 import './styles/globals.css';
 import App from './App';
 
+import './i18next';
+
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
     <BrowserRouter>

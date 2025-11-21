@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button } from '../atoms/Button';
-import { Icon } from '../atoms/Icon/Icon';
-
+import { BookActions } from './BookActions';
 interface PriceAndActionsProps {
   price: number;
   oldPrice: number | null;
   onAddToCart: () => void;
   onToggleWishlist: () => void;
   isInWishlist: boolean;
+  isInCart: boolean;
+  inStock?: boolean;
 }
 
 export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
@@ -16,6 +16,8 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   onAddToCart,
   onToggleWishlist,
   isInWishlist,
+  isInCart,
+  inStock = true,
 }) => {
   const hasDiscount = oldPrice !== null && oldPrice !== undefined;
   const currentPrice = hasDiscount ? oldPrice : price;
@@ -36,35 +38,13 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
         )}
       </div>
 
-      <div className="flex gap-2 mt-4">
-        <Button
-          onClick={onAddToCart}
-          className="
-            bg-primary text-white rounded-lg font-bold
-            w-60 md:w-[219px] lg:w-[272px] h-10
-            cursor-pointer transition hover:opacity-90 active:scale-95
-          "
-        >
-          Add to cart
-        </Button>
-
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={onToggleWishlist}
-          className="
-            w-10 h-10 border border-border rounded-lg flex items-center justify-center bg-background
-            cursor-pointer transition hover:bg-accent/50 active:scale-95
-          "
-        >
-          <Icon
-            name={isInWishlist ? 'heartRed' : 'heart'}
-            className={`h-5 w-5 transition-all duration-300 ${
-              isInWishlist ? 'scale-110' : 'scale-100'
-            }`}
-          />
-        </Button>
-      </div>
+      <BookActions
+        onAddToCart={onAddToCart}
+        onToggleWishlist={onToggleWishlist}
+        isInWishlist={isInWishlist}
+        isInCart={isInCart}
+        inStock={inStock}
+      />
     </>
   );
 };
