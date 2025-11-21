@@ -84,27 +84,37 @@ export const ProductCardsBlock = ({
           <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
 
           <div className="flex mr-4 gap-5">
-            <Icon
-              name="arrowLeft"
-              className={`h-8 w-8 ${
-                page === 0 ? 'opacity-30 cursor-default' : 'cursor-pointer'
+            <div
+              className={`p-1 rounded-sm ${
+                page === 0
+                  ? 'opacity-30 cursor-default'
+                  : 'cursor-pointer hover:bg-gray-300 transition duration-300'
               }`}
-              onClick={page === 0 ? undefined : prevPage}
-            />
+            >
+              <Icon
+                name="arrowLeft"
+                className="h-8 w-8"
+                onClick={page === 0 ? undefined : prevPage}
+              />
+            </div>
 
-            <Icon
-              name="arrowRight"
-              className={`h-8 w-8 ${
+            <div
+              className={`p-1 rounded-sm  ${
                 page === maxPage
                   ? 'opacity-30 cursor-default'
-                  : 'cursor-pointer'
+                  : 'cursor-pointer hover:bg-gray-300 transition duration-300'
               }`}
-              onClick={page === maxPage ? undefined : nextPage}
-            />
+            >
+              <Icon
+                name="arrowRight"
+                className="h-8 w-8"
+                onClick={page === maxPage ? undefined : nextPage}
+              />
+            </div>
           </div>
         </div>
 
-        <div className={`grid gap-4 justify-items-center ${gridCols}`}>
+        <div className={`grid justify-items-center ${gridCols}`}>
           {visibleBooks.map(book => (
             <div key={book.id} className="w-[272px]">
               <BookCard
