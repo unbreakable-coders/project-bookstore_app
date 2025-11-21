@@ -46,7 +46,7 @@ export const PromoSlider: FC = () => {
     <main className="mt-16 flex flex-col items-center justify-center">
       <div className="flex items-center justify-center gap-4 px-4 w-full">
         <button
-          className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14"
+          className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14 cursor-pointer"
           onClick={() => handleClick('left')}
         >
           <Icon name="arrowLeft" />
@@ -72,7 +72,7 @@ export const PromoSlider: FC = () => {
         </div>
 
         <button
-          className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14"
+          className="flex justify-center items-center rounded-2xl hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10 md:w-12 lg:w-14 cursor-pointer"
           onClick={() => handleClick('right')}
         >
           <Icon name="arrowRight" />

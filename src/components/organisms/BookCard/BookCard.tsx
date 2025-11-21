@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { BookImage } from '../../atoms/BookImage/BookImage';
 import { Badge } from '../../atoms/Badge/Badge';
 import { AudioBadge } from '../../atoms/AudioBadge/AudioBadge';
@@ -31,14 +33,20 @@ export const BookCard: React.FC<BookCardProps> = ({
   isInWishlist = false,
   isInCart = false,
 }) => {
+  const navigate = useNavigate();
   const [optimisticInCart, setOptimisticInCart] = useState(isInCart);
 
   useEffect(() => {
     setOptimisticInCart(isInCart);
   }, [isInCart]);
 
+  const openDetails = () => {
+    navigate(`/books/${book.namespaceId}`);
+  };
+
   const handleAddToCart = () => {
     const willBeInCart = !optimisticInCart;
+
     setOptimisticInCart(willBeInCart);
     onAddToCart?.(book.id);
 
@@ -51,6 +59,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   const handleToggleWishlist = () => {
     const willBeInWishlist = !isInWishlist;
+
     onToggleWishlist?.(book.id);
 
     if (willBeInWishlist) {
@@ -65,7 +74,10 @@ export const BookCard: React.FC<BookCardProps> = ({
   const isKindle = book.type === 'kindle';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300">
+    <div
+      className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      onClick={openDetails}
+    >
       <div className="relative">
         <BookImage src={book.images[0]} alt={book.name} />
 
