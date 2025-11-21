@@ -12,37 +12,32 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguage,
   onLanguageChange,
 }) => {
-  const handleLanguageSelect = async (lang: string) => {
+  const handleLanguageSelect = (lang: string) => {
     onLanguageChange(lang);
   };
 
   return (
     <div className="border-b border-border py-8">
       <h5 className="font-bold text-secondary mb-2">Select language</h5>
+
       <div className="flex gap-2">
-        {/* Кнопка UA */}
         {languages.includes('uk') && (
           <Button
             onClick={() => handleLanguageSelect('uk')}
-            className={`px-2.5 py-[5.5px] rounded-[5px] uppercase ${
-              selectedLanguage === 'uk'
-                ? 'bg-primary text-white'
-                : 'border border-border bg-background'
-            }`}
+            variant={selectedLanguage === 'uk' ? 'languageActive' : 'language'}
+            size="language"
+            className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
             UA
           </Button>
         )}
 
-        {/* Кнопка ENG */}
         {languages.includes('en') && (
           <Button
             onClick={() => handleLanguageSelect('en')}
-            className={`px-2.5 py-[5.5px] rounded-[5px] uppercase ${
-              selectedLanguage === 'en'
-                ? 'bg-primary text-white'
-                : 'border border-border bg-background'
-            }`}
+            variant={selectedLanguage === 'en' ? 'languageActive' : 'language'}
+            size="language"
+            className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
             ENG
           </Button>

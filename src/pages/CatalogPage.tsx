@@ -154,7 +154,6 @@ export const CatalogPage = () => {
             <p className="text-sm w-32 text-muted-foreground mb-1">
               Items on page
             </p>
-
             <SortPages
               options={ITEMS_PER_PAGE_OPTIONS}
               value={itemsPerPage}

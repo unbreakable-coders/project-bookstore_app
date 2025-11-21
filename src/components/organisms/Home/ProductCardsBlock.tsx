@@ -6,15 +6,27 @@ import { Icon } from '@/components/atoms/Icon';
 interface Props {
   listOfBooks: Book[] | null;
   title: string;
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
+  isInCart: (bookId: string) => boolean;
+  isInWishlist: (bookId: string) => boolean;
 }
 
-export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
+export const ProductCardsBlock = ({
+  title,
+  listOfBooks,
+  onAddToCart,
+  onToggleWishlist,
+  isInCart,
+  isInWishlist,
+}: Props) => {
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
     const updateLayout = () => {
       const w = window.innerWidth;
+
       if (w < 620) setItemsPerPage(1);
       else if (w < 870) setItemsPerPage(2);
       else if (w < 1200) setItemsPerPage(3);
@@ -23,6 +35,7 @@ export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
 
     updateLayout();
     window.addEventListener('resize', updateLayout);
+
     return () => window.removeEventListener('resize', updateLayout);
   }, []);
 
@@ -46,7 +59,7 @@ export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
   }[itemsPerPage];
 
   return (
-    <section className="w-full flex justify-center items-center mt-12 mb-16">
+    <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20 mx-8">
       <div className="max-w-6xl w-full">
         <div className="flex justify-between items-center">
           <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
@@ -75,7 +88,13 @@ export const ProductCardsBlock = ({ title, listOfBooks }: Props) => {
         <div className={`grid gap-4 justify-items-center ${gridCols}`}>
           {visibleBooks.map(book => (
             <div key={book.id} className="w-[272px]">
-              <BookCard book={book} />
+              <BookCard
+                book={book}
+                onAddToCart={() => onAddToCart(book.id)}
+                onToggleWishlist={() => onToggleWishlist(book.id)}
+                isInCart={isInCart(book.id)}
+                isInWishlist={isInWishlist(book.id)}
+              />
             </div>
           ))}
         </div>

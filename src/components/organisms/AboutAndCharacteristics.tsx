@@ -7,9 +7,6 @@ interface AboutAndCharacteristicsProps {
   characteristics: { label: string; value: string | number }[];
 }
 
-/**
- * Організм, що містить секції About та Characteristics
- */
 export const AboutAndCharacteristics: React.FC<
   AboutAndCharacteristicsProps
 > = ({ aboutTitle, aboutContent, characteristics }) => {
