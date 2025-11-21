@@ -51,7 +51,6 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
       onComplete: () => {
         flyingHeart.remove();
 
-        // Пульсація в хедері
         gsap.fromTo(
           targetEl,
           { scale: 1 },
