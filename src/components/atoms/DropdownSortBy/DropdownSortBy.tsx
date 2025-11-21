@@ -22,7 +22,7 @@ export const DropdownSortBy: FC<DropdownProps> = ({
       onClick={onToggle}
       className={[
         'h-10',
-        fullWidth ? 'w-full' : 'w-[176px]',
+        fullWidth ? 'w-full' : 'w-44',
         'flex items-center justify-between',
         'rounded-md border bg-white',
         'border-[#DADADA] hover:border-[#C5C5C5]',
