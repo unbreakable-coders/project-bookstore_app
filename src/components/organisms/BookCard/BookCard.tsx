@@ -76,7 +76,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   return (
     <div
-      className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer w-[288px] lg:w-[272px]"
       onClick={openDetails}
     >
       <div className="relative">
