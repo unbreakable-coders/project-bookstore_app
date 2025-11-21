@@ -46,30 +46,28 @@ export const Footer = () => {
 
         {/* Mobile */}
         <div className="md:hidden">
-          <div className="inline-block rounded-2xl border border-[#E3E3E3] bg-white px-4 py-5 shadow-sm">
-            <Logo className="h-7 w-auto" />
+          <Logo className="h-7 w-auto" />
 
-            <nav className="mt-4 space-y-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
-              {footerLinks.map(link => (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className="block text-left hover:text-[#050505]"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+          <nav className="mt-4 space-y-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
+            {footerLinks.map(link => (
+              <Link
+                key={link.label}
+                to={link.to}
+                className="block text-left hover:text-[#050505]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="mt-6 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F] hover:text-[#050505]"
-            >
-              <span>Back to top</span>
-              <Icon name="arrowUp" className="h-3 w-3" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className="mt-6 flex items-center  mx-auto justify-center  gap-1 text-[11px] font-semibold  tracking-[0.18em] text-[#9F9F9F] hover:text-[#050505]"
+          >
+            <span>Back to top</span>
+            <Icon name="arrowUp" className="h-3 w-3" />
+          </button>
         </div>
       </div>
     </footer>
