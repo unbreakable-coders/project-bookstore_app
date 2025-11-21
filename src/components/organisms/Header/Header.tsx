@@ -6,7 +6,7 @@ import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
 import { Dropdown } from '../../atoms/Dropdown';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
-import { useMoveHeart } from '@/components/MoveHeard';
+import { useMoveHeart } from '@/components/MoveHeart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -31,7 +31,7 @@ export const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { headerHeartRef, isWishlistActive } = useMoveHeart();
+  const { headerHeartRef, hasItemsInWishlist } = useMoveHeart();
 
   useEffect(() => {
     if (isMobileOpen) {
@@ -62,8 +62,6 @@ export const Header = () => {
   };
 
   const renderHeaderIcon = (iconName: IconName) => {
-    const icon = <Icon name={iconName} className="h-4 w-4" />;
-
     if (iconName === 'heart') {
       return (
         <Link
@@ -74,12 +72,14 @@ export const Header = () => {
           ref={headerHeartRef as React.Ref<HTMLAnchorElement>}
         >
           <Icon
-            name={isWishlistActive ? 'heartRed' : 'heart'} // <-- динамічна іконка
+            name={hasItemsInWishlist ? 'heartRed' : 'heart'}
             className="h-4 w-4"
           />
         </Link>
       );
     }
+
+    const icon = <Icon name={iconName} className="h-4 w-4" />;
 
     if (iconName === 'cart') {
       return (

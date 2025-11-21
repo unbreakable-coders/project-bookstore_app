@@ -4,25 +4,27 @@ import {
   useContext,
   useRef,
   useCallback,
-  useState,
   type ReactNode,
   type RefObject,
 } from 'react';
 import gsap from 'gsap';
 import HeartIconRed from '@/assets/icons/icon-heart-red.svg';
+import { useWishlist } from '@/context/WishlistContext';
 
 interface MoveHeartContextValue {
   headerHeartRef: RefObject<HTMLElement | null>;
   flyToWishlist: (sourceElement: HTMLElement) => void;
-  isWishlistActive: boolean;
-  setWishlistActive: (active: boolean) => void;
+  hasItemsInWishlist: boolean;
 }
 
 const MoveHeartContext = createContext<MoveHeartContextValue | null>(null);
 
 export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
   const headerHeartRef = useRef<HTMLElement | null>(null);
-  const [isWishlistActive, setWishlistActive] = useState(false);
+  const { wishlist } = useWishlist();
+
+  // Перевіряємо чи є елементи в wishlist
+  const hasItemsInWishlist = wishlist.size > 0;
 
   const flyToWishlist = useCallback((sourceElement: HTMLElement) => {
     const targetEl = headerHeartRef.current;
@@ -66,9 +68,6 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
       onComplete: () => {
         flyingHeart.remove();
 
-        // Встановлюємо активний стан (червона іконка в хедері)
-        setWishlistActive(true);
-
         // Пульсація в хедері
         gsap.fromTo(
           targetEl,
@@ -90,8 +89,7 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
       value={{
         headerHeartRef,
         flyToWishlist,
-        isWishlistActive,
-        setWishlistActive,
+        hasItemsInWishlist, // <-- передаємо
       }}
     >
       {children}

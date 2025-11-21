@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { useRef } from 'react';
-import { useMoveHeart } from '@/components/MoveHeard';
+import { useMoveHeart } from '@/components/MoveHeart';
 
 interface BookActionsProps {
   onAddToCart: () => void;
@@ -28,7 +28,6 @@ export const BookActions: React.FC<BookActionsProps> = ({
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    // Анімація тільки при додаванні
     if (!isInWishlist && heartButtonRef.current) {
       flyToWishlist(heartButtonRef.current);
     }

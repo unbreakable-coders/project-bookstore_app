@@ -13,8 +13,10 @@ import {
   PaginationPreviousButton,
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
-const ITEMS_PER_PAGE_OPTIONS = [4, 16, 32];
+const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
 
 export const CatalogPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -24,6 +26,8 @@ export const CatalogPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const { toggleCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const load = async () => {
@@ -166,7 +170,13 @@ export const CatalogPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {currentBooks.map(book => (
               <div key={book.id} className="w-full max-w-[272px]">
-                <BookCard book={book} />
+                <BookCard
+                  book={book}
+                  onAddToCart={() => toggleCart(book.id)}
+                  onToggleWishlist={() => toggleWishlist(book.id)}
+                  isInWishlist={isInWishlist(book.id)}
+                  isInCart={isInCart(book.id)}
+                />
               </div>
             ))}
           </div>

@@ -19,7 +19,7 @@ import { RightsPage } from './pages/system/RightsPage';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ScrollToTop } from './components/utils/ScrollToTop';
-import { MoveHeartProvider } from './components/MoveHeard';
+import { MoveHeartProvider } from './components/MoveHeart';
 
 export default function App() {
   return (
