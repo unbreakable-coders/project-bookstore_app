@@ -3,11 +3,10 @@ import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
 import { Categories } from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
-import { booksData } from '@/books/data/books.ts';
 import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButton.tsx';
-
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
 
 export const HomePage = () => {
   const [newBooks, setNewBooks] = useState<Book[]>([]);
@@ -19,7 +18,7 @@ export const HomePage = () => {
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const allBooks = await booksData();
+        const allBooks = await fetchBooks();
 
         setNewBooks(
           [...allBooks]

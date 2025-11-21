@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/context/CartContext';
 import { CartItem } from '@/components/organisms/Cart/CartItem';
 import { CartSummary } from '@/components/organisms/Cart/CartSummary';
 
