@@ -17,6 +17,7 @@ import {
   toastCartAdded,
   toastCartRemoved,
 } from '../../atoms/Toasts';
+import { KindleBookImage } from '@/components/atoms/KindleBookImage';
 
 interface BookCardProps {
   book: Book;
@@ -79,7 +80,11 @@ export const BookCard: React.FC<BookCardProps> = ({
       onClick={openDetails}
     >
       <div className="relative">
-        <BookImage src={book.images[0]} alt={book.name} />
+        {isKindle ? (
+          <KindleBookImage src={book.images[0]} alt={book.name} />
+        ) : (
+          <BookImage src={book.images[0]} alt={book.name} />
+        )}
 
         {isKindle && <KindleBadge />}
 
