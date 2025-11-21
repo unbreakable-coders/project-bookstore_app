@@ -4,6 +4,7 @@ import { Categories } from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
 import { booksData } from '@/books/data/books.ts';
+import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButton.tsx';
 
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -52,6 +53,10 @@ export const HomePage = () => {
         />
 
         <Categories />
+
+        <div className="p-8">
+          <PaymentButton />
+        </div>
 
         <ProductCardsBlock
           title="Also you might like it!"
