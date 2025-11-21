@@ -26,7 +26,6 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
 
   return (
     <>
-      {/* Price */}
       <div className="mt-4 flex items-center gap-2">
         <h2 className="md:tracking-[-0.01em]">₴{convertedCurrentPrice}</h2>
 
@@ -38,19 +37,25 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
       </div>
 
       <div className="flex gap-2 mt-4">
-        {/* ADD TO CART BUTTON */}
         <Button
           onClick={onAddToCart}
-          className="bg-primary text-white rounded-lg font-bold w-60 md:w-[219px] lg:w-[272px] h-10"
+          className="
+            bg-primary text-white rounded-lg font-bold
+            w-60 md:w-[219px] lg:w-[272px] h-10
+            cursor-pointer transition hover:opacity-90 active:scale-95
+          "
         >
           Add to cart
         </Button>
-        {/* HEART BUTTON */}
+
         <Button
           variant="outline"
           size="icon"
           onClick={onToggleWishlist}
-          className="w-10 h-10 border border-border rounded-lg flex items-center justify-center bg-background"
+          className="
+            w-10 h-10 border border-border rounded-lg flex items-center justify-center bg-background
+            cursor-pointer transition hover:bg-accent/50 active:scale-95
+          "
         >
           <Icon
             name={isInWishlist ? 'heartRed' : 'heart'}
