@@ -16,6 +16,7 @@ import HomeIcon from '../../../assets/icons/icon-home.svg';
 import HeartIconRed from '../../../assets/icons/icon-heart-red.svg';
 import TruckIcon from '../../../assets/icons/icon-truck.svg';
 import IconEarphones from '../../../assets/icons/icon-earphones.svg';
+import WhiteHomeIcon from '../../../assets/icons/icon-home-white.svg';
 
 const iconMap = {
   arrowDown: ArrowDown,
@@ -34,6 +35,7 @@ const iconMap = {
   home: HomeIcon,
   truck: TruckIcon,
   earphones: IconEarphones,
+  homeWhite: WhiteHomeIcon,
 } as const;
 
 export type IconName = keyof typeof iconMap;

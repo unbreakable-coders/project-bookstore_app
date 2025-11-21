@@ -5,7 +5,7 @@ export const PageNotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center max-w-xl">
         <div className="relative mb-8">
           <h1 className="text-9xl font-bold text-gray-200 animate-pulse">
@@ -27,10 +27,12 @@ export const PageNotFound = () => {
         <div className="space-y-3">
           <Link
             to="/"
-            className="block w-full bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+            className="block w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
           >
-            <Icon name="home" className="inline-block w-4 h-4 mr-2" />
-            Back to home page
+            <div className="flex justify-center items-center">
+              <Icon name="homeWhite" className="inline-block w-4 h-4 mr-2" />
+              Back to home page
+            </div>
           </Link>
 
           <button
