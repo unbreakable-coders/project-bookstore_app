@@ -1,31 +1,41 @@
-import { Button } from '@/components/atoms/Button';
+import { Icon, type IconName } from '@/components/atoms/Icon';
+import { ICON_BUTTON_CLASS } from '@/components/organisms/Header/Header';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+
+interface Language {
+  code: string;
+  icon: IconName;
+}
 
 export const GlobalLanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
 
-  const languages = [
-    { code: 'uk', label: 'UA' },
-    { code: 'en', label: 'EN' },
-  ];
-
-  const handleLanguageChange = (langCode: string) => {
-    i18n.changeLanguage(langCode);
+  const getCurrentLanguage = (): Language => {
+    return i18n.language === 'uk'
+      ? { code: 'en', icon: 'engLang' }
+      : { code: 'uk', icon: 'ukrLang' };
   };
 
+  const handleLanguageToggle = () => {
+    const currentLang = getCurrentLanguage();
+    void i18n.changeLanguage(currentLang.code);
+  };
+
+  const currentLanguage = getCurrentLanguage();
+
   return (
-    <div className="flex gap-2">
-      {languages.map(lang => (
-        <Button
-          key={lang.code}
-          onClick={() => handleLanguageChange(lang.code)}
-          variant={i18n.language === lang.code ? 'languageActive' : 'language'}
-          size="language"
-        >
-          {lang.label}
-        </Button>
-      ))}
-    </div>
+    <button
+      onClick={handleLanguageToggle}
+      type="button"
+      className={`${ICON_BUTTON_CLASS} cursor-pointer`}
+      title={
+        currentLanguage.code === 'uk'
+          ? 'Перейти на українську'
+          : 'Switch to English'
+      }
+    >
+      <Icon name={currentLanguage.icon} className="h-5 w-5" />
+    </button>
   );
 };

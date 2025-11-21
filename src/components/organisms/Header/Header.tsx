@@ -20,7 +20,7 @@ const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
 const HEADER_ICONS_LG: IconName[] = ['heart', 'cart', 'user'];
 const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart', 'user'];
 
-const ICON_BUTTON_CLASS =
+export const ICON_BUTTON_CLASS =
   'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]';
 
 export const Header = () => {
@@ -164,6 +164,8 @@ export const Header = () => {
               {HEADER_ICONS_LG.map(renderHeaderIcon)}
             </div>
 
+            <GlobalLanguageSwitcher />
+
             {/* Burger (mobile only) */}
             <button
               type="button"
@@ -179,8 +181,6 @@ export const Header = () => {
           </div>
         </div>
       </div>
-
-      <GlobalLanguageSwitcher />
 
       {/* MOBILE OVERLAY MENU (320–639) */}
       {isMobileOpen && (
