@@ -6,12 +6,18 @@ import { useCart } from '@/hooks/useCart';
 export const CheckoutPage: FC = () => {
   const { cartItems, totalPriceUAH, totalItems } = useCart();
 
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    address: '',
+    deliveryMethod: '',
+    paymentMethod: '',
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Логіка відправки замовлення
-    console.log('Order submitted:', formData);
   };
 
   const handleChange = (
@@ -177,7 +183,7 @@ export const CheckoutPage: FC = () => {
                     <input
                       type="text"
                       name="city"
-                      value={formData.city}
+                      value={formData.address}
                       onChange={handleChange}
                       className="w-full pl-12 pr-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                       placeholder="Please Enter Your Address"
