@@ -1,11 +1,16 @@
+// Header.tsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
-import { Dropdown } from '../../atoms/Dropdown';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
+import { booksData } from '@/books/data/books';
+import {
+  DropdownCategories,
+  type DropdownOption,
+} from '../../atoms/DropdownCategories';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -28,8 +33,43 @@ export const Header = () => {
   const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
+
   const navigate = useNavigate();
   const location = useLocation();
+
+  // ===== CATEGORIES =====
+  useEffect(() => {
+    const loadCategories = async () => {
+      const allBooks = await booksData();
+
+      const map = new Map<string, string>();
+
+      allBooks.forEach(book => {
+        book.category.forEach(cat => {
+          const slug = cat
+            .toLowerCase()
+            .replace(/&/g, 'and')
+            .replace(/[^\w]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+
+          if (!map.has(slug)) {
+            map.set(slug, cat);
+          }
+        });
+      });
+
+      const options: DropdownOption[] = Array.from(map, ([value, label]) => ({
+        value,
+        label,
+      })).sort((a, b) => a.label.localeCompare(b.label));
+
+      setCategoryOptions(options);
+    };
+
+    void loadCategories();
+  }, []);
+  // ======================
 
   useEffect(() => {
     if (isMobileOpen) {
@@ -118,6 +158,10 @@ export const Header = () => {
     return null;
   };
 
+  const handleCategorySelect = (slug: string) => {
+    navigate(`/catalog/${slug}`);
+  };
+
   return (
     <>
       <header className="border-b border-border bg-linear-to-r from-[#eeeade] to-[#ded8de]">
@@ -166,7 +210,11 @@ export const Header = () => {
                   />
                 </button>
 
-                <Dropdown label="Categories" />
+                <DropdownCategories
+                  placeholder="Categories"
+                  options={categoryOptions}
+                  onSelect={handleCategorySelect}
+                />
               </div>
 
               <div className="hidden md:flex lg:hidden items-center gap-2">
@@ -223,7 +271,12 @@ export const Header = () => {
                 </div>
 
                 <div className="mt-3">
-                  <Dropdown label="Categories" fullWidth />
+                  <DropdownCategories
+                    placeholder="Categories"
+                    options={categoryOptions}
+                    onSelect={handleCategorySelect}
+                    fullWidth
+                  />
                 </div>
               </div>
 
