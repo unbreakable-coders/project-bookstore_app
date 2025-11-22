@@ -23,12 +23,12 @@ interface BookDetailsTemplateProps {
   breadcrumbs: { label: string; href: string }[];
   selectedLanguage: string;
   onSelectLanguage: (lang: string) => void;
-  onAddToCart: (bookId: string) => void; // Измените сигнатуру
-  onToggleWishlist: (bookId: string) => void; // Измените сигнатуру
-  isInWishlist: (bookId: string) => boolean; // Измените сигнатуру
-  isInCart: (bookId: string) => boolean; // Добавьте эту пропсу
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
+  isInCart: (bookId: string) => boolean;
   availableLanguages: string[];
-  recommendedBooks?: Book[];
+  booksMightLike: Book[];
 }
 
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
@@ -41,7 +41,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   isInCart,
   isInWishlist,
   availableLanguages,
-  recommendedBooks = [],
+  booksMightLike = [],
 }) => {
   return (
     <div className="container pt-6">
@@ -86,11 +86,10 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
         aboutContent={book.aboutContent}
         characteristics={book.characteristics}
       />
-
-      {recommendedBooks.length > 0 && (
+      {booksMightLike.length > 0 && (
         <ProductCardsBlock
           title="You may also like"
-          listOfBooks={recommendedBooks}
+          listOfBooks={booksMightLike}
           onAddToCart={onAddToCart}
           onToggleWishlist={onToggleWishlist}
           isInCart={isInCart}

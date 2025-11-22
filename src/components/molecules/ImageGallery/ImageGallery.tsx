@@ -44,7 +44,7 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
 
       {/* COLUMN 2 — MAIN IMAGE */}
       <div className="flex justify-center lg:justify-start mr-8">
-        <div className="flex items-center justify-center w-[205px] h-[278px] md:w-[205px] md:h-[316px] lg:w-[337px] lg:h-[520px] rounded-[10px] overflow-hidden bg-background">
+        <div className="flex items-start justify-center w-[205px] h-[278px] md:w-[205px] md:h-[316px] lg:w-[337px] lg:h-[520px] rounded-[10px] overflow-hidden bg-background">
           <img
             key={mainImage}
             src={mainImage}
