@@ -90,13 +90,9 @@ export const BookDetailsPage = () => {
 
   const bookId = product.id;
 
-  const handleToggleWishlist = () => {
-    toggleWishlist(bookId);
-  };
+  const handleToggleWishlist = (id: string) => toggleWishlist(id);
 
-  const handleAddToCart = () => {
-    toggleCart(bookId);
-  };
+  const handleAddToCart = (id: string) => toggleCart(id);
 
   const detailsList = [
     { label: t('Author'), value: product.author },
@@ -142,7 +138,7 @@ export const BookDetailsPage = () => {
     isInCart: isInCart,
     isInWishlist: isInWishlist,
     availableLanguages: product.availableLanguages,
-    recommendedBooks,
+    booksMightLike: recommendedBooks,
   };
 
   return (
