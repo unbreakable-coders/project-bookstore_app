@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/molecules/BookPreview/Card';
+import { Link } from 'react-router-dom';
 
 import { useSupabaseHealthCheck } from '@/hooks/useSupabaseHealthCheck';
 
@@ -83,6 +84,12 @@ export default function DevPreviewPage() {
 
           <Button>Click me</Button>
         </section>
+
+        <Button>Click me</Button>
+
+        <Link to="/login">
+          <Button>Go to Login</Button>
+        </Link>
 
         {/* CARD TEST */}
         <section>
