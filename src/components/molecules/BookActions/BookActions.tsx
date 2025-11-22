@@ -4,7 +4,7 @@ import { Icon } from '../../atoms/Icon/Icon';
 import { useMoveHeart } from '@/components/MoveHeart';
 
 interface BookActionsProps {
-  bookId: string; // <-- додай цей проп
+  bookId: string;
   onAddToCart: () => void;
   onToggleWishlist: () => void;
   isInCart: boolean;
@@ -30,10 +30,8 @@ export const BookActions: React.FC<BookActionsProps> = ({
     e.stopPropagation();
 
     if (!isInWishlist && heartButtonRef.current) {
-      // Додавання - з анімацією (toggleWishlist викличеться в onComplete)
       flyToWishlist(heartButtonRef.current, bookId);
     } else {
-      // Видалення - без анімації, одразу
       onToggleWishlist();
     }
   };
