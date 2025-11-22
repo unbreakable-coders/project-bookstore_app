@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
-import { useRef } from 'react';
 import { useMoveHeart } from '@/components/MoveHeart';
 
 interface BookActionsProps {
+  bookId: string; // <-- додай цей проп
   onAddToCart: () => void;
   onToggleWishlist: () => void;
   isInCart: boolean;
@@ -13,26 +13,29 @@ interface BookActionsProps {
 }
 
 export const BookActions: React.FC<BookActionsProps> = ({
+  bookId,
   onAddToCart,
   onToggleWishlist,
   isInWishlist,
   isInCart,
   inStock,
 }) => {
-  const heartIconName = isInWishlist ? 'heartRed' : 'heart';
-  const canAddToCart = inStock || isInCart;
-
   const heartButtonRef = useRef<HTMLButtonElement>(null);
   const { flyToWishlist } = useMoveHeart();
+
+  const heartIconName = isInWishlist ? 'heartRed' : 'heart';
+  const canAddToCart = inStock || isInCart;
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (!isInWishlist && heartButtonRef.current) {
-      flyToWishlist(heartButtonRef.current);
+      // Додавання - з анімацією (toggleWishlist викличеться в onComplete)
+      flyToWishlist(heartButtonRef.current, bookId);
+    } else {
+      // Видалення - без анімації, одразу
+      onToggleWishlist();
     }
-
-    onToggleWishlist();
   };
 
   return (
