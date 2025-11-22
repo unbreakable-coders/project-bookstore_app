@@ -7,6 +7,7 @@ import { CatalogPage } from './pages/CatalogPage';
 import { BookDetailsPage } from './pages/BookDetailsPage';
 import { WishlistPage } from './pages/WishlistPage';
 import { CartPage } from './pages/CartPage';
+import { CheckoutPage } from './pages/CheckoutFormPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AboutPage } from './pages/AboutPage';
@@ -34,6 +35,7 @@ export default function App() {
             <Route path="books/:namespaceId" element={<BookDetailsPage />} />
             <Route path="wishlist" element={<WishlistPage />} />
             <Route path="cart" element={<CartPage />} />
+            <Route path="checkout" element={<CheckoutPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contacts" element={<ContactsPage />} />
             <Route path="login" element={<LoginPage />} />
