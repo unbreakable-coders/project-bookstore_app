@@ -8,8 +8,11 @@ import {
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export const LoginPage = () => {
+  const { t } = useTranslation();
+
   const [isLogin, setIsLogin] = useState(true);
   const { signIn, signUp, loading, error } = useAuth();
 
@@ -33,7 +36,7 @@ export const LoginPage = () => {
     setSuccess(null);
 
     if (!loginData.email || !loginData.password) {
-      setLocalError('Заповніть всі поля');
+      setLocalError(t('Fill in all fields'));
       return;
     }
 
@@ -43,9 +46,9 @@ export const LoginPage = () => {
     );
 
     if (authError) {
-      setLocalError('Невірний email або пароль');
+      setLocalError(t('Invalid email or password'));
     } else if (data) {
-      setSuccess('Успішний вхід!');
+      setSuccess(t('Login successful!'));
       setTimeout(() => {
         window.location.href = '/';
       }, 1000);
@@ -62,17 +65,17 @@ export const LoginPage = () => {
     setSuccess(null);
 
     if (!registerData.name || !registerData.email || !registerData.password) {
-      setLocalError('Заповніть всі поля');
+      setLocalError(t('Fill in all fields'));
       return;
     }
 
     if (registerData.password !== registerData.confirmPassword) {
-      setLocalError('Паролі не збігаються');
+      setLocalError(t('Passwords do not match'));
       return;
     }
 
     if (registerData.password.length < 6) {
-      setLocalError('Пароль повинен містити мінімум 6 символів');
+      setLocalError(t('Password must be at least 6 characters'));
       return;
     }
 
@@ -84,12 +87,14 @@ export const LoginPage = () => {
 
     if (authError) {
       if (authError.includes('already registered')) {
-        setLocalError('Цей email вже зареєстрований');
+        setLocalError(t('This email is already registered'));
       } else {
         setLocalError(authError);
       }
     } else if (data) {
-      setSuccess('Реєстрація успішна! Перевірте email для підтвердження.');
+      setSuccess(
+        t('Registration successful! Check your email for confirmation'),
+      );
       setRegisterData({
         name: '',
         email: '',
@@ -110,10 +115,10 @@ export const LoginPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center">
-            {isLogin ? 'Вхід' : 'Реєстрація'}
+            {isLogin ? t('Login') : t('Registration')}
           </CardTitle>
           <p className="text-sm text-muted-foreground text-center mt-2">
-            {isLogin ? 'Увійдіть у свій акаунт' : 'Створіть новий акаунт'}
+            {isLogin ? t('Sign in to your account') : t('Create a new account')}
           </p>
         </CardHeader>
 
@@ -144,7 +149,7 @@ export const LoginPage = () => {
                   : 'text-muted-foreground hover:text-foreground'
               } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              Вхід
+              {t('Login')}
             </button>
             <button
               onClick={() => {
@@ -159,7 +164,7 @@ export const LoginPage = () => {
                   : 'text-muted-foreground hover:text-foreground'
               } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              Реєстрація
+              {t('Registration')}
             </button>
           </div>
 
@@ -170,7 +175,7 @@ export const LoginPage = () => {
                   htmlFor="login-email"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Email
+                  {t('Email')}
                 </label>
                 <Input
                   id="login-email"
@@ -189,7 +194,7 @@ export const LoginPage = () => {
                   htmlFor="login-password"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Пароль
+                  {t('Password')}
                 </label>
                 <Input
                   id="login-password"
@@ -213,7 +218,7 @@ export const LoginPage = () => {
                   className="text-sm text-secondary hover:text-foreground transition-colors"
                   disabled={loading}
                 >
-                  Забули пароль?
+                  {t('Forgot password?')}
                 </button>
               </div>
 
@@ -222,7 +227,7 @@ export const LoginPage = () => {
                 disabled={loading}
                 className="w-full"
               >
-                {loading ? 'Завантаження...' : 'Увійти'}
+                {loading ? t('Loading...') : t('Sign in')}
               </Button>
             </div>
           ) : (
@@ -232,12 +237,12 @@ export const LoginPage = () => {
                   htmlFor="register-name"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Ім'я
+                  {t('Name')}
                 </label>
                 <Input
                   id="register-name"
                   type="text"
-                  placeholder="Іван Петренко"
+                  placeholder={t('John Doe')}
                   value={registerData.name}
                   onChange={e =>
                     setRegisterData({ ...registerData, name: e.target.value })
@@ -251,7 +256,7 @@ export const LoginPage = () => {
                   htmlFor="register-email"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Email
+                  {t('Email')}
                 </label>
                 <Input
                   id="register-email"
@@ -270,12 +275,12 @@ export const LoginPage = () => {
                   htmlFor="register-password"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Пароль
+                  {t('Password')}
                 </label>
                 <Input
                   id="register-password"
                   type="password"
-                  placeholder="Мінімум 6 символів"
+                  placeholder={t('At least 6 characters')}
                   value={registerData.password}
                   onChange={e =>
                     setRegisterData({
@@ -292,12 +297,12 @@ export const LoginPage = () => {
                   htmlFor="register-confirm"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Підтвердіть пароль
+                  {t('Confirm password')}
                 </label>
                 <Input
                   id="register-confirm"
                   type="password"
-                  placeholder="Повторіть пароль"
+                  placeholder={t('Repeat password')}
                   value={registerData.confirmPassword}
                   onChange={e =>
                     setRegisterData({
@@ -319,7 +324,7 @@ export const LoginPage = () => {
                 disabled={loading}
                 className="w-full"
               >
-                {loading ? 'Завантаження...' : 'Зареєструватися'}
+                {loading ? t('Loading...') : t('Sign up')}
               </Button>
             </div>
           )}

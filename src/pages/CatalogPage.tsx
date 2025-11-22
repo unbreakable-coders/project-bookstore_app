@@ -13,10 +13,14 @@ import {
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
 import { fetchBooks } from '@/lib/booksApi';
+import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 const ITEMS_PER_PAGE_OPTIONS = [4, 16, 32];
 
 export const CatalogPage = () => {
+  const { t } = useTranslation();
+
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
@@ -49,16 +53,15 @@ export const CatalogPage = () => {
         const data = await fetchBooks();
         setBooks(data);
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error('Failed to load books from Supabase:', err);
-        setError('Failed to load books. Please try again later.');
+        setError(t('Failed to load books. Please try again later'));
       } finally {
         setLoading(false);
       }
     };
 
     void load();
-  }, []);
+  }, [t]);
 
   const filteredBooks = useMemo(() => {
     let base = books.filter(book => book.type === catalogType);
@@ -177,7 +180,7 @@ export const CatalogPage = () => {
   if (loading) {
     return (
       <div className="flex h-screen justify-center items-center text-xl">
-        Loading catalog…
+        <Loader />
       </div>
     );
   }
@@ -202,21 +205,21 @@ export const CatalogPage = () => {
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">
-            {catalogTitle}
-          </h1>
-          <p className="text-muted-foreground">{filteredBooks.length} books</p>
+          <h1 className="text-4xl font-bold text-foreground">{catalogTitle}</h1>
+          <p className="text-muted-foreground">
+            {t('{{count}} books', { count: filteredBooks.length })}
+          </p>
         </div>
 
         <div className="pt-10 flex gap-4 items-start">
           <div className="w-44">
-            <p className="text-sm text-muted-foreground mb-1">Sort by</p>
+            <p className="text-sm text-muted-foreground mb-1">{t('Sort by')}</p>
             <SortCategory value={sortBy} onChange={handleSortChange} />
           </div>
 
           <div className="w-32">
             <p className="text-sm w-32 text-muted-foreground mb-1">
-              Items on page
+              {t('Items on page')}
             </p>
             <SortPages
               options={ITEMS_PER_PAGE_OPTIONS}

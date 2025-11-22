@@ -1,6 +1,7 @@
 import { toast, ToastContainer, type ToastOptions } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Icon } from '@/components/atoms/Icon';
+import i18n from 'i18next';
 
 const defaultOptions: ToastOptions = {
   position: 'bottom-right',
@@ -16,7 +17,7 @@ export const toastWishlistAdded = () =>
   toast.success(
     <>
       <Icon name="heartRed" className="w-6 h-6 mr-2" />
-      Книжка додана до улюблених
+      {i18n.t('Book added to favorites')}
     </>,
     { ...defaultOptions, autoClose: 2500 },
   );
@@ -25,7 +26,7 @@ export const toastWishlistRemoved = () =>
   toast.info(
     <>
       <Icon name="heart" className="w-6 h-6 mr-2 text-gray-400" />
-      Книжка видалена з улюблених
+      {i18n.t('Book removed from favorites')}
     </>,
     { ...defaultOptions, autoClose: 2000 },
   );
@@ -34,7 +35,7 @@ export const toastCartAdded = () =>
   toast.success(
     <>
       <Icon name="cart" className="w-6 h-6 mr-2" />
-      Книжка додана до кошика
+      {i18n.t('Book added to cart')}
     </>,
     { ...defaultOptions, autoClose: 2500 },
   );
@@ -43,7 +44,7 @@ export const toastCartRemoved = () =>
   toast.info(
     <>
       <Icon name="cart" className="w-6 h-6 mr-2 text-gray-400" />
-      Книжка видалена з кошика
+      {i18n.t('Book removed from cart')}
     </>,
     { ...defaultOptions, autoClose: 2000 },
   );

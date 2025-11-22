@@ -108,7 +108,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
       />
       {booksMightLike.length > 0 && (
         <ProductCardsBlock
-          title="You may also like"
+          title={t('You may also like')}
           listOfBooks={booksMightLike}
           onAddToCart={onAddToCart}
           onToggleWishlist={onToggleWishlist}
