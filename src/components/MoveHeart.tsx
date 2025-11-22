@@ -1,3 +1,4 @@
+// src/components/MoveHeart.tsx
 import {
   createContext,
   useContext,
@@ -12,7 +13,11 @@ import { useWishlist } from '@/context/WishlistContext';
 
 interface MoveHeartContextValue {
   headerHeartRef: RefObject<HTMLElement | null>;
-  flyToWishlist: (sourceElement: HTMLElement, bookId: string) => void;
+  flyToWishlist: (
+    sourceElement: HTMLElement,
+    bookId: string,
+    onComplete?: () => void,
+  ) => void;
   hasItemsInWishlist: boolean;
 }
 
@@ -25,11 +30,12 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
   const hasItemsInWishlist = wishlist.size > 0;
 
   const flyToWishlist = useCallback(
-    (sourceElement: HTMLElement, bookId: string) => {
+    (sourceElement: HTMLElement, bookId: string, onComplete?: () => void) => {
       const targetEl = headerHeartRef.current;
       if (!targetEl) {
         console.warn('[MoveHeart] Header heart ref not found');
         toggleWishlist(bookId);
+        onComplete?.();
         return;
       }
 
@@ -68,6 +74,7 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
           flyingHeart.remove();
 
           toggleWishlist(bookId);
+          onComplete?.();
 
           gsap.fromTo(
             targetEl,

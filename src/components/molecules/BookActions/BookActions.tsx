@@ -2,6 +2,10 @@ import React, { useRef } from 'react';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { useMoveHeart } from '@/components/MoveHeart';
+import {
+  toastWishlistAdded,
+  toastWishlistRemoved,
+} from '@/components/atoms/Toasts';
 
 interface BookActionsProps {
   bookId: string;
@@ -30,11 +34,12 @@ export const BookActions: React.FC<BookActionsProps> = ({
     e.stopPropagation();
 
     if (!isInWishlist && heartButtonRef.current) {
-      // Додавання - з анімацією (toggleWishlist викликається після анімації)
-      flyToWishlist(heartButtonRef.current, bookId);
+      flyToWishlist(heartButtonRef.current, bookId, () => {
+        toastWishlistAdded();
+      });
     } else {
-      // Видалення - без анімації
       onToggleWishlist();
+      toastWishlistRemoved();
     }
   };
 
