@@ -20,32 +20,35 @@ import { RightsPage } from './pages/system/RightsPage';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ScrollToTop } from './components/utils/ScrollToTop';
+import { MoveHeartProvider } from './components/MoveHeart';
 
 export default function App() {
   return (
     <CartProvider>
       <WishlistProvider>
-        <ScrollToTop />
+        <MoveHeartProvider>
+          <ScrollToTop />
 
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="catalog" element={<CatalogPage />} />
-            <Route path="catalog/:bookType" element={<CatalogPage />} />
-            <Route path="books/:namespaceId" element={<BookDetailsPage />} />
-            <Route path="wishlist" element={<WishlistPage />} />
-            <Route path="cart" element={<CartPage />} />
-            <Route path="checkout" element={<CheckoutPage />} />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="contacts" element={<ContactsPage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="github" element={<GithubPage />} />
-            <Route path="rights" element={<RightsPage />} />
-            <Route path="dev/preview" element={<DevPreviewPage />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Route>
-        </Routes>
+          <Routes>
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="catalog" element={<CatalogPage />} />
+              <Route path="catalog/:bookType" element={<CatalogPage />} />
+              <Route path="books/:namespaceId" element={<BookDetailsPage />} />
+              <Route path="wishlist" element={<WishlistPage />} />
+              <Route path="cart" element={<CartPage />} />
+              <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="contacts" element={<ContactsPage />} />
+              <Route path="login" element={<LoginPage />} />
+              <Route path="register" element={<RegisterPage />} />
+              <Route path="github" element={<GithubPage />} />
+              <Route path="rights" element={<RightsPage />} />
+              <Route path="dev/preview" element={<DevPreviewPage />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Route>
+          </Routes>
+        </MoveHeartProvider>
       </WishlistProvider>
     </CartProvider>
   );

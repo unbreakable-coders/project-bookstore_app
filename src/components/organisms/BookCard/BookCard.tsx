@@ -108,6 +108,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
         <BookActions
           onAddToCart={handleAddToCart}
+          bookId={book.id}
           onToggleWishlist={handleToggleWishlist}
           isInCart={optimisticInCart}
           isInWishlist={isInWishlist}

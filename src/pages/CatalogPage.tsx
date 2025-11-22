@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { booksData } from '@/books/data/books';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
 import { SortCategory } from '@/components/SortBy';
@@ -12,76 +13,39 @@ import {
   PaginationPreviousButton,
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
-import { fetchBooks } from '@/lib/booksApi';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
-const ITEMS_PER_PAGE_OPTIONS = [4, 16, 32];
+const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
 
 export const CatalogPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
   const [sortBy, setSortBy] = useState('name-asc');
-  const [error, setError] = useState<string | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-
   const currentPage = Number(searchParams.get('page')) || 1;
-  const selectedCategory = searchParams.get('category') || 'all';
-  const searchTerm = (searchParams.get('search') || '').trim().toLowerCase();
-
-  const catalogType = useMemo(() => {
-    if (location.pathname.startsWith('/catalog/kindle')) return 'kindle';
-    if (location.pathname.startsWith('/catalog/audiobook')) return 'audiobook';
-    return 'paperback';
-  }, [location.pathname]);
-
-  const slugifyCategory = (cat: string) =>
-    cat
-      .toLowerCase()
-      .replace(/&/g, 'and')
-      .replace(/[^\w]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+  const { toggleCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await fetchBooks();
+        const data = await booksData();
         setBooks(data);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to load books from Supabase:', err);
-        setError('Failed to load books. Please try again later.');
+        console.error('Failed to load books:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    void load();
+    load();
   }, []);
 
-  const filteredBooks = useMemo(() => {
-    let base = books.filter(book => book.type === catalogType);
-
-    if (selectedCategory !== 'all') {
-      base = base.filter(book =>
-        book.category.some(cat => slugifyCategory(cat) === selectedCategory),
-      );
-    }
-
-    if (searchTerm) {
-      base = base.filter(book => {
-        const name = book.name.toLowerCase();
-        const author = book.author.toLowerCase();
-        return name.includes(searchTerm) || author.includes(searchTerm);
-      });
-    }
-
-    return base;
-  }, [books, catalogType, selectedCategory, searchTerm]);
-
   const sortedBooks = useMemo(() => {
-    const sorted = [...filteredBooks];
+    const sorted = [...books];
 
     switch (sortBy) {
       case 'name-asc':
@@ -115,32 +79,26 @@ export const CatalogPage = () => {
     }
 
     return sorted;
-  }, [filteredBooks, sortBy]);
+  }, [books, sortBy]);
 
-  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage) || 1;
+  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentBooks = sortedBooks.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set('page', String(page));
-    setSearchParams(params);
+    setSearchParams({ page: String(page) });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
-    const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
-    setSearchParams(params);
+    setSearchParams({ page: '1' });
   };
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
-    const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
-    setSearchParams(params);
+    setSearchParams({ page: '1' });
   };
 
   const getPageNumbers = () => {
@@ -182,30 +140,12 @@ export const CatalogPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="flex h-screen justify-center items-center text-xl text-red-600">
-        {error}
-      </div>
-    );
-  }
-
-  const titleByType: Record<string, string> = {
-    paperback: 'paperback',
-    kindle: 'kindle',
-    audiobook: 'audiobook',
-  };
-
-  const catalogTitle = titleByType[catalogType] ?? 'paperback';
-
   return (
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">
-            {catalogTitle}
-          </h1>
-          <p className="text-muted-foreground">{filteredBooks.length} books</p>
+          <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
+          <p className="text-muted-foreground">{books.length} books</p>
         </div>
 
         <div className="pt-10 flex gap-4 items-start">
@@ -230,7 +170,13 @@ export const CatalogPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {currentBooks.map(book => (
               <div key={book.id} className="w-full max-w-[272px]">
-                <BookCard book={book} />
+                <BookCard
+                  book={book}
+                  onAddToCart={() => toggleCart(book.id)}
+                  onToggleWishlist={() => toggleWishlist(book.id)}
+                  isInWishlist={isInWishlist(book.id)}
+                  isInCart={isInCart(book.id)}
+                />
               </div>
             ))}
           </div>
