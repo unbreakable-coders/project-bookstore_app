@@ -1,11 +1,22 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+// Header.tsx
+import { useState, useEffect, useRef } from 'react';
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
-import { Dropdown } from '../../atoms/Dropdown';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
+import { booksData } from '@/books/data/books';
+import {
+  DropdownCategories,
+  type DropdownOption,
+} from '../../atoms/DropdownCategories';
+import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -20,7 +31,7 @@ const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
 const HEADER_ICONS_LG: IconName[] = ['heart', 'cart', 'user'];
 const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart', 'user'];
 
-const ICON_BUTTON_CLASS =
+export const ICON_BUTTON_CLASS =
   'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]';
 
 export const Header = () => {
@@ -28,8 +39,48 @@ export const Header = () => {
   const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
+
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const isCatalogPage = location.pathname.startsWith('/catalog');
+  const catalogSearch = searchParams.get('search') ?? '';
+  const selectedCategory = searchParams.get('category') ?? 'all';
+
+  const prevPathRef = useRef(location.pathname);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const allBooks = await booksData();
+
+      const map = new Map<string, string>();
+
+      allBooks.forEach(book => {
+        book.category.forEach(cat => {
+          const slug = cat
+            .toLowerCase()
+            .replace(/&/g, 'and')
+            .replace(/[^\w]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+
+          if (!map.has(slug)) {
+            map.set(slug, cat);
+          }
+        });
+      });
+
+      const options: DropdownOption[] = Array.from(map, ([value, label]) => ({
+        value,
+        label,
+      })).sort((a, b) => a.label.localeCompare(b.label));
+
+      setCategoryOptions([{ value: 'all', label: '--- ALL ---' }, ...options]);
+    };
+
+    void loadCategories();
+  }, []);
 
   useEffect(() => {
     if (isMobileOpen) {
@@ -48,6 +99,40 @@ export const Header = () => {
     setIsSearchOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const prevPath = prevPathRef.current;
+
+    if (prevPath !== location.pathname) {
+      const wasCatalog = prevPath.startsWith('/catalog');
+      const isCatalog = location.pathname.startsWith('/catalog');
+
+      if (wasCatalog && !isCatalog) {
+        const params = new URLSearchParams(searchParams);
+
+        if (params.has('category')) {
+          params.delete('category');
+          params.set('page', '1');
+          setSearchParams(params);
+        }
+      }
+
+      prevPathRef.current = location.pathname;
+    }
+  }, [location.pathname, searchParams, setSearchParams]);
+
+  const handleCatalogSearchChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (!value.trim()) {
+      params.delete('search');
+    } else {
+      params.set('search', value);
+      params.set('page', '1');
+    }
+
+    setSearchParams(params);
+  };
+
   const toggleMobile = () => setIsMobileOpen(prev => !prev);
   const closeMobile = () => setIsMobileOpen(false);
 
@@ -57,6 +142,27 @@ export const Header = () => {
     }
 
     return location.pathname.startsWith(to);
+  };
+
+  const buildCatalogLink = (to: string) => {
+    if (!to.startsWith('/catalog')) {
+      return to;
+    }
+
+    const params = new URLSearchParams(searchParams);
+    const category = params.get('category');
+    const search = params.get('search');
+
+    if (!category && !search) {
+      return to;
+    }
+
+    params.set('page', '1');
+
+    return {
+      pathname: to,
+      search: params.toString(),
+    };
   };
 
   const renderHeaderIcon = (iconName: IconName) => {
@@ -102,6 +208,10 @@ export const Header = () => {
     }
 
     if (iconName === 'search') {
+      if (isCatalogPage) {
+        return null;
+      }
+
       return (
         <button
           key={iconName}
@@ -118,9 +228,29 @@ export const Header = () => {
     return null;
   };
 
+  const handleCategorySelect = (slug: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+
+    if (slug === 'all') {
+      params.delete('category');
+    } else {
+      params.set('category', slug);
+    }
+
+    const baseCatalogPath = location.pathname.startsWith('/catalog')
+      ? location.pathname
+      : '/catalog/paper';
+
+    navigate({
+      pathname: baseCatalogPath,
+      search: params.toString(),
+    });
+  };
+
   return (
     <>
-      <header className="border-b border-border bg-linear-to-r from-[#eeeade] to-[#ded8de]">
+      <header className="border-b border-border bg-gradient-to-r from-[#fef9e7] to-[#fdebd0]">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">
@@ -135,7 +265,7 @@ export const Header = () => {
                   return (
                     <Link
                       key={item.label}
-                      to={item.to}
+                      to={buildCatalogLink(item.to)}
                       className={`relative pb-1 transition-colors ${
                         active
                           ? 'text-[#050505]'
@@ -154,19 +284,33 @@ export const Header = () => {
 
             <div className="flex items-center gap-2 md:gap-3">
               <div className="hidden lg:flex items-center gap-4">
-                <button
-                  type="button"
-                  className="w-[289px] text-left"
-                  onClick={() => setIsSearchOpen(true)}
-                >
+                {isCatalogPage ? (
                   <Input
                     withSearchIcon
                     placeholder="Find a book or author"
-                    readOnly
+                    value={catalogSearch}
+                    onChange={e => handleCatalogSearchChange(e.target.value)}
                   />
-                </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="w-[289px] text-left"
+                    onClick={() => setIsSearchOpen(true)}
+                  >
+                    <Input
+                      withSearchIcon
+                      placeholder="Find a book or author"
+                      readOnly
+                    />
+                  </button>
+                )}
 
-                <Dropdown label="Categories" />
+                <DropdownCategories
+                  placeholder="Categories"
+                  options={categoryOptions}
+                  onSelect={handleCategorySelect}
+                  value={selectedCategory}
+                />
               </div>
 
               <div className="hidden md:flex lg:hidden items-center gap-2">
@@ -176,6 +320,8 @@ export const Header = () => {
               <div className="hidden lg:flex items-center gap-2">
                 {HEADER_ICONS_LG.map(renderHeaderIcon)}
               </div>
+
+              <GlobalLanguageSwitcher />
 
               <button
                 type="button"
@@ -203,7 +349,7 @@ export const Header = () => {
                     return (
                       <Link
                         key={item.label}
-                        to={item.to}
+                        to={buildCatalogLink(item.to)}
                         onClick={closeMobile}
                         className={`block w-full text-left ${
                           active ? 'text-[#050505]' : 'hover:text-[#050505]'
@@ -219,11 +365,26 @@ export const Header = () => {
                 </nav>
 
                 <div className="mt-6">
-                  <Input withSearchIcon placeholder="Find a book or author" />
+                  <Input
+                    withSearchIcon
+                    placeholder="Find a book or author"
+                    value={isCatalogPage ? catalogSearch : undefined}
+                    onChange={
+                      isCatalogPage
+                        ? e => handleCatalogSearchChange(e.target.value)
+                        : undefined
+                    }
+                  />
                 </div>
 
                 <div className="mt-3">
-                  <Dropdown label="Categories" fullWidth />
+                  <DropdownCategories
+                    placeholder="Categories"
+                    options={categoryOptions}
+                    onSelect={handleCategorySelect}
+                    fullWidth
+                    value={selectedCategory}
+                  />
                 </div>
               </div>
 
@@ -281,7 +442,9 @@ export const Header = () => {
         )}
       </header>
 
-      <SearchPanel open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+      {!isCatalogPage && (
+        <SearchPanel open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+      )}
     </>
   );
 };

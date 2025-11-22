@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 
 import { useSupabaseHealthCheck } from '@/hooks/useSupabaseHealthCheck';
 
+const gridCells = Array.from({ length: 12 }, (_, index) => index + 1);
+
 export default function DevPreviewPage() {
   const { status, message } = useSupabaseHealthCheck();
 
@@ -42,12 +44,9 @@ export default function DevPreviewPage() {
         ? 'Supabase client initialized successfully.'
         : 'Supabase connection failed.');
 
-  const gridCells = Array.from({ length: 12 }, (_, index) => index + 1);
-
   return (
     <div className="min-h-screen">
-      <div className="container py-10 space-y-10">
-        {/* SUPABASE STATUS PANEL */}
+      <div className="container py-10 space-y-8">
         <section
           className={`rounded-xl border px-4 py-3 text-sm flex items-start gap-3 ${statusColorClass}`}
         >
@@ -62,7 +61,6 @@ export default function DevPreviewPage() {
           </div>
         </section>
 
-        {/* HEADER */}
         <header className="space-y-2">
           <h1 className="text-3xl font-bold text-foreground">
             UI Kit / Dev Preview
@@ -71,9 +69,12 @@ export default function DevPreviewPage() {
           <p className="text-muted-foreground">
             Tailwind + shadcn UI + global styles + local fonts (Manrope) 🎉
           </p>
+
+          <p className="text-sm text-muted-foreground">
+            Minimal dev panel. Seeder removed, проект працює повністю з Supabase.
+          </p>
         </header>
 
-        {/* FORM TEST */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">Form check</h2>
 
@@ -85,13 +86,10 @@ export default function DevPreviewPage() {
           <Button>Click me</Button>
         </section>
 
-        <Button>Click me</Button>
-
         <Link to="/login">
           <Button>Go to Login</Button>
         </Link>
 
-        {/* CARD TEST */}
         <section>
           <Card className="max-w-md">
             <CardHeader>
@@ -111,7 +109,6 @@ export default function DevPreviewPage() {
           </Card>
         </section>
 
-        {/* TAILWIND UTILITIES TEST */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
             Tailwind utilities test
@@ -147,7 +144,6 @@ export default function DevPreviewPage() {
           </div>
         </section>
 
-        {/* COLORS PALETTE TEST */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
             Colors from design system
@@ -209,7 +205,6 @@ export default function DevPreviewPage() {
           </div>
         </section>
 
-        {/* GRID SYSTEM TEST */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
             Grid system test
@@ -234,7 +229,6 @@ export default function DevPreviewPage() {
           </div>
         </section>
 
-        {/* HEADING TYPOGRAPHY TEST */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
             Heading scale test
@@ -298,7 +292,6 @@ export default function DevPreviewPage() {
           </div>
         </section>
 
-        {/* FONT TEST */}
         <section className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
             Font test (Manrope)

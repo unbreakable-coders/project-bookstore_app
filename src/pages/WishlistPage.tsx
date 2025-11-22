@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BookCard } from '../components/organisms/BookCard';
-import { booksData } from '../books/data/books';
 import type { Book } from '../types/book';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
 
 export const WishlistPage: React.FC = () => {
   const [allBooks, setAllBooks] = useState<Book[]>([]);
@@ -15,7 +15,7 @@ export const WishlistPage: React.FC = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const books = await booksData();
+        const books = await fetchBooks();
         setAllBooks(books);
       } catch (error) {
         console.error('[WishlistPage] Failed to load books:', error);
@@ -49,7 +49,7 @@ export const WishlistPage: React.FC = () => {
           У вас поки немає улюблених книжок
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
           {favouriteBooks.map(book => (
             <BookCard
               key={book.id}

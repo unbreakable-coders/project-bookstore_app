@@ -8,6 +8,7 @@ import { ProductCardsBlock } from '../organisms/Home/ProductCardsBlock.tsx';
 
 interface BookDetailsTemplateProps {
   book: {
+    id: string;
     title: string;
     author: string;
     images: string[];
@@ -22,11 +23,12 @@ interface BookDetailsTemplateProps {
   breadcrumbs: { label: string; href: string }[];
   selectedLanguage: string;
   onSelectLanguage: (lang: string) => void;
-  onAddToCart: () => void;
-  onToggleWishlist: () => void;
-  isInWishlist: boolean;
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
+  isInCart: (bookId: string) => boolean;
   availableLanguages: string[];
-  recommendedBooks?: Book[];
+  booksMightLike: Book[];
 }
 
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
@@ -36,9 +38,10 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   onSelectLanguage,
   onAddToCart,
   onToggleWishlist,
+  isInCart,
   isInWishlist,
   availableLanguages,
-  recommendedBooks = [],
+  booksMightLike = [],
 }) => {
   return (
     <div className="container pt-6">
@@ -51,7 +54,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
       </h2>
       <p className="mt-1.5 opacity-60">{book.author}</p>
 
-      <div className="px-4 md:px-6 lg:px-8 mt-[5px] md:mt-8 lg:mt-10">
+      <div className="px-4 md:px-6 lg:px-8 mt-[5px] md:mt-8 lg:mt-10 ">
         {/* GRID: Main Content (Gallery + Info Panel) */}
         <div className="md:grid md:grid-cols-[auto_1fr_1fr] flex flex-col items-center md:flex-none md:flex-row md:items-start">
           {/* Column 1 & 2: Image Gallery (Molecule) */}
@@ -69,9 +72,10 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
             languages={availableLanguages}
             selectedLanguage={selectedLanguage}
             onLanguageChange={onSelectLanguage}
-            onAddToCart={onAddToCart}
-            onToggleWishlist={onToggleWishlist}
-            isInWishlist={isInWishlist}
+            onAddToCart={() => onAddToCart(book.id)}
+            onToggleWishlist={() => onToggleWishlist(book.id)}
+            isInWishlist={isInWishlist(book.id)}
+            isInCart={isInCart(book.id)}
           />
         </div>
       </div>
@@ -82,11 +86,14 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
         aboutContent={book.aboutContent}
         characteristics={book.characteristics}
       />
-
-      {recommendedBooks.length > 0 && (
+      {booksMightLike.length > 0 && (
         <ProductCardsBlock
           title="You may also like"
-          listOfBooks={recommendedBooks}
+          listOfBooks={booksMightLike}
+          onAddToCart={onAddToCart}
+          onToggleWishlist={onToggleWishlist}
+          isInCart={isInCart}
+          isInWishlist={isInWishlist}
         />
       )}
     </div>
