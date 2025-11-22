@@ -1,5 +1,11 @@
 import React from 'react';
 import { BookActions } from './BookActions';
+import {
+  toastCartAdded,
+  toastCartRemoved,
+  toastWishlistAdded,
+  toastWishlistRemoved,
+} from '../atoms/Toasts';
 interface PriceAndActionsProps {
   price: number;
   oldPrice: number | null;
@@ -26,6 +32,24 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   const convertedCurrentPrice = Math.ceil(currentPrice * 42);
   const convertedRegularPrice = Math.ceil(price * 42);
 
+  const handleAddToCart = () => {
+    onAddToCart();
+    if (isInCart) {
+      toastCartRemoved();
+    } else {
+      toastCartAdded();
+    }
+  };
+
+  const handleToggleWishlist = () => {
+    onToggleWishlist();
+    if (isInWishlist) {
+      toastWishlistRemoved();
+    } else {
+      toastWishlistAdded();
+    }
+  };
+
   return (
     <>
       <div className="mt-4 flex items-center gap-2">
@@ -39,8 +63,8 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
       </div>
 
       <BookActions
-        onAddToCart={onAddToCart}
-        onToggleWishlist={onToggleWishlist}
+        onAddToCart={handleAddToCart}
+        onToggleWishlist={handleToggleWishlist}
         isInWishlist={isInWishlist}
         isInCart={isInCart}
         inStock={inStock}
