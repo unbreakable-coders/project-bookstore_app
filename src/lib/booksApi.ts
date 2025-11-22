@@ -41,8 +41,9 @@ export const fetchBooks = async (): Promise<Book[]> => {
   }));
 };
 
-export type BookProduct = {
+export interface BookProduct {
   id: string;
+  type: string;
   namespaceId: string;
   title: string;
   author: string;
@@ -61,7 +62,7 @@ export type BookProduct = {
     format: string;
     illustrations: boolean;
   };
-};
+}
 
 export const fetchBookProduct = async (
   namespaceId: string,
@@ -89,6 +90,7 @@ export const fetchBookProduct = async (
 
   return {
     id: variant.id,
+    type: variant.type,
     namespaceId: variant.namespace_id,
     title: variant.name,
     author: variant.author,
