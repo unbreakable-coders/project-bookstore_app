@@ -1,4 +1,4 @@
-import { Icon, type IconName } from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { ICON_BUTTON_CLASS } from '@/components/organisms/Header/Header';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ export const GlobalLanguageSwitcher: React.FC = () => {
       title={isUK ? 'Switch to English' : 'Перейти на українську'}
     >
       <Icon
-        name={isUK ? 'ukrLang' : 'engLang'} 
+        name={isUK ? 'ukrLang' : 'engLang'}
         className="h-5 w-5"
       />
     </button>
