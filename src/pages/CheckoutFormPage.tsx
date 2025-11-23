@@ -2,9 +2,12 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { useCart } from '@/hooks/useCart';
 import { Button } from '@/components/atoms/Button';
+import { useTranslation } from 'react-i18next';
 // import { Icon } from '@/components/atoms/Icon'
 
 export const CheckoutPage: FC = () => {
+  const { t } = useTranslation();
+
   const { cartItems, totalPriceUAH, totalItems } = useCart();
 
   const [formData, setFormData] = useState({
@@ -76,23 +79,25 @@ export const CheckoutPage: FC = () => {
               strokeLinejoin="round"
             />
           </svg>
-          <span className="text-sm font-semibold">Back</span>
+          <span className="text-sm font-semibold">{t('Back')}</span>
         </button>
 
-        <h2 className="mb-8">Place an order</h2>
+        <h2 className="mb-8">{t('Place an order')}</h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Ліва колонка - Форма */}
           <div className="lg:col-span-2 space-y-6">
             {/* Секція 1: Контактні дані */}
             <div className="bg-card rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold mb-4">Contact details</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                {t('Contact details')}
+              </h2>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">
-                      Name *
+                      {t('Name *')}
                     </label>
                     <input
                       type="text"
@@ -100,14 +105,14 @@ export const CheckoutPage: FC = () => {
                       value={formData.firstName}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                      placeholder="Please Enter Your Name"
+                      placeholder={t('Please Enter Your Name')}
                       required
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-secondary mb-2">
-                      Surname *
+                      {t('Surname *')}
                     </label>
                     <input
                       type="text"
@@ -115,7 +120,7 @@ export const CheckoutPage: FC = () => {
                       value={formData.lastName}
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                      placeholder="Please Enter Your Surname"
+                      placeholder={t('Please Enter Your Surname')}
                       required
                     />
                   </div>
@@ -123,7 +128,7 @@ export const CheckoutPage: FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    Phone number *
+                    {t('Phone number *')}
                   </label>
                   <input
                     type="tel"
@@ -138,7 +143,7 @@ export const CheckoutPage: FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    Email
+                    {t('Email')}
                   </label>
                   <input
                     type="email"
@@ -154,12 +159,12 @@ export const CheckoutPage: FC = () => {
 
             {/* Секція 2: Доставка */}
             <div className="bg-card rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold mb-4">Delivery</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('Delivery')}</h2>
 
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-2">
-                    Address *
+                    {t('Address *')}
                   </label>
                   <div className="relative">
                     <svg
@@ -187,7 +192,7 @@ export const CheckoutPage: FC = () => {
                       value={formData.address}
                       onChange={handleChange}
                       className="w-full pl-12 pr-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-                      placeholder="Please Enter Your Address"
+                      placeholder={t('Please Enter Your Address')}
                     />
                   </div>
                 </div>
@@ -195,7 +200,7 @@ export const CheckoutPage: FC = () => {
                 {/* Спосіб доставки */}
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-3">
-                    Delivery method *
+                    {t('Delivery method *')}
                   </label>
                   <div className="space-y-3">
                     <label className="flex items-start gap-3 p-4 rounded-lg border border-border cursor-pointer hover:border-primary transition-colors">
@@ -208,9 +213,9 @@ export const CheckoutPage: FC = () => {
                         className="mt-1 w-4 h-4 text-primary accent-[#0f9952]"
                       />
                       <div>
-                        <div>Nova Poshta (branch)</div>
+                        <div>{t('Nova Poshta (branch)')}</div>
                         <div className="text-sm text-secondary mt-1">
-                          at the carrier's rates
+                          {t("at the carrier's rates")}
                         </div>
                       </div>
                     </label>
@@ -225,9 +230,9 @@ export const CheckoutPage: FC = () => {
                         className="mt-1 w-4 h-4 text-primary accent-[#0f9952]"
                       />
                       <div>
-                        <div>Nova Poshta (post office)</div>
+                        <div>{t('Nova Poshta (post office)')}</div>
                         <div className="text-sm text-secondary mt-1">
-                          at the carrier's rates
+                          {t("at the carrier's rates")}
                         </div>
                       </div>
                     </label>
@@ -242,9 +247,9 @@ export const CheckoutPage: FC = () => {
                         className="mt-1 w-4 h-4 text-primary accent-[#0f9952]"
                       />
                       <div>
-                        <div>Ukrposhta</div>
+                        <div>{t('Ukrposhta')}</div>
                         <div className="text-sm text-secondary mt-1">
-                          at the carrier's rates
+                          {t("at the carrier's rates")}
                         </div>
                       </div>
                     </label>
@@ -259,7 +264,7 @@ export const CheckoutPage: FC = () => {
                         className="mt-1 w-4 h-4 text-primary accent-[#0f9952]"
                       />
                       <div>
-                        <div>Courier delivery</div>
+                        <div>{t('Courier delivery')}</div>
                         <div className="text-sm text-secondary mt-1">150 ₴</div>
                       </div>
                     </label>
@@ -270,7 +275,7 @@ export const CheckoutPage: FC = () => {
 
             {/* Секція 3: Оплата */}
             <div className="bg-card rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold mb-4">Payment</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('Payment')}</h2>
 
               <div className="space-y-3">
                 <label className="flex items-start gap-3 p-4 rounded-lg border border-border cursor-pointer hover:border-primary transition-colors">
@@ -283,7 +288,7 @@ export const CheckoutPage: FC = () => {
                     className="mt-1 w-4 h-4 text-primary accent-[#0f9952]"
                   />
                   <div>
-                    <div>Online card payment</div>
+                    <div>{t('Online card payment')}</div>
                     <div className="text-secondary mt-1">Visa, Mastercard</div>
                   </div>
                 </label>
@@ -298,8 +303,10 @@ export const CheckoutPage: FC = () => {
                     className="mt-1 w-4 h-4 text-primary accent-[#0f9952]"
                   />
                   <div className="">
-                    <div>Payment upon receipt</div>
-                    <div className="text-secondary mt-1">Cash or card</div>
+                    <div>{t('Payment upon receipt')}</div>
+                    <div className="text-secondary mt-1">
+                      {t('Cash or card')}
+                    </div>
                   </div>
                 </label>
               </div>
@@ -308,12 +315,12 @@ export const CheckoutPage: FC = () => {
             {/* Коментар до замовлення */}
             <div className="bg-card rounded-lg border border-border p-6">
               <label className="block text-sm font-medium text-secondary mb-3">
-                Comment on the order
+                {t('Comment on the order')}
               </label>
               <textarea
                 rows={4}
                 className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary outline-none transition-colors resize-none"
-                placeholder="Additional wishes for the order..."
+                placeholder={t('Additional wishes for the order...')}
               />
             </div>
           </div>
@@ -322,29 +329,30 @@ export const CheckoutPage: FC = () => {
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-4">
               <div className="bg-card rounded-lg border border-border p-6">
-                <h3 className="text-lg font-semibold mb-4">Total</h3>
+                <h3 className="text-lg font-semibold mb-4">{t('Total')}</h3>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-secondary">
-                      {totalItems} {totalItems === 1 ? 'article ' : 'articles '}
-                      for the amount
+                      {t('{{count}} articles for the amount', {
+                        count: totalItems,
+                      })}
                     </span>
                     <span className="font-medium">{totalPriceUAH} ₴</span>
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-secondary">Shipping cost</span>
+                    <span className="text-secondary">{t('Shipping cost')}</span>
                     <span className="font-medium">
                       {deliveryPrice === 0
-                        ? "at the carrier's rates"
+                        ? t("at the carrier's rates")
                         : `${deliveryPrice} ₴`}
                     </span>
                   </div>
 
                   <div className="border-t border-border pt-3">
                     <div className="flex justify-between">
-                      <span className="font-semibold">Due</span>
+                      <span className="font-semibold">{t('Due')}</span>
                       <span className="text-2xl font-bold">
                         {totalWithDelivery} ₴
                       </span>
@@ -357,7 +365,7 @@ export const CheckoutPage: FC = () => {
                   size="lg"
                   className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
                 >
-                  I confirm the order
+                  {t('I confirm the order')}
                 </Button>
               </div>
 

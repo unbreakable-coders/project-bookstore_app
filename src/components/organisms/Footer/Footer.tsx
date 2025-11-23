@@ -1,12 +1,7 @@
 import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import { Link } from 'react-router-dom';
-
-const footerLinks = [
-  { label: 'Github', to: '/github' },
-  { label: 'Contacts', to: '/contacts' },
-  { label: 'Rights', to: '/rights' },
-];
+import { useTranslation } from 'react-i18next';
 
 const scrollToTop = () => {
   if (typeof window !== 'undefined') {
@@ -15,6 +10,14 @@ const scrollToTop = () => {
 };
 
 export const Footer = () => {
+  const { t } = useTranslation();
+
+  const footerLinks = [
+    { label: t('Github'), to: '/github' },
+    { label: t('Contacts'), to: '/contacts' },
+    { label: t('Rights'), to: '/rights' },
+  ];
+
   return (
     <footer className="border-t bg-gradient-to-r from-[#fef9e7] to-[#fdebd0] border-border">
       <div className="mx-auto max-w-6xl px-4 py-6">
@@ -39,7 +42,7 @@ export const Footer = () => {
             onClick={scrollToTop}
             className="flex items-center gap-1 text-[#9F9F9F] hover:text-[#050505]"
           >
-            <span>Back to top</span>
+            <span>{t('Back to top')}</span>
             <Icon name="arrowUp" className="h-3 w-3" />
           </button>
         </div>
@@ -65,7 +68,7 @@ export const Footer = () => {
             onClick={scrollToTop}
             className="mt-6 flex items-center  mx-auto justify-center  gap-1 text-[11px] font-semibold  tracking-[0.18em] text-[#898888] hover:text-[#050505]"
           >
-            <span>Back to top</span>
+            <span>{t('Back to top')}</span>
             <Icon name="arrowUp" className="h-3 w-3" />
           </button>
         </div>

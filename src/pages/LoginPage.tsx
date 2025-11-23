@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/molecules/BookPreview/Card';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '@/supabaseClient';
 import { SocialAuthButtons } from '@/components/molecules/auth/SocialAuthButtons';
 import { AuthTabs } from '@/components/molecules/auth/AuthTabs';
@@ -18,6 +19,8 @@ import {
 } from '@/components/organisms/auth/RegisterForm';
 
 export const LoginPage = () => {
+  const { t } = useTranslation();
+
   const [isLogin, setIsLogin] = useState(true);
 
   const { signIn, signUp, signOut, getCurrentUser, loading, error } = useAuth();
@@ -90,7 +93,7 @@ export const LoginPage = () => {
     setSuccess(null);
 
     if (!loginData.email || !loginData.password) {
-      setLocalError('Заповніть всі поля');
+      setLocalError(t('Fill in all fields'));
       return;
     }
 
@@ -100,9 +103,9 @@ export const LoginPage = () => {
     );
 
     if (authError) {
-      setLocalError('Невірний email або пароль');
+      setLocalError(t('Invalid email or password'));
     } else if (data) {
-      setSuccess('Успішний вхід!');
+      setSuccess(t('Login successful!'));
       setTimeout(() => {
         window.location.href = '/';
       }, 1000);
@@ -132,17 +135,17 @@ export const LoginPage = () => {
     setSuccess(null);
 
     if (!registerData.name || !registerData.email || !registerData.password) {
-      setLocalError('Заповніть всі поля');
+      setLocalError(t('Fill in all fields'));
       return;
     }
 
     if (registerData.password !== registerData.confirmPassword) {
-      setLocalError('Паролі не збігаються');
+      setLocalError(t('Passwords do not match'));
       return;
     }
 
     if (registerData.password.length < 6) {
-      setLocalError('Пароль повинен містити мінімум 6 символів');
+      setLocalError(t('Password must be at least 6 characters'));
       return;
     }
 
@@ -154,12 +157,14 @@ export const LoginPage = () => {
 
     if (authError) {
       if (authError.includes('already registered')) {
-        setLocalError('Цей email вже зареєстрований');
+        setLocalError(t('This email is already registered'));
       } else {
         setLocalError(authError);
       }
     } else if (data) {
-      setSuccess('Реєстрація успішна! Перевірте email для підтвердження.');
+      setSuccess(
+        t('Registration successful! Check your email for confirmation'),
+      );
       setRegisterData({
         name: '',
         email: '',
@@ -185,10 +190,10 @@ export const LoginPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center">
-            {isLogin ? 'Вхід' : 'Реєстрація'}
+            {isLogin ? t('Login') : t('Registration')}
           </CardTitle>
           <p className="text-sm text-muted-foreground text-center mt-2">
-            {isLogin ? 'Увійдіть у свій акаунт' : 'Створіть новий акаунт'}
+            {isLogin ? t('Sign in to your account') : t('Create a new account')}
           </p>
         </CardHeader>
 

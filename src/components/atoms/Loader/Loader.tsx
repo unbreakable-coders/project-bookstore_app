@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import './loader.css';
 
 export const Loader = () => {
+  const { t } = useTranslation();
+
   const books = [
     { delay: 0, color: 'from-[#F5E6D3] to-[#E8D5C4]' },
     { delay: 1.2, color: 'from-[#E8D5C4] to-[#D4C4A8]' },
@@ -14,7 +17,7 @@ export const Loader = () => {
     <div className="loader-container">
       <div className="loader-wrapper">
         {/* Текст Loading */}
-        <div className="loader-text">LOADING</div>
+        <div className="loader-text">{t('LOADING')}</div>
 
         {/* Літаючі книги */}
         {books.map((book, index) => (

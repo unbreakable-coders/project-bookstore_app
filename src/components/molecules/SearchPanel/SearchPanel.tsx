@@ -4,6 +4,7 @@ import { Icon } from '@/components/atoms/Icon';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
 import { fetchBooks } from '@/lib/booksApi';
+import { useTranslation } from 'react-i18next';
 
 interface SearchPanelProps {
   open: boolean;
@@ -11,6 +12,8 @@ interface SearchPanelProps {
 }
 
 export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
+  const { t } = useTranslation();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
@@ -71,7 +74,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
             <input
               autoFocus
               type="text"
-              placeholder="Search books or authors..."
+              placeholder={t('Search books or authors...')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="h-9 flex-1 border-0 bg-transparent text-sm outline-none placeholder:text-[#B1B1B1]"
@@ -80,7 +83,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
 
           <div className="mt-3 max-h-80 overflow-auto">
             {loading && (
-              <p className="px-1 text-sm text-[#8F8F8F]">Loading...</p>
+              <p className="px-1 text-sm text-[#8F8F8F]">{t('Loading...')}</p>
             )}
 
             {!loading &&
@@ -112,7 +115,9 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
               ))}
 
             {!loading && searchQuery && filtered.length === 0 && (
-              <p className="px-1 text-sm text-[#8F8F8F]">No books found.</p>
+              <p className="px-1 text-sm text-[#8F8F8F]">
+                {t('No books found')}
+              </p>
             )}
           </div>
         </div>

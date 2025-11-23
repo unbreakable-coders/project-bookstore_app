@@ -13,6 +13,7 @@ import type { Book } from '@/types/book';
 
 import { toastCartAdded, toastCartRemoved } from '../../atoms/Toasts';
 import { KindleBookImage } from '@/components/atoms/KindleBookImage';
+import { useTranslation } from 'react-i18next';
 
 interface BookCardProps {
   book: Book;
@@ -29,6 +30,8 @@ export const BookCard: React.FC<BookCardProps> = ({
   isInWishlist = false,
   isInCart = false,
 }) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [optimisticInCart, setOptimisticInCart] = useState(isInCart);
 
@@ -77,7 +80,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
         <div className="absolute inset-0 pointer-events-none z-20">
           <div className="flex justify-between p-3">
-            {book.priceDiscount !== null && <Badge>Знижка</Badge>}
+            {book.priceDiscount !== null && <Badge>{t('Discount')}</Badge>}
             {isAudiobook && <AudioBadge />}
           </div>
         </div>
