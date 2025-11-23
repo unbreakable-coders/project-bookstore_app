@@ -1,11 +1,14 @@
 import { type FC, useState } from 'react';
 import { ButtonLoader } from '@/components/atoms/ButtonLoader/ButtonLoader.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   className: string;
 }
 
 export const PaymentButton: FC<Props> = ({ className }) => {
+  const { t } = useTranslation();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleCheckout = async () => {
@@ -31,7 +34,7 @@ export const PaymentButton: FC<Props> = ({ className }) => {
       }
     >
       <span className="flex items-center justify-center w-full">
-        {isLoading ? <ButtonLoader /> : 'Checkout'}
+        {isLoading ? <ButtonLoader /> : t('Checkout')}
       </span>
     </button>
   );

@@ -64,10 +64,28 @@ export const BookDetailsPage = () => {
     setCurrentLanguage(lang);
   };
 
+  const getDisplayValue = (
+    value: string | number | null | undefined,
+  ): string => {
+    if (value === null || value === undefined || value === '') {
+      return '-';
+    }
+    return String(value);
+  };
+
+  const getTranslatedValue = (
+    value: string | number | null | undefined,
+  ): string => {
+    if (value === null || value === undefined || value === '') {
+      return '-';
+    }
+    return t(String(value));
+  };
+
   if (!namespaceId) {
     return (
       <div className="flex h-screen items-center justify-center text-xl text-red-600">
-        Помилка: не передано ідентифікатор книги в URL.
+        {t('Error: Book ID not passed in URL')}
       </div>
     );
   }
@@ -83,7 +101,7 @@ export const BookDetailsPage = () => {
   if (!product) {
     return (
       <div className="flex h-screen items-center justify-center text-xl text-red-600">
-        Помилка: Не вдалося завантажити дані продукту.
+        {t('Error: Failed to load product data')}
       </div>
     );
   }
@@ -95,19 +113,28 @@ export const BookDetailsPage = () => {
   const handleAddToCart = (id: string) => toggleCart(id);
 
   const detailsList = [
-    { label: t('Author'), value: product.author },
-    { label: t('Cover type'), value: product.details.coverType },
-    { label: t('Number of pages'), value: product.details.numberOfPages },
+    { label: t('Author'), value: getDisplayValue(product.author) },
+    {
+      label: t('Cover type'),
+      value: getTranslatedValue(t(product.details.coverType)),
+    },
+    {
+      label: t('Number of pages'),
+      value: getDisplayValue(product.details.numberOfPages),
+    },
     {
       label: t('Year of publication'),
-      value: product.details.publicationYear,
+      value: getDisplayValue(product.details.publicationYear),
     },
-    { label: t('Publication'), value: product.details.publication },
-    { label: t('Format'), value: product.details.format },
-    { label: t('LangLanguage'), value: product.lang },
     {
-      label: t('illustrations'),
-      value: product.details.illustrations ? 'Yes' : 'No',
+      label: t('Publication'),
+      value: getTranslatedValue(product.details.publication),
+    },
+    { label: t('Format'), value: getTranslatedValue(product.details.format) },
+    { label: t('Language'), value: getTranslatedValue(t(product.lang)) },
+    {
+      label: t('Illustrations'),
+      value: product.details.illustrations ? t('yes') : t('no'),
     },
   ];
 
@@ -129,6 +156,7 @@ export const BookDetailsPage = () => {
       aboutTitle: product.description[0] || t('About this book'),
       aboutContent: product.description.slice(1),
       characteristics: detailsList,
+      type: product.type,
     },
     breadcrumbs,
     selectedLanguage: currentLanguage,

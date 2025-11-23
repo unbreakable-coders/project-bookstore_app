@@ -5,6 +5,7 @@ import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
 import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
 import type { Book } from '@/types/book/book.ts';
 import { ProductCardsBlock } from '../organisms/Home/ProductCardsBlock.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface BookDetailsTemplateProps {
   book: {
@@ -19,6 +20,7 @@ interface BookDetailsTemplateProps {
     aboutTitle: string;
     aboutContent: string[];
     characteristics: { label: string; value: string | number }[];
+    type: string;
   };
   breadcrumbs: { label: string; href: string }[];
   selectedLanguage: string;
@@ -31,9 +33,14 @@ interface BookDetailsTemplateProps {
   booksMightLike: Book[];
 }
 
+const BOOK_TYPE_LABELS: Record<string, string> = {
+  paperback: 'PAPER BOOKS',
+  kindle: 'KINDLE EDITION',
+  audiobook: 'AUDIOBOOKS',
+};
+
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   book,
-  breadcrumbs,
   selectedLanguage,
   onSelectLanguage,
   onAddToCart,
@@ -43,10 +50,23 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   availableLanguages,
   booksMightLike = [],
 }) => {
+  const { t } = useTranslation();
+
+  const computedBreadcrumbs = [
+    {
+      label: t(BOOK_TYPE_LABELS[book.type] || 'BOOKS'),
+      href: `/books/${book.type}`,
+    },
+    {
+      label: t(book.category).toUpperCase(),
+      href: `/books/${book.type}/${encodeURIComponent(book.category)}`,
+    },
+  ];
+
   return (
     <div className="container pt-6">
       {/* Breadcrumb (Molecule) */}
-      <BreadcrumbNav items={breadcrumbs} currentTitle={book.title} />
+      <BreadcrumbNav items={computedBreadcrumbs} currentTitle={book.title} />
 
       {/* Title */}
       <h2 className="mt-4 md:mt-6 tracking-[0] md:tracking-[-0.01em]">
