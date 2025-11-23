@@ -18,6 +18,9 @@ import {
 import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import { useMoveHeart } from '../../MoveHeart';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { useAuth } from '@/hooks/useAuth';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -30,6 +33,15 @@ export const ICON_BUTTON_CLASS =
 
 export const Header = () => {
   const { t } = useTranslation();
+
+  const { totalItems } = useCart();
+  const { wishlist } = useWishlist();
+  const { getCurrentUser } = useAuth();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const wishlistCount = wishlist.size;
+  const cartCount = totalItems;
 
   const navItems: { label: string; to: string }[] = [
     { label: t('Home'), to: '/' },
@@ -55,6 +67,19 @@ export const Header = () => {
   const selectedCategory = selectedCategoryParam ?? 'all';
 
   const prevPathRef = useRef(location.pathname);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setIsLoggedIn(Boolean(user));
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+
+    void checkUser();
+  }, [getCurrentUser]);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -174,7 +199,12 @@ export const Header = () => {
   };
 
   const renderHeaderIcon = (iconName: IconName) => {
-    const icon = <Icon name={iconName} className="h-4 w-4" />;
+    const badgeCount =
+      iconName === 'cart'
+        ? cartCount
+        : iconName === 'heart'
+          ? wishlistCount
+          : 0;
 
     if (iconName === 'heart') {
       return (
@@ -182,13 +212,26 @@ export const Header = () => {
           key={iconName}
           to="/wishlist"
           aria-label="Open wishlist"
-          className={ICON_BUTTON_CLASS}
+          className={`${ICON_BUTTON_CLASS} relative`}
           ref={headerHeartRef as React.Ref<HTMLAnchorElement>}
         >
           <Icon
             name={hasItemsInWishlist ? 'heartRed' : 'heart'}
             className="h-4 w-4"
           />
+          {badgeCount > 0 && (
+            <span
+              className="
+                absolute -right-1 -top-1
+                min-w-[16px] h-4 px-[3px]
+                rounded-full bg-[#FF5A5A]
+                text-[10px] leading-4 text-white
+                flex items-center justify-center
+              "
+            >
+              {badgeCount > 99 ? '99+' : badgeCount}
+            </span>
+          )}
         </Link>
       );
     }
@@ -199,25 +242,55 @@ export const Header = () => {
           key={iconName}
           to="/cart"
           aria-label="Open cart"
-          className={ICON_BUTTON_CLASS}
+          className={`${ICON_BUTTON_CLASS} relative`}
         >
-          {icon}
+          <Icon name="cart" className="h-4 w-4" />
+          {badgeCount > 0 && (
+            <span
+              className="
+                absolute -right-1 -top-1
+                min-w-[16px] h-4 px-[3px]
+                rounded-full bg-[#FF5A5A]
+                text-[10px] leading-4 text-white
+                flex items-center justify-center
+              "
+            >
+              {badgeCount > 99 ? '99+' : badgeCount}
+            </span>
+          )}
         </Link>
       );
     }
 
-    if (iconName === 'user') {
-      return (
-        <Link
-          key={iconName}
-          to="/login"
-          aria-label="Open login page"
-          className={ICON_BUTTON_CLASS}
+if (iconName === 'user') {
+  return (
+    <Link
+      key={iconName}
+      to="/login"
+      aria-label="Open login page"
+      className={`${ICON_BUTTON_CLASS} relative`}
+    >
+      <Icon
+        name="user"
+        className="h-4 w-4"
+      />
+
+      {isLoggedIn && (
+        <span
+          className="
+            absolute -top-1 -right-1
+            h-4 w-4
+            rounded-full bg-[#27AE60]
+            text-[8px] leading-none text-white
+            flex items-center justify-center
+          "
         >
-          {icon}
-        </Link>
-      );
-    }
+          ✓
+        </span>
+      )}
+    </Link>
+  );
+}
 
     if (iconName === 'search') {
       if (isCatalogPage) {
@@ -232,7 +305,7 @@ export const Header = () => {
           className={ICON_BUTTON_CLASS}
           aria-label="Open search"
         >
-          {icon}
+          <Icon name="search" className="h-4 w-4" />
         </button>
       );
     }
@@ -268,7 +341,7 @@ export const Header = () => {
             <div className="flex items-center gap-8">
               <Link to="/" aria-label="Go to home page">
                 <div className="h-8 w-[110px] flex items-center justify-start overflow-hidden flex-none">
-                <Logo className="h-full w-auto" />
+                  <Logo className="h-full w-auto" />
                 </div>
               </Link>
 
@@ -448,15 +521,49 @@ export const Header = () => {
                           ? 'Open cart'
                           : 'Open wishlist';
 
+                    const badgeCount =
+                      name === 'cart'
+                        ? cartCount
+                        : name === 'heart'
+                          ? wishlistCount
+                          : 0;
+
+                    const isUserLogged = name === 'user' && isLoggedIn;
+
                     return (
                       <button
                         key={name}
                         type="button"
                         onClick={handleClick}
-                        className="flex h-14 flex-col items-center justify-center"
+                        className="relative flex h-14 flex-col items-center justify-center"
                         aria-label={ariaLabel}
                       >
-                        <Icon name={name} className="h-5 w-5" />
+                        <span className="relative inline-flex">
+                          <Icon
+                            name={name}
+                            className={`h-5 w-5 ${
+                              isUserLogged ? 'text-[#27AE60]' : ''
+                            }`}
+                          />
+                          {badgeCount > 0 && (
+                            <span
+                              className="
+                                absolute -right-2 -top-1
+                                min-w-[16px] h-4 px-[3px]
+                                rounded-full bg-[#FF5A5A]
+                                text-[10px] leading-4 text-white
+                                flex items-center justify-center
+                              "
+                            >
+                              {badgeCount > 99 ? '99+' : badgeCount}
+                            </span>
+                          )}
+                          {isUserLogged && (
+                            <span className="absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#27AE60] text-[8px] leading-none text-white">
+                              ✓
+                            </span>
+                          )}
+                        </span>
                         <span
                           className={`mt-2 h-0.5 w-12 ${
                             isActive ? 'bg-[#050505]' : 'bg-transparent'

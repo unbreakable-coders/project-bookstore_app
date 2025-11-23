@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { booksData } from '@/books/data/books';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
 import { SortCategory } from '@/components/SortBy';
@@ -13,21 +12,33 @@ import {
   PaginationPreviousButton,
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
-import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
 
 const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
 
+const getBookPrice = (book: Book) => {
+  const value = book.priceDiscount ?? book.priceRegular ?? 0;
+  return typeof value === 'string' ? Number(value) || 0 : value;
+};
+
+const getBookYear = (book: Book) => {
+  const value = book.publicationYear ?? 0;
+  return typeof value === 'string' ? Number(value) || 0 : value;
+};
+
 export const CatalogPage = () => {
   const { t } = useTranslation();
+  const location = useLocation();
 
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
   const [sortBy, setSortBy] = useState('name-asc');
+  const [error, setError] = useState<string | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -37,7 +48,7 @@ export const CatalogPage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const data = await booksData();
+        const data = await fetchBooks();
         setBooks(data);
       } catch (err) {
         console.error('Failed to load books from Supabase:', err);
@@ -61,24 +72,16 @@ export const CatalogPage = () => {
         sorted.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case 'price-asc':
-        sorted.sort((a, b) => {
-          const priceA = a.priceDiscount ?? a.priceRegular;
-          const priceB = b.priceDiscount ?? b.priceRegular;
-          return priceA - priceB;
-        });
+        sorted.sort((a, b) => getBookPrice(a) - getBookPrice(b));
         break;
       case 'price-desc':
-        sorted.sort((a, b) => {
-          const priceA = a.priceDiscount ?? a.priceRegular;
-          const priceB = b.priceDiscount ?? b.priceRegular;
-          return priceB - priceA;
-        });
+        sorted.sort((a, b) => getBookPrice(b) - getBookPrice(a));
         break;
       case 'year-asc':
-        sorted.sort((a, b) => a.publicationYear - b.publicationYear);
+        sorted.sort((a, b) => getBookYear(a) - getBookYear(b));
         break;
       case 'year-desc':
-        sorted.sort((a, b) => b.publicationYear - a.publicationYear);
+        sorted.sort((a, b) => getBookYear(b) - getBookYear(a));
         break;
       default:
         break;
@@ -87,10 +90,23 @@ export const CatalogPage = () => {
     return sorted;
   }, [books, sortBy]);
 
-  const totalPages = Math.ceil(sortedBooks.length / itemsPerPage);
+  const filteredBooks = sortedBooks;
+
+  const catalogTitle = useMemo(() => {
+    const segments = location.pathname.split('/');
+    const type = segments[2];
+
+    if (type === 'paper') return t('Paper books');
+    if (type === 'kindle') return t('Kindle books');
+    if (type === 'audiobook') return t('Audiobooks');
+
+    return t('Catalog');
+  }, [location.pathname, t]);
+
+  const totalPages = Math.ceil(filteredBooks.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentBooks = sortedBooks.slice(startIndex, endIndex);
+  const currentBooks = filteredBooks.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setSearchParams({ page: String(page) });
@@ -154,6 +170,11 @@ export const CatalogPage = () => {
           <p className="text-muted-foreground">
             {t('{{count}} books', { count: filteredBooks.length })}
           </p>
+          {error && (
+            <p className="mt-2 text-sm text-red-600">
+              {error}
+            </p>
+          )}
         </div>
 
         <div className="pt-10 flex gap-4 items-start">

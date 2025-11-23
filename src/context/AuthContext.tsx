@@ -31,7 +31,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. Ініціалізація: перевіряємо, чи є поточний юзер
   useEffect(() => {
     const init = async () => {
       setLoading(true);
@@ -43,7 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user ?? null);
       setLoading(false);
 
-      // 2. Підписка на зміни сесії
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -106,7 +104,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const newUser = data.user ?? null;
 
     if (newUser) {
-      // створюємо профіль у таблиці profiles
       const { error: profileError } = await supabase.from('profiles').insert({
         id: newUser.id,
         email: newUser.email,
