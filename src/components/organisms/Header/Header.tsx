@@ -16,16 +16,10 @@ import {
   type DropdownOption,
 } from '../../atoms/DropdownCategories';
 import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 import { useMoveHeart } from '../../MoveHeart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
-
-const navItems: { label: string; to: string }[] = [
-  { label: 'Home', to: '/' },
-  { label: 'Paper', to: '/catalog/paper' },
-  { label: 'Kindle', to: '/catalog/kindle' },
-  { label: 'Audiobook', to: '/catalog/audiobook' },
-];
 
 const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
 const HEADER_ICONS_LG: IconName[] = ['heart', 'cart', 'user'];
@@ -35,6 +29,15 @@ export const ICON_BUTTON_CLASS =
   'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]';
 
 export const Header = () => {
+  const { t } = useTranslation();
+
+  const navItems: { label: string; to: string }[] = [
+    { label: t('Home'), to: '/' },
+    { label: t('Paper'), to: '/catalog/paper' },
+    { label: t('Kindle'), to: '/catalog/kindle' },
+    { label: t('Audiobook'), to: '/catalog/audiobook' },
+  ];
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -75,14 +78,17 @@ export const Header = () => {
 
       const options: DropdownOption[] = Array.from(map, ([value, label]) => ({
         value,
-        label,
+        label: t(label),
       })).sort((a, b) => a.label.localeCompare(b.label));
 
-      setCategoryOptions(options);
+      setCategoryOptions([
+        { value: 'all', label: t('--- ALL ---') },
+        ...options,
+      ]);
     };
 
     void loadCategories();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (isMobileOpen) {
@@ -295,7 +301,7 @@ export const Header = () => {
                 {isCatalogPage ? (
                   <Input
                     withSearchIcon
-                    placeholder="Find a book or author"
+                    placeholder={t('Find a book or author')}
                     value={catalogSearch}
                     onChange={e => handleCatalogSearchChange(e.target.value)}
                   />
@@ -307,14 +313,14 @@ export const Header = () => {
                   >
                     <Input
                       withSearchIcon
-                      placeholder="Find a book or author"
+                      placeholder={t('Find a book or author')}
                       readOnly
                     />
                   </button>
                 )}
 
                 <DropdownCategories
-                  placeholder="Categories"
+                  placeholder={t('Categories')}
                   options={categoryOptions}
                   onSelect={handleCategorySelect}
                   value={selectedCategory === 'all' ? '' : selectedCategory}

@@ -1,9 +1,9 @@
 import type { FC, ChangeEvent } from 'react';
 
-export type DropdownOption = {
+export interface DropdownOption {
   label: string;
   value: string;
-};
+}
 
 interface DropdownCategoriesProps {
   placeholder?: string;

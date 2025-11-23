@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
+import { useTranslation } from 'react-i18next';
 
 type AuthResult<T> = {
   data: T | null;
@@ -8,6 +9,8 @@ type AuthResult<T> = {
 };
 
 export const useAuth = () => {
+  const { t } = useTranslation();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,8 +63,7 @@ export const useAuth = () => {
       return { data: user, error: null };
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : 'Помилка реєстрації';
-
+        err instanceof Error ? err.message : t('Registration error');
       setError(errorMessage);
 
       return { data: null, error: errorMessage };
@@ -93,8 +95,7 @@ export const useAuth = () => {
       return { data: user, error: null };
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : 'Помилка входу';
-
+        err instanceof Error ? err.message : t('Login error');
       setError(errorMessage);
 
       return { data: null, error: errorMessage };
@@ -117,8 +118,7 @@ export const useAuth = () => {
       return { error: null };
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : 'Помилка виходу';
-
+        err instanceof Error ? err.message : t('Logout error');
       setError(errorMessage);
 
       return { error: errorMessage };

@@ -7,8 +7,11 @@ import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButto
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
+import { useTranslation } from 'react-i18next';
 
 export const HomePage = () => {
+  const { t } = useTranslation();
+
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
 
@@ -43,7 +46,7 @@ export const HomePage = () => {
         <PromoSlider />
 
         <ProductCardsBlock
-          title="New books"
+          title={t('New books')}
           listOfBooks={newBooks}
           onAddToCart={toggleCart}
           onToggleWishlist={toggleWishlist}
@@ -58,7 +61,7 @@ export const HomePage = () => {
         </div>
 
         <ProductCardsBlock
-          title="Also you might like it!"
+          title={t('Also you might like it!')}
           listOfBooks={booksMightLike}
           onAddToCart={toggleCart}
           onToggleWishlist={toggleWishlist}
