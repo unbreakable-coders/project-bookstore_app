@@ -68,7 +68,7 @@ export const SortPages: FC<SortPagesProps> = ({
         <ul
           role="listbox"
           className={[
-            'absolute z-50 mt-1', // змінити z-10 на z-50
+            'absolute z-50 mt-1',
             fullWidth ? 'w-full' : 'w-32',
             'rounded-md border border-[#DADADA] bg-white',
             'shadow-lg',

@@ -14,7 +14,7 @@ import {
 } from '@/components/atoms/Pagination';
 import { fetchBooks } from '@/lib/booksApi';
 
-const ITEMS_PER_PAGE_OPTIONS = [4, 16, 32];
+const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
 
 export const CatalogPage = () => {
   const [books, setBooks] = useState<Book[]>([]);
@@ -49,7 +49,6 @@ export const CatalogPage = () => {
         const data = await fetchBooks();
         setBooks(data);
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error('Failed to load books from Supabase:', err);
         setError('Failed to load books. Please try again later.');
       } finally {
@@ -202,9 +201,7 @@ export const CatalogPage = () => {
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">
-            {catalogTitle}
-          </h1>
+          <h1 className="text-4xl font-bold text-foreground">{catalogTitle}</h1>
           <p className="text-muted-foreground">{filteredBooks.length} books</p>
         </div>
 
