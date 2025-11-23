@@ -6,20 +6,20 @@ type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
   | KeyboardEvent<HTMLInputElement>;
 
-export type RegisterFormValues = {
+export interface RegisterFormValues {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-};
+}
 
-type RegisterFormProps = {
+interface RegisterFormProps {
   values: RegisterFormValues;
   loading: boolean;
   isAuthenticated: boolean;
   onChange: (values: RegisterFormValues) => void;
   onSubmit: (e: SubmitEvent) => void;
-};
+}
 
 export const RegisterForm: FC<RegisterFormProps> = ({
   values,

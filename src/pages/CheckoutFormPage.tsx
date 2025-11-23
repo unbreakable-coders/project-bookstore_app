@@ -19,7 +19,10 @@ export const CheckoutPage: FC = () => {
     paymentMethod: '',
   });
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    // TODO: implement order submission logic (API call / redirect to payment)
+    void 0;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,

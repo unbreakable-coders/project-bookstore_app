@@ -15,7 +15,7 @@ export const PaymentButton: FC<Props> = ({ className }) => {
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [] }), // 👉 додай свої товари
+        body: JSON.stringify({ items: [] }), 
       });
 
       if (!res.ok) {

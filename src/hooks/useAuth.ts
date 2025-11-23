@@ -3,17 +3,17 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
 import { useTranslation } from 'react-i18next';
 
-type AuthResult<T> = {
+interface AuthResult<T> {
   data: T | null;
   error: string | null;
-};
+}
 
 export const useAuth = () => {
   const { t } = useTranslation();
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false); // для операцій (login/logout/signUp)
-  const [initializing, setInitializing] = useState(true); 
+  const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -171,8 +171,8 @@ export const useAuth = () => {
   };
 
   return {
-    user,          
-    initializing,   
+    user,
+    initializing,
     signUp,
     signIn,
     signOut,
