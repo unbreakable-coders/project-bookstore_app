@@ -42,6 +42,10 @@ export const CatalogPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const category = searchParams.get('category') || '';
+  const searchQuery =
+    searchParams.get('search')?.trim().toLowerCase() || '';
+
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -60,6 +64,9 @@ export const CatalogPage = () => {
 
     void load();
   }, [t]);
+
+  const segments = location.pathname.split('/');
+  const type = segments[2] as 'paperback' | 'kindle' | 'audiobook' | undefined;
 
   const sortedBooks = useMemo(() => {
     const sorted = [...books];
@@ -90,37 +97,100 @@ export const CatalogPage = () => {
     return sorted;
   }, [books, sortBy]);
 
-  const filteredBooks = sortedBooks;
+  // 🔍 ФІЛЬТР: type + category + search
+  const filteredBooks = useMemo(() => {
+    let result = [...sortedBooks];
+
+    // by format/type
+    if (type === 'paperback' || type === 'kindle' || type === 'audiobook') {
+      result = result.filter(
+        book => book.format === type || book.type === type,
+      );
+    }
+
+    // by category from ?category=
+    if (category) {
+      result = result.filter(book => {
+        const cat = (book as any).category;
+
+        if (Array.isArray(cat)) {
+          return cat.includes(category);
+        }
+
+        if (typeof cat === 'string') {
+          return cat === category;
+        }
+
+        return false;
+      });
+    }
+
+    // by search from ?search=
+    if (searchQuery) {
+      result = result.filter(book => {
+        const desc = (book as any).description;
+        const descText = Array.isArray(desc)
+          ? desc.join(' ')
+          : desc ?? '';
+
+        const haystack = `${book.name} ${book.author ?? ''} ${descText}`.toLowerCase();
+
+        return haystack.includes(searchQuery);
+      });
+    }
+
+    return result;
+  }, [sortedBooks, type, category, searchQuery]);
 
   const catalogTitle = useMemo(() => {
-    const segments = location.pathname.split('/');
-    const type = segments[2];
-
-    if (type === 'paper') return t('Paper books');
+    if (type === 'paperback') return t('Paper books');
     if (type === 'kindle') return t('Kindle books');
     if (type === 'audiobook') return t('Audiobooks');
 
     return t('Catalog');
-  }, [location.pathname, t]);
+  }, [type, t]);
 
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage) || 1;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentBooks = filteredBooks.slice(startIndex, endIndex);
 
+  const updateSearchParams = (updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams);
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
+
+    setSearchParams(params);
+  };
+
   const handlePageChange = (page: number) => {
-    setSearchParams({ page: String(page) });
+    updateSearchParams({ page: String(page) });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
-    setSearchParams({ page: '1' });
+    updateSearchParams({ page: '1' });
   };
 
   const handleSortChange = (value: string) => {
     setSortBy(value);
-    setSearchParams({ page: '1' });
+    updateSearchParams({ page: '1' });
+  };
+
+  // щоб href теж зберігав і category, і search
+  const buildHref = (page: number) => {
+    const params = new URLSearchParams();
+    params.set('page', String(page));
+    if (category) params.set('category', category);
+    if (searchQuery) params.set('search', searchQuery);
+    return `?${params.toString()}`;
   };
 
   const getPageNumbers = () => {
@@ -179,7 +249,9 @@ export const CatalogPage = () => {
 
         <div className="pt-10 flex gap-4 items-start">
           <div className="w-44">
-            <p className="text-sm text-muted-foreground mb-1">{t('Sort by')}</p>
+            <p className="text-sm text-muted-foreground mb-1">
+              {t('Sort by')}
+            </p>
             <SortCategory value={sortBy} onChange={handleSortChange} />
           </div>
 
@@ -216,7 +288,7 @@ export const CatalogPage = () => {
             <Pagination>
               <PaginationList>
                 <PaginationPreviousButton
-                  href={`?page=${currentPage - 1}`}
+                  href={buildHref(currentPage - 1)}
                   disabled={currentPage === 1}
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
@@ -230,7 +302,7 @@ export const CatalogPage = () => {
                   ) : (
                     <PaginationPage
                       key={page}
-                      href={`?page=${page}`}
+                      href={buildHref(page)}
                       isCurrent={currentPage === page}
                       onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                         e.preventDefault();
@@ -243,7 +315,7 @@ export const CatalogPage = () => {
                 )}
 
                 <PaginationNextButton
-                  href={`?page=${currentPage + 1}`}
+                  href={buildHref(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
