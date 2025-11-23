@@ -16,6 +16,7 @@ import {
   type DropdownOption,
 } from '../../atoms/DropdownCategories';
 import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
+import { useMoveHeart } from '../../MoveHeart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -45,6 +46,8 @@ export const Header = () => {
 
   const isCatalogPage = location.pathname.startsWith('/catalog');
   const catalogSearch = searchParams.get('search') ?? '';
+
+  const { headerHeartRef, hasItemsInWishlist } = useMoveHeart();
   const selectedCategoryParam = searchParams.get('category');
   const selectedCategory = selectedCategoryParam ?? 'all';
 
@@ -174,8 +177,12 @@ export const Header = () => {
           to="/wishlist"
           aria-label="Open wishlist"
           className={ICON_BUTTON_CLASS}
+          ref={headerHeartRef as React.Ref<HTMLAnchorElement>}
         >
-          {icon}
+          <Icon
+            name={hasItemsInWishlist ? 'heartRed' : 'heart'}
+            className="h-4 w-4"
+          />
         </Link>
       );
     }
