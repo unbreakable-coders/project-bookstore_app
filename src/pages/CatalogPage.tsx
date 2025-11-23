@@ -30,6 +30,11 @@ const getBookYear = (book: Book) => {
   return typeof value === 'string' ? Number(value) || 0 : value;
 };
 
+type BookWithMeta = Book & {
+  category?: string | string[];
+  description?: string | string[];
+};
+
 export const CatalogPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -97,21 +102,18 @@ export const CatalogPage = () => {
     return sorted;
   }, [books, sortBy]);
 
-  // 🔍 ФІЛЬТР: type + category + search
   const filteredBooks = useMemo(() => {
     let result = [...sortedBooks];
 
-    // by format/type
     if (type === 'paperback' || type === 'kindle' || type === 'audiobook') {
       result = result.filter(
         book => book.format === type || book.type === type,
       );
     }
 
-    // by category from ?category=
     if (category) {
       result = result.filter(book => {
-        const cat = (book as any).category;
+        const cat = (book as BookWithMeta).category;
 
         if (Array.isArray(cat)) {
           return cat.includes(category);
@@ -125,10 +127,9 @@ export const CatalogPage = () => {
       });
     }
 
-    // by search from ?search=
     if (searchQuery) {
       result = result.filter(book => {
-        const desc = (book as any).description;
+        const desc = (book as BookWithMeta).description;
         const descText = Array.isArray(desc)
           ? desc.join(' ')
           : desc ?? '';
@@ -184,7 +185,6 @@ export const CatalogPage = () => {
     updateSearchParams({ page: '1' });
   };
 
-  // щоб href теж зберігав і category, і search
   const buildHref = (page: number) => {
     const params = new URLSearchParams();
     params.set('page', String(page));
