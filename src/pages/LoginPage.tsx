@@ -67,7 +67,7 @@ export const LoginPage = () => {
     });
 
     if (authError) {
-      setLocalError('Не вдалося увійти через Google');
+      setLocalError(t('auth.googleError'));
     }
   };
 
@@ -81,19 +81,21 @@ export const LoginPage = () => {
     });
 
     if (authError) {
-      setLocalError('Не вдалося увійти через Facebook');
+      setLocalError(t('auth.facebookError'));
     }
   };
 
   const handleLogin = async (
-    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>,
+    e:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.KeyboardEvent<HTMLInputElement>,
   ) => {
     e.preventDefault();
     setLocalError(null);
     setSuccess(null);
 
     if (!loginData.email || !loginData.password) {
-      setLocalError(t('Fill in all fields'));
+      setLocalError(t('auth.fillAllFields'));
       return;
     }
 
@@ -103,9 +105,9 @@ export const LoginPage = () => {
     );
 
     if (authError) {
-      setLocalError(t('Invalid email or password'));
+      setLocalError(t('auth.invalidCredentials'));
     } else if (data) {
-      setSuccess(t('Login successful!'));
+      setSuccess(t('auth.loginSuccess'));
       setTimeout(() => {
         window.location.href = '/';
       }, 1000);
@@ -121,31 +123,33 @@ export const LoginPage = () => {
     if (logoutError) {
       setLocalError(logoutError);
     } else {
-      setSuccess('Ви вийшли з акаунту');
+      setSuccess(t('auth.logoutSuccess'));
       setCurrentUser(null);
       setLoginData({ email: '', password: '' });
     }
   };
 
   const handleRegister = async (
-    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>,
+    e:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.KeyboardEvent<HTMLInputElement>,
   ) => {
     e.preventDefault();
     setLocalError(null);
     setSuccess(null);
 
     if (!registerData.name || !registerData.email || !registerData.password) {
-      setLocalError(t('Fill in all fields'));
+      setLocalError(t('auth.fillAllFields'));
       return;
     }
 
     if (registerData.password !== registerData.confirmPassword) {
-      setLocalError(t('Passwords do not match'));
+      setLocalError(t('auth.passwordsNotMatch'));
       return;
     }
 
     if (registerData.password.length < 6) {
-      setLocalError(t('Password must be at least 6 characters'));
+      setLocalError(t('auth.passwordMinLength'));
       return;
     }
 
@@ -157,14 +161,12 @@ export const LoginPage = () => {
 
     if (authError) {
       if (authError.includes('already registered')) {
-        setLocalError(t('This email is already registered'));
+        setLocalError(t('auth.emailAlreadyRegistered'));
       } else {
         setLocalError(authError);
       }
     } else if (data) {
-      setSuccess(
-        t('Registration successful! Check your email for confirmation'),
-      );
+      setSuccess(t('auth.registrationSuccess'));
       setRegisterData({
         name: '',
         email: '',
@@ -181,8 +183,8 @@ export const LoginPage = () => {
   const displayError = localError || error;
 
   const fullName =
-    (currentUser?.user_metadata as { full_name?: string } | undefined)?.full_name ||
-    '';
+    (currentUser?.user_metadata as { full_name?: string } | undefined)
+      ?.full_name || '';
   const displayName = fullName || currentUser?.email || '';
 
   return (
@@ -190,10 +192,10 @@ export const LoginPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center">
-            {isLogin ? t('Login') : t('Registration')}
+            {isLogin ? t('auth.login') : t('auth.registration')}
           </CardTitle>
           <p className="text-sm text-muted-foreground text-center mt-2">
-            {isLogin ? t('Sign in to your account') : t('Create a new account')}
+            {isLogin ? t('auth.signInToAccount') : t('auth.createNewAccount')}
           </p>
         </CardHeader>
 
@@ -201,7 +203,7 @@ export const LoginPage = () => {
           {isAuthenticated && (
             <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
               <p className="text-sm text-emerald-800">
-                Ви вже авторизовані як{' '}
+                {t('auth.alreadyLoggedIn')}{' '}
                 <span className="font-semibold">{displayName}</span>.
               </p>
             </div>
