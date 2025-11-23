@@ -9,6 +9,8 @@ import {
 } from 'react';
 import type { Book } from '@/types/book';
 import { fetchBooks } from '@/lib/booksApi';
+import { useAuth } from '@/hooks/useAuth';
+import { cartApi } from '@/api/cartApi';
 
 type CartMap = Record<string, number>;
 
@@ -36,39 +38,136 @@ const toUAH = (amount: number) => Math.ceil(amount * USD_TO_UAH_RATE);
 const CartContext = createContext<CartContextValue | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { getCurrentUser } = useAuth();
+
   const [allBooks, setAllBooks] = useState<Book[]>([]);
-  const [cartMap, setCartMap] = useState<CartMap>(() => {
-    try {
-      const saved = localStorage.getItem(CART_STORAGE_KEY);
-      if (!saved) {
-        return {};
-      }
-      const parsed = JSON.parse(saved) as CartMap;
-      return parsed;
-    } catch {
-      return {};
-    }
-  });
-  const [loading, setLoading] = useState(true);
+  const [cartMap, setCartMap] = useState<CartMap>({});
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const [booksLoading, setBooksLoading] = useState(true);
+  const [cartInitialized, setCartInitialized] = useState(false);
+
+  const loading = booksLoading || !cartInitialized;
 
   useEffect(() => {
-    const load = async () => {
+    console.log('%c[CartProvider] mounted/rendered', 'color: #00b0ff');
+  });
+
+  useEffect(() => {
+    const loadBooks = async () => {
       try {
         const books = await fetchBooks();
         setAllBooks(books);
       } catch (error) {
         console.error('[CartProvider] Failed to load books:', error);
       } finally {
-        setLoading(false);
+        setBooksLoading(false);
       }
     };
 
-    void load();
+    void loadBooks();
   }, []);
 
-  const persistCart = useCallback((next: CartMap) => {
+  useEffect(() => {
+    const initCart = async () => {
+      try {
+        console.log('%c[CartProvider] INIT CART', 'color: orange');
+
+        const user = await getCurrentUser().catch(err => {
+          console.error('[Cart] getCurrentUser error:', err);
+          return null;
+        });
+
+        const id = user?.id ?? null;
+        setUserId(id);
+
+        if (id) {
+          console.log('[Cart] Logged in as:', id);
+
+          const remote = await cartApi.getByUser(id);
+          console.log('%c[Cart] Supabase →', 'color: cyan', remote);
+
+          let localMap: CartMap = {};
+          try {
+            const saved = localStorage.getItem(CART_STORAGE_KEY);
+            if (saved) {
+              localMap = JSON.parse(saved) as CartMap;
+            }
+          } catch {
+            localMap = {};
+          }
+          console.log('%c[Cart] LocalStorage →', 'color: gray', localMap);
+
+          const mergedMap: CartMap = {};
+
+          for (const item of remote) {
+            mergedMap[item.bookId] = item.quantity;
+          }
+
+          for (const [bookId, qty] of Object.entries(localMap)) {
+            const prev = mergedMap[bookId] ?? 0;
+            mergedMap[bookId] = Math.max(prev, qty as number);
+          }
+
+          console.log('%c[Cart] MERGED MAP →', 'color: yellow', mergedMap);
+
+          setCartMap(mergedMap);
+
+          const entries = Object.entries(mergedMap);
+          await Promise.all(
+            entries.map(([bookId, quantity]) =>
+              cartApi.setItem(id, bookId, quantity),
+            ),
+          );
+
+          localStorage.removeItem(CART_STORAGE_KEY);
+        } else {
+          console.log('[Cart] No user → using localStorage only');
+          let localMap: CartMap = {};
+          try {
+            const saved = localStorage.getItem(CART_STORAGE_KEY);
+            if (saved) {
+              localMap = JSON.parse(saved) as CartMap;
+            }
+          } catch {
+            localMap = {};
+          }
+          setCartMap(localMap);
+        }
+      } catch (e) {
+        console.error('[Cart] INIT ERROR', e);
+      } finally {
+        setCartInitialized(true);
+      }
+    };
+
+    void initCart();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
+
+  const persistCartLocal = useCallback((next: CartMap) => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
+    console.log('%c[Cart] Saved to LS →', 'color: #4caf50', next);
   }, []);
+
+  const syncCartItem = useCallback(
+    (bookId: string, quantity: number) => {
+      if (!userId) return;
+      console.log('[Cart] Supabase setItem', { bookId, quantity });
+      void cartApi.setItem(userId, bookId, quantity);
+    },
+    [userId],
+  );
+
+  const deleteCartItem = useCallback(
+    (bookId: string) => {
+      if (!userId) return;
+      console.log('[Cart] Supabase remove', bookId);
+      void cartApi.remove(userId, bookId);
+    },
+    [userId],
+  );
 
   const changeQuantity = useCallback(
     (bookId: string, delta: number) => {
@@ -79,15 +178,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
         if (nextQuantity <= 0) {
           delete next[bookId];
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            deleteCartItem(bookId);
+          }
         } else {
           next[bookId] = nextQuantity;
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            syncCartItem(bookId, nextQuantity);
+          }
         }
 
-        persistCart(next);
         return next;
       });
     },
-    [persistCart],
+    [userId, persistCartLocal, syncCartItem, deleteCartItem],
   );
 
   const removeItem = useCallback(
@@ -96,31 +206,50 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (!prev[bookId]) {
           return prev;
         }
+
         const next: CartMap = { ...prev };
         delete next[bookId];
-        persistCart(next);
+
+        if (!userId) {
+          persistCartLocal(next);
+        } else {
+          deleteCartItem(bookId);
+        }
+
         return next;
       });
     },
-    [persistCart],
+    [userId, persistCartLocal, deleteCartItem],
   );
 
   const toggleCart = useCallback(
     (bookId: string) => {
       setCartMap(prev => {
+        const exists = Boolean(prev[bookId]);
         const next: CartMap = { ...prev };
 
-        if (next[bookId]) {
+        if (exists) {
           delete next[bookId];
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            deleteCartItem(bookId);
+          }
         } else {
           next[bookId] = 1;
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            syncCartItem(bookId, 1);
+          }
         }
 
-        persistCart(next);
         return next;
       });
     },
-    [persistCart],
+    [userId, persistCartLocal, syncCartItem, deleteCartItem],
   );
 
   const isInCart = useCallback(
@@ -185,4 +314,3 @@ export const useCart = () => {
 
   return ctx;
 };
-
