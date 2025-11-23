@@ -1,32 +1,89 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
+
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from '@/components/molecules/BookPreview/Card';
-import { Input } from '@/components/atoms/Input';
-import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/supabaseClient';
+import { SocialAuthButtons } from '@/components/molecules/auth/SocialAuthButtons';
+import { AuthTabs } from '@/components/molecules/auth/AuthTabs';
+import { LoginForm } from '@/components/organisms/auth/LoginForm';
+import {
+  RegisterForm,
+  type RegisterFormValues,
+} from '@/components/organisms/auth/RegisterForm';
 
 export const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { signIn, signUp, loading, error } = useAuth();
+
+  const { signIn, signUp, signOut, getCurrentUser, loading, error } = useAuth();
+
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [registerData, setRegisterData] = useState({
+  const [registerData, setRegisterData] = useState<RegisterFormValues>({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+
   const [localError, setLocalError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const isAuthenticated = Boolean(currentUser);
+
+  useEffect(() => {
+    const load = async () => {
+      const user = await getCurrentUser();
+
+      if (user) {
+        setCurrentUser(user);
+        setLoginData(prev => ({
+          ...prev,
+          email: user.email ?? '',
+        }));
+        setIsLogin(true);
+      }
+    };
+
+    void load();
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    setLocalError(null);
+    setSuccess(null);
+
+    const { error: authError } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    });
+
+    if (authError) {
+      setLocalError('Не вдалося увійти через Google');
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setLocalError(null);
+    setSuccess(null);
+
+    const { error: authError } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: { redirectTo: window.location.origin },
+    });
+
+    if (authError) {
+      setLocalError('Не вдалося увійти через Facebook');
+    }
+  };
+
   const handleLogin = async (
-    e:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.KeyboardEvent<HTMLInputElement>,
+    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>,
   ) => {
     e.preventDefault();
     setLocalError(null);
@@ -52,10 +109,23 @@ export const LoginPage = () => {
     }
   };
 
+  const handleLogout = async () => {
+    setLocalError(null);
+    setSuccess(null);
+
+    const { error: logoutError } = await signOut();
+
+    if (logoutError) {
+      setLocalError(logoutError);
+    } else {
+      setSuccess('Ви вийшли з акаунту');
+      setCurrentUser(null);
+      setLoginData({ email: '', password: '' });
+    }
+  };
+
   const handleRegister = async (
-    e:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.KeyboardEvent<HTMLInputElement>,
+    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>,
   ) => {
     e.preventDefault();
     setLocalError(null);
@@ -105,6 +175,11 @@ export const LoginPage = () => {
 
   const displayError = localError || error;
 
+  const fullName =
+    (currentUser?.user_metadata as { full_name?: string } | undefined)?.full_name ||
+    '';
+  const displayName = fullName || currentUser?.email || '';
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
@@ -118,6 +193,15 @@ export const LoginPage = () => {
         </CardHeader>
 
         <CardContent>
+          {isAuthenticated && (
+            <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+              <p className="text-sm text-emerald-800">
+                Ви вже авторизовані як{' '}
+                <span className="font-semibold">{displayName}</span>.
+              </p>
+            </div>
+          )}
+
           {success && (
             <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
               <p className="text-sm text-green-800">{success}</p>
@@ -130,198 +214,42 @@ export const LoginPage = () => {
             </div>
           )}
 
-          <div className="flex gap-2 mb-6 p-1 bg-muted rounded-lg">
-            <button
-              onClick={() => {
-                setIsLogin(true);
+          {!isAuthenticated && (
+            <SocialAuthButtons
+              loading={loading}
+              onGoogle={handleGoogleLogin}
+              onFacebook={handleFacebookLogin}
+            />
+          )}
+
+          {!isAuthenticated && (
+            <AuthTabs
+              isLogin={isLogin}
+              loading={loading}
+              onChange={mode => {
+                setIsLogin(mode === 'login');
                 setLocalError(null);
                 setSuccess(null);
               }}
-              disabled={loading}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-all ${
-                isLogin
-                  ? 'bg-card text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              Вхід
-            </button>
-            <button
-              onClick={() => {
-                setIsLogin(false);
-                setLocalError(null);
-                setSuccess(null);
-              }}
-              disabled={loading}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-all ${
-                !isLogin
-                  ? 'bg-card text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              Реєстрація
-            </button>
-          </div>
+            />
+          )}
 
           {isLogin ? (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label
-                  htmlFor="login-email"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  Email
-                </label>
-                <Input
-                  id="login-email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={loginData.email}
-                  onChange={e =>
-                    setLoginData({ ...loginData, email: e.target.value })
-                  }
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="login-password"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  Пароль
-                </label>
-                <Input
-                  id="login-password"
-                  type="password"
-                  placeholder="Введіть пароль"
-                  value={loginData.password}
-                  onChange={e =>
-                    setLoginData({ ...loginData, password: e.target.value })
-                  }
-                  disabled={loading}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && !loading) {
-                      handleLogin(e);
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="text-right">
-                <button
-                  className="text-sm text-secondary hover:text-foreground transition-colors"
-                  disabled={loading}
-                >
-                  Забули пароль?
-                </button>
-              </div>
-
-              <Button
-                onClick={handleLogin}
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? 'Завантаження...' : 'Увійти'}
-              </Button>
-            </div>
+            <LoginForm
+              values={loginData}
+              isAuthenticated={isAuthenticated}
+              loading={loading}
+              onChange={values => setLoginData(values)}
+              onSubmit={isAuthenticated ? handleLogout : handleLogin}
+            />
           ) : (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label
-                  htmlFor="register-name"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  Ім'я
-                </label>
-                <Input
-                  id="register-name"
-                  type="text"
-                  placeholder="Іван Петренко"
-                  value={registerData.name}
-                  onChange={e =>
-                    setRegisterData({ ...registerData, name: e.target.value })
-                  }
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="register-email"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  Email
-                </label>
-                <Input
-                  id="register-email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={registerData.email}
-                  onChange={e =>
-                    setRegisterData({ ...registerData, email: e.target.value })
-                  }
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="register-password"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  Пароль
-                </label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  placeholder="Мінімум 6 символів"
-                  value={registerData.password}
-                  onChange={e =>
-                    setRegisterData({
-                      ...registerData,
-                      password: e.target.value,
-                    })
-                  }
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="register-confirm"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  Підтвердіть пароль
-                </label>
-                <Input
-                  id="register-confirm"
-                  type="password"
-                  placeholder="Повторіть пароль"
-                  value={registerData.confirmPassword}
-                  onChange={e =>
-                    setRegisterData({
-                      ...registerData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  disabled={loading}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && !loading) {
-                      handleRegister(e);
-                    }
-                  }}
-                />
-              </div>
-
-              <Button
-                onClick={handleRegister}
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? 'Завантаження...' : 'Зареєструватися'}
-              </Button>
-            </div>
+            <RegisterForm
+              values={registerData}
+              loading={loading}
+              isAuthenticated={isAuthenticated}
+              onChange={values => setRegisterData(values)}
+              onSubmit={handleRegister}
+            />
           )}
         </CardContent>
       </Card>
