@@ -31,7 +31,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             size="language"
             className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
-            UA
+            {t('UA')}
           </Button>
         )}
 
@@ -42,7 +42,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             size="language"
             className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
-            ENG
+            {t('ENG')}
           </Button>
         )}
       </div>

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
+import { useTranslation } from 'react-i18next';
 import { useMoveHeart } from '@/components/MoveHeart';
 import {
   toastWishlistAdded,
@@ -24,6 +25,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
   isInCart,
   inStock,
 }) => {
+  const { t } = useTranslation();
   const heartButtonRef = useRef<HTMLButtonElement>(null);
   const { flyToWishlist } = useMoveHeart();
 
@@ -57,7 +59,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
           canAddToCart ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'
         }`}
       >
-        {isInCart ? 'Added' : inStock ? 'Add to cart' : 'Out of stock'}
+        {isInCart ? t('Added') : inStock ? t('Add to cart') : t('Out of stock')}
       </Button>
 
       <Button
