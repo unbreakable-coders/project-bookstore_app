@@ -39,6 +39,15 @@ const BOOK_TYPE_LABELS: Record<string, string> = {
   audiobook: 'AUDIOBOOKS',
 };
 
+const getCatalogType = (bookType: string): string => {
+  const typeMap: Record<string, string> = {
+    paperback: 'paperback',
+    kindle: 'kindle',
+    audiobook: 'audiobook',
+  };
+  return typeMap[bookType] || 'paperback';
+};
+
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   book,
   selectedLanguage,
@@ -52,14 +61,29 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const bookType = book?.type || 'paperback';
+  const bookCategory = book?.category || 'books';
+
+  const catalogType = getCatalogType(bookType);
+
+  const createCategorySlug = (category: string): string => {
+    return category
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^\w]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
+
+  const categorySlug = createCategorySlug(bookCategory);
+
   const computedBreadcrumbs = [
     {
       label: t(BOOK_TYPE_LABELS[book.type] || 'BOOKS'),
-      href: `/books/${book.type}`,
+      href: `/catalog/${catalogType}`,
     },
     {
       label: t(book.category).toUpperCase(),
-      href: `/books/${book.type}/${encodeURIComponent(book.category)}`,
+      href: `/catalog/${catalogType}?category=${categorySlug}&page=1`,
     },
   ];
 
