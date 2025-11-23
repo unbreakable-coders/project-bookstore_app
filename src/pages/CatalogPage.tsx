@@ -35,6 +35,13 @@ type BookWithMeta = Book & {
   description?: string | string[];
 };
 
+const slugify = (str: string) =>
+  str
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^\w]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
 export const CatalogPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -47,7 +54,8 @@ export const CatalogPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-  const category = searchParams.get('category') || '';
+  const rawCategory = searchParams.get('category');
+  const category = rawCategory === 'all' ? '' : rawCategory || '';
   const searchQuery =
     searchParams.get('search')?.trim().toLowerCase() || '';
 
@@ -112,18 +120,20 @@ export const CatalogPage = () => {
     }
 
     if (category) {
+      const selectedSlug = category.toLowerCase().trim();
+
       result = result.filter(book => {
-        const cat = (book as BookWithMeta).category;
+        const rawCategory = (book as BookWithMeta).category;
 
-        if (Array.isArray(cat)) {
-          return cat.includes(category);
+        if (!rawCategory) {
+          return false;
         }
 
-        if (typeof cat === 'string') {
-          return cat === category;
-        }
+        const categoriesArray = Array.isArray(rawCategory)
+          ? rawCategory
+          : [rawCategory];
 
-        return false;
+        return categoriesArray.some(catItem => slugify(catItem) === selectedSlug);
       });
     }
 
