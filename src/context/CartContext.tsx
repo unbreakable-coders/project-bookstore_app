@@ -17,6 +17,7 @@ type CartMap = Record<string, number>;
 export interface CartItem {
   book: Book;
   quantity: number;
+  totalPriceUAH: number;
 }
 
 interface CartContextValue {
@@ -144,7 +145,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     void initCart();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
   const persistCartLocal = useCallback((next: CartMap) => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
@@ -268,7 +269,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (!book) {
           return null;
         }
-        return { book, quantity };
+
+        const usdPrice =
+          typeof book.priceDiscount === 'number'
+            ? book.priceDiscount
+            : typeof book.priceRegular === 'number'
+              ? book.priceRegular
+              : 0;
+
+        const totalPriceUAH = toUAH(usdPrice * quantity);
+
+        return { book, quantity, totalPriceUAH };
       })
       .filter((item): item is CartItem => item !== null);
   }, [allBooks, cartMap]);
@@ -279,11 +290,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const totalPriceUAH = useMemo(
-    () =>
-      cartItems.reduce((sum, item) => {
-        const price = item.book.priceDiscount ?? item.book.priceRegular;
-        return sum + toUAH(price * item.quantity);
-      }, 0),
+    () => cartItems.reduce((sum, item) => sum + item.totalPriceUAH, 0),
     [cartItems],
   );
 

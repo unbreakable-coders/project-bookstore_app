@@ -1,29 +1,13 @@
 import type { FC } from 'react';
-import { useState, useMemo } from 'react';
-import { useCart } from '@/hooks/useCart';
+import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
-
-const USD_TO_UAH_RATE = 42;
-
-const parsePrice = (value: number | string | null | undefined): number => {
-  if (typeof value === 'number') {
-    return Number.isFinite(value) ? value : 0;
-  }
-
-  if (typeof value === 'string') {
-    const normalized = value.replace(',', '.').trim();
-    const parsed = Number(normalized);
-
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  return 0;
-};
+import { OrderItemSummary } from '@/components/molecules/order/OrderItemSummary';
 
 export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
-  const { cartItems, totalItems } = useCart();
+  const { cartItems, totalItems, totalPriceUAH } = useCart();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -35,9 +19,7 @@ export const CheckoutPage: FC = () => {
     paymentMethod: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+  const handleSubmit = () => {};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -49,29 +31,11 @@ export const CheckoutPage: FC = () => {
   };
 
   const deliveryPrice = formData.deliveryMethod === 'courier' ? 150 : 0;
-
-  const itemsTotalUAH = useMemo(
-    () =>
-      cartItems.reduce((sum, item) => {
-        const usd = parsePrice(
-          item.book.priceDiscount ?? item.book.priceRegular,
-        );
-        const perItemUAH = Math.ceil(usd * USD_TO_UAH_RATE);
-        const totalUAH = perItemUAH * item.quantity;
-
-        return sum + totalUAH;
-      }, 0),
-    [cartItems],
-  );
-
+  const itemsTotalUAH = totalPriceUAH;
   const totalWithDelivery = itemsTotalUAH + deliveryPrice;
 
-  const getItemTotalUAH = (item: (typeof cartItems)[number]) => {
-    const usd = parsePrice(item.book.priceDiscount ?? item.book.priceRegular);
-    const perItemUAH = Math.ceil(usd * USD_TO_UAH_RATE);
-
-    return perItemUAH * item.quantity;
-  };
+  const getItemTotalUAH = (item: (typeof cartItems)[number]) =>
+    item.totalPriceUAH ?? 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -396,32 +360,20 @@ export const CheckoutPage: FC = () => {
               </div>
 
               <div className="rounded-lg border border-border bg-card p-4">
-                <h4 className="mb-3 font-semibold">In your order</h4>
+                <h4 className="mb-3 font-semibold">
+                  {t('In your order')}
+                </h4>
+
                 <div className="max-h-64 space-y-3 overflow-y-auto">
                   {cartItems.map(item => (
-                    <div key={item.book.id} className="flex gap-3">
-                      <img
-                        src={item.book.images[0]}
-                        alt={item.book.name}
-                        className="h-16 w-12 rounded object-cover"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
-                          {item.book.name}
-                        </p>
-                        <p className="text-xs text-secondary">
-                          {item.book.author}
-                        </p>
-                        <div className="mt-1 flex items-center justify-between">
-                          <span className="text-xs text-secondary">
-                            {item.quantity}
-                          </span>
-                          <span className="text-sm font-semibold">
-                            {getItemTotalUAH(item)} ₴
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                    <OrderItemSummary
+                      key={item.book.id}
+                      image={item.book.images[0]}
+                      title={item.book.name}
+                      author={item.book.author}
+                      quantity={item.quantity}
+                      totalPriceUAH={getItemTotalUAH(item)}
+                    />
                   ))}
                 </div>
               </div>
