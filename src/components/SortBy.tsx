@@ -1,20 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import type { FC } from 'react';
 import { DropdownSortBy } from '@/components/atoms/DropdownSortBy';
+import { useTranslation } from 'react-i18next';
 
 export interface SortOption {
   value: string;
   label: string;
+  icon: string;
 }
-
-const SORT_OPTIONS: SortOption[] = [
-  { value: 'name-asc', label: 'Name ▲' },
-  { value: 'name-desc', label: 'Name ▼' },
-  { value: 'price-asc', label: 'Price ▼' },
-  { value: 'price-desc', label: 'Price ▲' },
-  { value: 'year-asc', label: 'Year ▼' },
-  { value: 'year-desc', label: 'Year ▲' },
-];
 
 interface SortCategoryProps {
   value: string;
@@ -29,8 +22,19 @@ export const SortCategory: FC<SortCategoryProps> = ({
   fullWidth,
   className,
 }) => {
+  const { t } = useTranslation();
+
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const SORT_OPTIONS: SortOption[] = [
+    { value: 'name-asc', label: t('sort.name'), icon: '▲' },
+    { value: 'name-desc', label: t('sort.name'), icon: '▼' },
+    { value: 'price-asc', label: t('sort.price'), icon: '▲' },
+    { value: 'price-desc', label: t('sort.price'), icon: '▼' },
+    { value: 'year-asc', label: t('sort.year'), icon: '▲' },
+    { value: 'year-desc', label: t('sort.year'), icon: '▼' },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -102,7 +106,10 @@ export const SortCategory: FC<SortCategoryProps> = ({
                 value === option.value ? 'bg-gray-50 font-medium' : '',
               ].join(' ')}
             >
-              {option.label}
+              <div className="flex items-center justify-between">
+                <span>{option.label}</span>
+                <span>{option.icon}</span>
+              </div>
             </li>
           ))}
         </ul>
