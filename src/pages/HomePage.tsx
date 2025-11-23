@@ -3,12 +3,14 @@ import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
 import { Categories } from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
-import { booksData } from '@/books/data/books.ts';
-
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
+import { useTranslation } from 'react-i18next';
 
 export const HomePage = () => {
+  const { t } = useTranslation();
+
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
 
@@ -18,7 +20,7 @@ export const HomePage = () => {
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const allBooks = await booksData();
+        const allBooks = await fetchBooks();
 
         setNewBooks(
           [...allBooks]
@@ -43,7 +45,7 @@ export const HomePage = () => {
         <PromoSlider />
 
         <ProductCardsBlock
-          title="New books"
+          title={t('New books')}
           listOfBooks={newBooks}
           onAddToCart={toggleCart}
           onToggleWishlist={toggleWishlist}
@@ -54,7 +56,7 @@ export const HomePage = () => {
         <Categories />
 
         <ProductCardsBlock
-          title="Also you might like it!"
+          title={t('Also you might like it!')}
           listOfBooks={booksMightLike}
           onAddToCart={toggleCart}
           onToggleWishlist={toggleWishlist}

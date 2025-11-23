@@ -21,7 +21,9 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
   return (
     <div className="flex items-center gap-1 uppercase font-bold tracking-[0.01em] truncate whitespace-nowrap">
       {/* Home icon */}
-      <Icon name="home" />
+      <Link to="/">
+        <Icon name="home" />
+      </Link>
 
       {/* Стрілка після home */}
       <Icon name="arrowRight" />

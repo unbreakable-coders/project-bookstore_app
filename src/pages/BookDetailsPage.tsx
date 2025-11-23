@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchBookProduct, type BookProduct } from '@/lib/mockProductData';
+import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
+import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useRecommendedBooks } from '@/hooks/useRecommendedBooks';
 import { useCart } from '@/context/CartContext';
@@ -11,13 +12,14 @@ type LanguageCode = 'uk' | 'en' | string;
 
 export const BookDetailsPage = () => {
   const { namespaceId } = useParams<{ namespaceId: string }>();
+  const { t, i18n } = useTranslation();
   const { books: recommendedBooks } = useRecommendedBooks(16);
 
   const [product, setProduct] = useState<BookProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('uk');
 
-  const { toggleCart } = useCart();
+  const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
   const loadProductData = useCallback(
@@ -33,7 +35,7 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
-        await new Promise(resolve => setTimeout(resolve, 5500)); // імітація затримки
+        await new Promise(resolve => setTimeout(resolve, 500)); // імітація затримки
 
         if (!data) {
           console.error(
@@ -56,16 +58,34 @@ export const BookDetailsPage = () => {
 
   useEffect(() => {
     void loadProductData(currentLanguage);
-  }, [loadProductData, currentLanguage]);
+  }, [loadProductData, currentLanguage, i18n.language]);
 
   const handleLanguageChange = (lang: LanguageCode) => {
     setCurrentLanguage(lang);
   };
 
+  const getDisplayValue = (
+    value: string | number | null | undefined,
+  ): string => {
+    if (value === null || value === undefined || value === '') {
+      return '-';
+    }
+    return String(value);
+  };
+
+  const getTranslatedValue = (
+    value: string | number | null | undefined,
+  ): string => {
+    if (value === null || value === undefined || value === '') {
+      return '-';
+    }
+    return t(String(value));
+  };
+
   if (!namespaceId) {
     return (
       <div className="flex h-screen items-center justify-center text-xl text-red-600">
-        Помилка: не передано ідентифікатор книги в URL.
+        {t('Error: Book ID not passed in URL')}
       </div>
     );
   }
@@ -81,64 +101,72 @@ export const BookDetailsPage = () => {
   if (!product) {
     return (
       <div className="flex h-screen items-center justify-center text-xl text-red-600">
-        Помилка: Не вдалося завантажити дані продукту.
+        {t('Error: Failed to load product data')}
       </div>
     );
   }
 
-  // 👇 ВАЖЛИВО: використовуємо саме product.id, а не namespaceId
   const bookId = product.id;
 
-  const handleToggleWishlist = () => {
-    console.log('[BookDetails] Toggle wishlist', bookId);
-    toggleWishlist(bookId);
-  };
+  const handleToggleWishlist = (id: string) => toggleWishlist(id);
 
-  const handleAddToCart = () => {
-    console.log('[BookDetails] Add to cart', bookId);
-    toggleCart(bookId);
-  };
+  const handleAddToCart = (id: string) => toggleCart(id);
 
   const detailsList = [
-    { label: 'Author', value: product.author },
-    { label: 'Cover type', value: product.details.coverType },
-    { label: 'Number of pages', value: product.details.numberOfPages },
-    { label: 'Year of publication', value: product.details.publicationYear },
-    { label: 'Publication', value: product.details.publication },
-    { label: 'Format', value: product.details.format },
-    { label: 'LangLanguage', value: product.lang },
+    { label: t('Author'), value: getDisplayValue(product.author) },
     {
-      label: 'illustrations',
-      value: product.details.illustrations ? 'Yes' : 'No',
+      label: t('Cover type'),
+      value: getTranslatedValue(t(product.details.coverType)),
+    },
+    {
+      label: t('Number of pages'),
+      value: getDisplayValue(product.details.numberOfPages),
+    },
+    {
+      label: t('Year of publication'),
+      value: getDisplayValue(product.details.publicationYear),
+    },
+    {
+      label: t('Publication'),
+      value: getTranslatedValue(product.details.publication),
+    },
+    { label: t('Format'), value: getTranslatedValue(product.details.format) },
+    { label: t('Language'), value: getTranslatedValue(t(product.lang)) },
+    {
+      label: t('Illustrations'),
+      value: product.details.illustrations ? t('yes') : t('no'),
     },
   ];
 
   const breadcrumbs = [
-    { label: 'Paper books', href: '/books' },
-    { label: 'Tech/business', href: '/books/tech-business' },
+    { label: t('Paper books'), href: '/books' },
+    { label: t('Tech/business'), href: '/books/tech-business' },
   ];
 
   const templateData = {
     book: {
+      id: bookId,
       title: product.title,
       author: product.author,
       images: product.images,
-      category: product.category,
+      category: product.category[0] ?? '',
       price: product.price,
       oldPrice: product.oldPrice,
       details: detailsList,
-      aboutTitle: product.about[0] || 'About this book',
-      aboutContent: product.about.slice(1),
+      aboutTitle: product.description[0] || t('About this book'),
+      aboutContent: product.description.slice(1),
       characteristics: detailsList,
+      type: product.type,
     },
     breadcrumbs,
     selectedLanguage: currentLanguage,
     onSelectLanguage: handleLanguageChange,
     onAddToCart: handleAddToCart,
     onToggleWishlist: handleToggleWishlist,
-    isInWishlist: isInWishlist(bookId),
+    isInCart: isInCart,
+    isInWishlist: isInWishlist,
     availableLanguages: product.availableLanguages,
-    recommendedBooks,
+    booksMightLike: recommendedBooks,
   };
 
   return (

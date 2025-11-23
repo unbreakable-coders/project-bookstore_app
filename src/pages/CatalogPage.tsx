@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
-
-import type { Book } from '@/types/book';
-import { booksData } from '@/books/data/books';
-
-import { Dropdown } from '@/components/atoms/Dropdown';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { BookCard } from '../components/organisms/BookCard';
+import type { Book } from '../types/book';
+import { SortCategory } from '@/components/SortBy';
+import { SortPages } from '@/components/SortPages';
 import {
   Pagination,
   PaginationList,
@@ -13,243 +12,321 @@ import {
   PaginationPreviousButton,
   PaginationNextButton,
 } from '@/components/atoms/Pagination';
+import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
+
+const getBookPrice = (book: Book) => {
+  const value = book.priceDiscount ?? book.priceRegular ?? 0;
+  return typeof value === 'string' ? Number(value) || 0 : value;
+};
+
+const getBookYear = (book: Book) => {
+  const value = book.publicationYear ?? 0;
+  return typeof value === 'string' ? Number(value) || 0 : value;
+};
 
 export const CatalogPage = () => {
-  const { bookType } = useParams<{ bookType?: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
+  const location = useLocation();
 
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [itemsPerPage, setItemsPerPage] = useState(16);
+  const [sortBy, setSortBy] = useState('name-asc');
+  const [error, setError] = useState<string | null>(null);
 
-  const currentPage = Number(searchParams.get('page') || '1');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const category = searchParams.get('category') || '';
+  const searchQuery =
+    searchParams.get('search')?.trim().toLowerCase() || '';
+
+  const { toggleCart, isInCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const load = async () => {
-      const data = await booksData();
-      setBooks(data);
-      setLoading(false);
+      try {
+        const data = await fetchBooks();
+        setBooks(data);
+      } catch (err) {
+        console.error('Failed to load books from Supabase:', err);
+        setError(t('Failed to load books. Please try again later'));
+      } finally {
+        setLoading(false);
+      }
     };
 
     void load();
-  }, []);
+  }, [t]);
+
+  const segments = location.pathname.split('/');
+  const type = segments[2] as 'paperback' | 'kindle' | 'audiobook' | undefined;
+
+  const sortedBooks = useMemo(() => {
+    const sorted = [...books];
+
+    switch (sortBy) {
+      case 'name-asc':
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name-desc':
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'price-asc':
+        sorted.sort((a, b) => getBookPrice(a) - getBookPrice(b));
+        break;
+      case 'price-desc':
+        sorted.sort((a, b) => getBookPrice(b) - getBookPrice(a));
+        break;
+      case 'year-asc':
+        sorted.sort((a, b) => getBookYear(a) - getBookYear(b));
+        break;
+      case 'year-desc':
+        sorted.sort((a, b) => getBookYear(b) - getBookYear(a));
+        break;
+      default:
+        break;
+    }
+
+    return sorted;
+  }, [books, sortBy]);
+
+  // 🔍 ФІЛЬТР: type + category + search
+  const filteredBooks = useMemo(() => {
+    let result = [...sortedBooks];
+
+    // by format/type
+    if (type === 'paperback' || type === 'kindle' || type === 'audiobook') {
+      result = result.filter(
+        book => book.format === type || book.type === type,
+      );
+    }
+
+    // by category from ?category=
+    if (category) {
+      result = result.filter(book => {
+        const cat = (book as any).category;
+
+        if (Array.isArray(cat)) {
+          return cat.includes(category);
+        }
+
+        if (typeof cat === 'string') {
+          return cat === category;
+        }
+
+        return false;
+      });
+    }
+
+    // by search from ?search=
+    if (searchQuery) {
+      result = result.filter(book => {
+        const desc = (book as any).description;
+        const descText = Array.isArray(desc)
+          ? desc.join(' ')
+          : desc ?? '';
+
+        const haystack = `${book.name} ${book.author ?? ''} ${descText}`.toLowerCase();
+
+        return haystack.includes(searchQuery);
+      });
+    }
+
+    return result;
+  }, [sortedBooks, type, category, searchQuery]);
+
+  const catalogTitle = useMemo(() => {
+    if (type === 'paperback') return t('Paper books');
+    if (type === 'kindle') return t('Kindle books');
+    if (type === 'audiobook') return t('Audiobooks');
+
+    return t('Catalog');
+  }, [type, t]);
+
+  const totalPages = Math.ceil(filteredBooks.length / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentBooks = filteredBooks.slice(startIndex, endIndex);
+
+  const updateSearchParams = (updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams);
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
+
+    setSearchParams(params);
+  };
+
+  const handlePageChange = (page: number) => {
+    updateSearchParams({ page: String(page) });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    updateSearchParams({ page: '1' });
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    updateSearchParams({ page: '1' });
+  };
+
+  // щоб href теж зберігав і category, і search
+  const buildHref = (page: number) => {
+    const params = new URLSearchParams();
+    params.set('page', String(page));
+    if (category) params.set('category', category);
+    if (searchQuery) params.set('search', searchQuery);
+    return `?${params.toString()}`;
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | 'gap')[] = [];
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+
+      if (currentPage > 3) {
+        pages.push('gap');
+      }
+
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (currentPage < totalPages - 2) {
+        pages.push('gap');
+      }
+
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
 
   if (loading) {
     return (
       <div className="flex h-screen justify-center items-center text-xl">
-        Loading catalog…
+        <Loader />
       </div>
     );
   }
-
-  const normalizedType = (bookType || '').toLowerCase();
-
-  const typeBackendMap: Record<string, string> = {
-    paper: 'paperback',
-    kindle: 'kindle',
-    audiobook: 'audiobook',
-  };
-
-  const backendType =
-    normalizedType && typeBackendMap[normalizedType]
-      ? typeBackendMap[normalizedType]
-      : normalizedType || null;
-
-  const filteredBooks = backendType
-    ? books.filter(book => book.type.toLowerCase() === backendType)
-    : books;
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredBooks.length / ITEMS_PER_PAGE),
-  );
-
-  const safePage = Math.min(Math.max(1, currentPage), totalPages);
-
-  const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
-  const paginatedBooks = filteredBooks.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE,
-  );
-
-  const handlePageChange = (page: number) => {
-    const nextPage = Math.min(Math.max(1, page), totalPages);
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('page', String(nextPage));
-    setSearchParams(newParams);
-  };
-
-  const titleMap: Record<string, string> = {
-    paper: 'Paper books',
-    kindle: 'Kindle books',
-    audiobook: 'Audiobooks',
-  };
-
-  const pageTitle =
-    (normalizedType && titleMap[normalizedType]) || 'All books';
 
   return (
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">{pageTitle}</h1>
+          <h1 className="text-4xl font-bold text-foreground">{catalogTitle}</h1>
           <p className="text-muted-foreground">
-            {filteredBooks.length} books
+            {t('{{count}} books', { count: filteredBooks.length })}
           </p>
+          {error && (
+            <p className="mt-2 text-sm text-red-600">
+              {error}
+            </p>
+          )}
         </div>
 
-        <div className="pt-[40px] flex gap-4 items-start">
+        <div className="pt-10 flex gap-4 items-start">
           <div className="w-44">
-            <p className="text-sm text-muted-foreground mb-1">Sort by</p>
-            <Dropdown label="Categories" />
+            <p className="text-sm text-muted-foreground mb-1">
+              {t('Sort by')}
+            </p>
+            <SortCategory value={sortBy} onChange={handleSortChange} />
           </div>
 
           <div className="w-32">
             <p className="text-sm w-32 text-muted-foreground mb-1">
-              Items on page
+              {t('Items on page')}
             </p>
-            <Dropdown label={String(ITEMS_PER_PAGE)} />
+            <SortPages
+              options={ITEMS_PER_PAGE_OPTIONS}
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+            />
           </div>
         </div>
 
         <section className="pt-6 gap-y-10 mx-auto justify-center">
-          <div className="grid gap-4 justify-center sm:grid-cols-2 gap-y-10 lg:grid-cols-4">
-            {paginatedBooks.map(book => {
-              const currentPrice = book.priceDiscount ?? book.priceRegular;
-              const hasDiscount = book.priceDiscount !== null;
-              const inStock = book.inStock ?? true;
-
-              return (
-                <Link
-                  key={book.id}
-                  to={`/books/${book.namespaceId}`}
-                  className="rounded-xl bg-card shadow p-4 flex flex-col gap-2 w-full max-w-69 hover:shadow-md transition"
-                >
-                  <img
-                    src={book.images[0]}
-                    alt={book.name}
-                    className="w-full h-[263px] object-cover rounded-md"
-                  />
-
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {book.name}
-                  </h3>
-
-                  <p className="text-sm text-muted-foreground">
-                    {book.author}
-                  </p>
-
-                  {hasDiscount ? (
-                    <div className="flex items-center gap-2">
-                      <p className="text-base font-semibold text-foreground">
-                        €{currentPrice}
-                      </p>
-                      <p className="text-base line-through text-muted-foreground">
-                        €{book.priceRegular}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-base font-semibold text-foreground">
-                      €{currentPrice}
-                    </p>
-                  )}
-
-                  <p className="text-xs text-green-600 flex items-center">
-                    <img
-                      src="/icons/icon-in-stock.svg"
-                      alt="In stock"
-                      className="inline h-3 w-3 mr-1"
-                    />
-                    {inStock ? 'In stock' : 'Out of stock'}
-                  </p>
-
-                  <button className="mt-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
-                    Add to cart
-                  </button>
-                </Link>
-              );
-            })}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            {currentBooks.map(book => (
+              <div key={book.id} className="w-full max-w-[272px]">
+                <BookCard
+                  book={book}
+                  onAddToCart={() => toggleCart(book.id)}
+                  onToggleWishlist={() => toggleWishlist(book.id)}
+                  isInWishlist={isInWishlist(book.id)}
+                  isInCart={isInCart(book.id)}
+                />
+              </div>
+            ))}
           </div>
         </section>
 
-        <section className="flex justify-center py-[64px] px-4">
-          <Pagination>
-            <PaginationList>
-              <PaginationPreviousButton
-                href={`?page=${safePage - 1}`}
-                disabled={safePage === 1}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(safePage - 1);
-                }}
-              />
+        {totalPages > 1 && (
+          <section className="flex justify-center py-16 px-4">
+            <Pagination>
+              <PaginationList>
+                <PaginationPreviousButton
+                  href={buildHref(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.preventDefault();
+                    if (currentPage > 1) handlePageChange(currentPage - 1);
+                  }}
+                />
 
-              <PaginationPage
-                href="?page=1"
-                isCurrent={safePage === 1}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(1);
-                }}
-              >
-                1
-              </PaginationPage>
-              <PaginationPage
-                href="?page=2"
-                isCurrent={safePage === 2}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(2);
-                }}
-              >
-                2
-              </PaginationPage>
-              <PaginationPage
-                href="?page=3"
-                isCurrent={safePage === 3}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(3);
-                }}
-              >
-                3
-              </PaginationPage>
-              <PaginationPage
-                href="?page=4"
-                isCurrent={safePage === 4}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(4);
-                }}
-              >
-                4
-              </PaginationPage>
+                {getPageNumbers().map((page, index) =>
+                  page === 'gap' ? (
+                    <PaginationGap key={`gap-${index}`} />
+                  ) : (
+                    <PaginationPage
+                      key={page}
+                      href={buildHref(page)}
+                      isCurrent={currentPage === page}
+                      onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                        e.preventDefault();
+                        handlePageChange(page);
+                      }}
+                    >
+                      {page}
+                    </PaginationPage>
+                  ),
+                )}
 
-              <PaginationGap />
-
-              <PaginationPage
-                href={`?page=${totalPages}`}
-                isCurrent={safePage === totalPages}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(totalPages);
-                }}
-              >
-                {totalPages}
-              </PaginationPage>
-
-              <PaginationNextButton
-                href={`?page=${safePage + 1}`}
-                disabled={safePage === totalPages}
-                onClick={e => {
-                  e.preventDefault();
-                  handlePageChange(safePage + 1);
-                }}
-              />
-            </PaginationList>
-          </Pagination>
-        </section>
+                <PaginationNextButton
+                  href={buildHref(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages)
+                      handlePageChange(currentPage + 1);
+                  }}
+                />
+              </PaginationList>
+            </Pagination>
+          </section>
+        )}
       </section>
     </div>
   );
