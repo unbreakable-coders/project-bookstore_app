@@ -18,23 +18,22 @@ export const DropdownCategories: FC<DropdownCategoriesProps> = ({
   options,
   onSelect,
   fullWidth,
-  value,
+  value = '',
 }) => {
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = event.target;
-    onSelect(value);
+    const { value: nextValue } = event.target;
+    onSelect(nextValue);
   };
 
   return (
     <select
-      value={value ?? ''}
+      value={value}
       onChange={handleChange}
-      className={`h-9 rounded-md border border-[#DADADA] bg-white px-3 text-sm outline-none cursor-pointer ${
-        fullWidth ? 'w-full' : 'w-[180px]'
+      className={`h-9 rounded-md border border-[#DADADA] bg-white px-3 text-xs text-[#050505] outline-none hover:border-[#C5C5C5] ${
+        fullWidth ? 'w-full' : 'min-w-[180px]'
       }`}
     >
       <option value="">{placeholder}</option>
-
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}
