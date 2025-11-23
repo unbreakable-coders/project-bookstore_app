@@ -30,11 +30,6 @@ export const CartSummary: FC<CartSummaryProps> = ({
           className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors"
           size="lg"
           type="button"
-          // onClick={() => {
-          //   // тимчасовий плейсхолдер
-
-          //   alert('Checkout functionality coming soon!');
-          // }}
         >
           {t('Checkout')}
         </Button>

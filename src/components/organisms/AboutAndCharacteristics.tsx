@@ -15,7 +15,6 @@ export const AboutAndCharacteristics: React.FC<
 
   return (
     <div className="mt-8 lg:grid lg:grid-cols-2 lg:gap-16">
-      {/* ABOUT SECTION */}
       <div>
         <p className="text-[20px] leading-5 md:text-[22px] font-semibold mb-4">
           {t('About')}
@@ -29,7 +28,6 @@ export const AboutAndCharacteristics: React.FC<
         ))}
       </div>
 
-      {/* CHARACTERISTICS SECTION */}
       <div className="mt-8 sm:mt-10 lg:mt-0">
         <h2 className="text-[20px] leading-5 font-semibold mb-4">
           {t('Characteristics')}
@@ -37,7 +35,6 @@ export const AboutAndCharacteristics: React.FC<
         <div className="h-px bg-border mb-6"></div>
         <div className="">
           {characteristics.map((detail, index) => (
-            // Reusing the same Atom for the list
             <ProductDetailLabel
               key={`char-${index}`}
               label={detail.label}
