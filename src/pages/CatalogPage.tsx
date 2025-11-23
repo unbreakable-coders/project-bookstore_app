@@ -30,6 +30,18 @@ const getBookYear = (book: Book) => {
   return typeof value === 'string' ? Number(value) || 0 : value;
 };
 
+type BookWithMeta = Book & {
+  category?: string | string[];
+  description?: string | string[];
+};
+
+const slugify = (str: string) =>
+  str
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^\w]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
 export const CatalogPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -42,8 +54,10 @@ export const CatalogPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-  const category = searchParams.get('category') || '';
-  const searchQuery = searchParams.get('search')?.trim().toLowerCase() || '';
+  const rawCategory = searchParams.get('category');
+  const category = rawCategory === 'all' ? '' : rawCategory || '';
+  const searchQuery =
+    searchParams.get('search')?.trim().toLowerCase() || '';
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -109,19 +123,20 @@ export const CatalogPage = () => {
 
     // by category from ?category=
     if (category) {
+      const selectedSlug = category.toLowerCase().trim();
+
       result = result.filter(book => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const cat = (book as any).category;
+        const rawCategory = (book as BookWithMeta).category;
 
-        if (Array.isArray(cat)) {
-          return cat.includes(category);
+        if (!rawCategory) {
+          return false;
         }
 
-        if (typeof cat === 'string') {
-          return cat === category;
-        }
+        const categoriesArray = Array.isArray(rawCategory)
+          ? rawCategory
+          : [rawCategory];
 
-        return false;
+        return categoriesArray.some(catItem => slugify(catItem) === selectedSlug);
       });
     }
 
