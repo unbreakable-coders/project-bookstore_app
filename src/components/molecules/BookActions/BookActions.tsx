@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { useTranslation } from 'react-i18next';
+import { useMoveHeart } from '@/components/MoveHeart';
+import {
+  toastWishlistAdded,
+  toastWishlistRemoved,
+} from '@/components/atoms/Toasts';
 
 interface BookActionsProps {
+  bookId: string;
   onAddToCart: () => void;
   onToggleWishlist: () => void;
   isInCart: boolean;
@@ -12,6 +18,7 @@ interface BookActionsProps {
 }
 
 export const BookActions: React.FC<BookActionsProps> = ({
+  bookId,
   onAddToCart,
   onToggleWishlist,
   isInWishlist,
@@ -19,9 +26,24 @@ export const BookActions: React.FC<BookActionsProps> = ({
   inStock,
 }) => {
   const { t } = useTranslation();
+  const heartButtonRef = useRef<HTMLButtonElement>(null);
+  const { flyToWishlist } = useMoveHeart();
 
   const heartIconName = isInWishlist ? 'heartRed' : 'heart';
   const canAddToCart = inStock || isInCart;
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!isInWishlist && heartButtonRef.current) {
+      flyToWishlist(heartButtonRef.current, bookId, () => {
+        toastWishlistAdded();
+      });
+    } else {
+      onToggleWishlist();
+      toastWishlistRemoved();
+    }
+  };
 
   return (
     <div className="flex gap-3 pt-2">
@@ -41,10 +63,8 @@ export const BookActions: React.FC<BookActionsProps> = ({
       </Button>
 
       <Button
-        onClick={e => {
-          e.stopPropagation();
-          onToggleWishlist();
-        }}
+        ref={heartButtonRef}
+        onClick={handleWishlistClick}
         variant="outline"
         size="icon"
         className="rounded-lg h-10 w-10 shrink-0 border border-input hover:bg-accent/50 transition-colors cursor-pointer"

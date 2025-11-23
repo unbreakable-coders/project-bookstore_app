@@ -11,12 +11,7 @@ import { StockStatus } from '../../molecules/StockStatus/StockStatus';
 import { BookActions } from '../../molecules/BookActions/BookActions';
 import type { Book } from '@/types/book';
 
-import {
-  toastWishlistAdded,
-  toastWishlistRemoved,
-  toastCartAdded,
-  toastCartRemoved,
-} from '../../atoms/Toasts';
+import { toastCartAdded, toastCartRemoved } from '../../atoms/Toasts';
 import { KindleBookImage } from '@/components/atoms/KindleBookImage';
 import { useTranslation } from 'react-i18next';
 
@@ -62,15 +57,7 @@ export const BookCard: React.FC<BookCardProps> = ({
   };
 
   const handleToggleWishlist = () => {
-    const willBeInWishlist = !isInWishlist;
-
     onToggleWishlist?.(book.id);
-
-    if (willBeInWishlist) {
-      toastWishlistAdded();
-    } else {
-      toastWishlistRemoved();
-    }
   };
 
   const inStock = book.inStock ?? true;
@@ -111,6 +98,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
         <BookActions
           onAddToCart={handleAddToCart}
+          bookId={book.id}
           onToggleWishlist={handleToggleWishlist}
           isInCart={optimisticInCart}
           isInWishlist={isInWishlist}

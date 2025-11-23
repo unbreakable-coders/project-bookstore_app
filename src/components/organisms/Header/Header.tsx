@@ -1,4 +1,3 @@
-// Header.tsx
 import { useState, useEffect, useRef } from 'react';
 import {
   Link,
@@ -18,6 +17,7 @@ import {
 } from '../../atoms/DropdownCategories';
 import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import { useMoveHeart } from '../../MoveHeart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -41,7 +41,6 @@ export const Header = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
 
   const navigate = useNavigate();
@@ -50,7 +49,10 @@ export const Header = () => {
 
   const isCatalogPage = location.pathname.startsWith('/catalog');
   const catalogSearch = searchParams.get('search') ?? '';
-  const selectedCategory = searchParams.get('category') ?? 'all';
+
+  const { headerHeartRef, hasItemsInWishlist } = useMoveHeart();
+  const selectedCategoryParam = searchParams.get('category');
+  const selectedCategory = selectedCategoryParam ?? 'all';
 
   const prevPathRef = useRef(location.pathname);
 
@@ -181,8 +183,12 @@ export const Header = () => {
           to="/wishlist"
           aria-label="Open wishlist"
           className={ICON_BUTTON_CLASS}
+          ref={headerHeartRef as React.Ref<HTMLAnchorElement>}
         >
-          {icon}
+          <Icon
+            name={hasItemsInWishlist ? 'heartRed' : 'heart'}
+            className="h-4 w-4"
+          />
         </Link>
       );
     }
@@ -204,8 +210,8 @@ export const Header = () => {
       return (
         <Link
           key={iconName}
-          to="/dev/preview"
-          aria-label="Open dev preview"
+          to="/login"
+          aria-label="Open login page"
           className={ICON_BUTTON_CLASS}
         >
           {icon}
@@ -238,7 +244,7 @@ export const Header = () => {
     const params = new URLSearchParams(searchParams);
     params.set('page', '1');
 
-    if (slug === 'all') {
+    if (!slug) {
       params.delete('category');
     } else {
       params.set('category', slug);
@@ -256,12 +262,14 @@ export const Header = () => {
 
   return (
     <>
-      <header className="border-b border-border bg-gradient-to-r from-[#fef9e7] to-[#fdebd0]">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-gradient-to-r from-[#fef9e7] to-[#fdebd0]">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">
               <Link to="/" aria-label="Go to home page">
-                <Logo className="h-7 w-auto" />
+                <div className="h-8 w-[110px] flex items-center justify-start overflow-hidden flex-none">
+                <Logo className="h-full w-auto" />
+                </div>
               </Link>
 
               <nav className="hidden md:flex items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em]">
@@ -315,16 +323,32 @@ export const Header = () => {
                   placeholder={t('Categories')}
                   options={categoryOptions}
                   onSelect={handleCategorySelect}
-                  value={selectedCategory}
+                  value={selectedCategory === 'all' ? '' : selectedCategory}
                 />
               </div>
 
               <div className="hidden md:flex lg:hidden items-center gap-2">
                 {HEADER_ICONS_MD.map(renderHeaderIcon)}
+
+                <Link
+                  to="/dev/preview"
+                  aria-label="Open dev preview"
+                  className={ICON_BUTTON_CLASS}
+                >
+                  <span className="text-lg">⚙️</span>
+                </Link>
               </div>
 
               <div className="hidden lg:flex items-center gap-2">
                 {HEADER_ICONS_LG.map(renderHeaderIcon)}
+
+                <Link
+                  to="/dev/preview"
+                  aria-label="Open dev preview"
+                  className={ICON_BUTTON_CLASS}
+                >
+                  <span className="text-lg">⚙️</span>
+                </Link>
               </div>
 
               <GlobalLanguageSwitcher />
@@ -389,13 +413,13 @@ export const Header = () => {
                     options={categoryOptions}
                     onSelect={handleCategorySelect}
                     fullWidth
-                    value={selectedCategory}
+                    value={selectedCategory === 'all' ? '' : selectedCategory}
                   />
                 </div>
               </div>
 
               <div className="border-t">
-                <div className="grid grid-cols-3">
+                <div className="grid grid-cols-4">
                   {MOBILE_BOTTOM_ICONS.map(name => {
                     const isActive = activeMobileIcon === name;
 
@@ -413,13 +437,13 @@ export const Header = () => {
                       }
 
                       if (name === 'user') {
-                        navigate('/dev/preview');
+                        navigate('/login');
                       }
                     };
 
                     const ariaLabel =
                       name === 'user'
-                        ? 'Open profile preview'
+                        ? 'Open login page'
                         : name === 'cart'
                           ? 'Open cart'
                           : 'Open wishlist';
@@ -441,6 +465,16 @@ export const Header = () => {
                       </button>
                     );
                   })}
+
+                  <button
+                    type="button"
+                    onClick={() => navigate('/dev/preview')}
+                    className="flex h-14 flex-col items-center justify-center"
+                    aria-label="Open dev preview"
+                  >
+                    <span className="text-2xl">⚙️</span>
+                    <span className="mt-2 h-0.5 w-12 bg-transparent" />
+                  </button>
                 </div>
               </div>
             </div>
