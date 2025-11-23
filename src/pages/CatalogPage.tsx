@@ -30,11 +30,6 @@ const getBookYear = (book: Book) => {
   return typeof value === 'string' ? Number(value) || 0 : value;
 };
 
-type BookWithMeta = Book & {
-  category?: string | string[];
-  description?: string | string[];
-};
-
 export const CatalogPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -48,8 +43,7 @@ export const CatalogPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const category = searchParams.get('category') || '';
-  const searchQuery =
-    searchParams.get('search')?.trim().toLowerCase() || '';
+  const searchQuery = searchParams.get('search')?.trim().toLowerCase() || '';
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -102,18 +96,22 @@ export const CatalogPage = () => {
     return sorted;
   }, [books, sortBy]);
 
+  // 🔍 ФІЛЬТР: type + category + search
   const filteredBooks = useMemo(() => {
     let result = [...sortedBooks];
 
+    // by format/type
     if (type === 'paperback' || type === 'kindle' || type === 'audiobook') {
       result = result.filter(
         book => book.format === type || book.type === type,
       );
     }
 
+    // by category from ?category=
     if (category) {
       result = result.filter(book => {
-        const cat = (book as BookWithMeta).category;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const cat = (book as any).category;
 
         if (Array.isArray(cat)) {
           return cat.includes(category);
@@ -127,14 +125,15 @@ export const CatalogPage = () => {
       });
     }
 
+    // by search from ?search=
     if (searchQuery) {
       result = result.filter(book => {
-        const desc = (book as BookWithMeta).description;
-        const descText = Array.isArray(desc)
-          ? desc.join(' ')
-          : desc ?? '';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const desc = (book as any).description;
+        const descText = Array.isArray(desc) ? desc.join(' ') : (desc ?? '');
 
-        const haystack = `${book.name} ${book.author ?? ''} ${descText}`.toLowerCase();
+        const haystack =
+          `${book.name} ${book.author ?? ''} ${descText}`.toLowerCase();
 
         return haystack.includes(searchQuery);
       });
@@ -185,6 +184,7 @@ export const CatalogPage = () => {
     updateSearchParams({ page: '1' });
   };
 
+  // щоб href теж зберігав і category, і search
   const buildHref = (page: number) => {
     const params = new URLSearchParams();
     params.set('page', String(page));
@@ -240,18 +240,12 @@ export const CatalogPage = () => {
           <p className="text-muted-foreground">
             {t('{{count}} books', { count: filteredBooks.length })}
           </p>
-          {error && (
-            <p className="mt-2 text-sm text-red-600">
-              {error}
-            </p>
-          )}
+          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </div>
 
         <div className="pt-10 flex gap-4 items-start">
           <div className="w-44">
-            <p className="text-sm text-muted-foreground mb-1">
-              {t('Sort by')}
-            </p>
+            <p className="text-sm text-muted-foreground mb-1">{t('Sort by')}</p>
             <SortCategory value={sortBy} onChange={handleSortChange} />
           </div>
 
