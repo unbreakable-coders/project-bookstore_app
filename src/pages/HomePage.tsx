@@ -3,7 +3,6 @@ import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
 import { Categories } from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
-import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButton.tsx';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
@@ -55,10 +54,6 @@ export const HomePage = () => {
         />
 
         <Categories />
-
-        <div className="p-8">
-          <PaymentButton />
-        </div>
 
         <ProductCardsBlock
           title={t('Also you might like it!')}
