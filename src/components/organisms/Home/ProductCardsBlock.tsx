@@ -28,7 +28,7 @@ export const ProductCardsBlock = ({
       const w = window.innerWidth;
 
       if (w < 620) setItemsPerPage(1);
-      else if (w < 870) setItemsPerPage(2);
+      else if (w < 920) setItemsPerPage(2);
       else if (w < 1200) setItemsPerPage(3);
       else setItemsPerPage(4);
     };
@@ -78,8 +78,8 @@ export const ProductCardsBlock = ({
   };
 
   return (
-    <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20 mx-8">
-      <div className="max-w-6xl w-full">
+    <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20">
+      <div className="max-w-6xl w-full mx-auto">
         <div className="flex justify-between items-center">
           <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
 
@@ -114,7 +114,7 @@ export const ProductCardsBlock = ({
           </div>
         </div>
 
-        <div className={`grid justify-items-center ${gridCols}`}>
+        <div className={`grid ${gridCols} gap-8 justify-items-center`}>
           {visibleBooks.map(book => (
             <div key={book.id} className="w-[272px]">
               <BookCard
