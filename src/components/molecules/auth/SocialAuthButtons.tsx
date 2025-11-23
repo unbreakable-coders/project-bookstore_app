@@ -1,11 +1,11 @@
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
 
-type SocialAuthButtonsProps = {
+interface SocialAuthButtonsProps {
   loading: boolean;
   onGoogle: () => void;
   onFacebook: () => void;
-};
+}
 
 export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
   loading,

@@ -6,18 +6,18 @@ type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
   | KeyboardEvent<HTMLInputElement>;
 
-type LoginFormValues = {
+interface LoginFormValues {
   email: string;
   password: string;
-};
+}
 
-type LoginFormProps = {
+interface LoginFormProps {
   values: LoginFormValues;
   isAuthenticated: boolean;
   loading: boolean;
   onChange: (values: LoginFormValues) => void;
   onSubmit: (e: SubmitEvent) => void;
-};
+}
 
 export const LoginForm: FC<LoginFormProps> = ({
   values,

@@ -1,10 +1,10 @@
 import type { FC } from 'react';
 
-type AuthTabsProps = {
+interface AuthTabsProps {
   isLogin: boolean;
   loading: boolean;
   onChange: (mode: 'login' | 'register') => void;
-};
+}
 
 export const AuthTabs: FC<AuthTabsProps> = ({
   isLogin,
