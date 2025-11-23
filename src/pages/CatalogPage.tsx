@@ -35,7 +35,8 @@ export const CatalogPage = () => {
         const data = await booksData();
         setBooks(data);
       } catch (err) {
-        console.error('Failed to load books:', err);
+        console.error('Failed to load books from Supabase:', err);
+        setError('Failed to load books. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -144,8 +145,8 @@ export const CatalogPage = () => {
     <div className="min-h-screen">
       <section className="container space-y-4">
         <div className="pt-16">
-          <h1 className="text-4xl font-bold text-foreground">Paper books</h1>
-          <p className="text-muted-foreground">{books.length} books</p>
+          <h1 className="text-4xl font-bold text-foreground">{catalogTitle}</h1>
+          <p className="text-muted-foreground">{filteredBooks.length} books</p>
         </div>
 
         <div className="pt-10 flex gap-4 items-start">

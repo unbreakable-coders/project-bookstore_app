@@ -83,7 +83,7 @@ export const SortCategory: FC<SortCategoryProps> = ({
         <ul
           role="listbox"
           className={[
-            'absolute z-50 mt-1', // z-10 → z-50
+            'absolute z-50 mt-1',
             fullWidth ? 'w-full' : 'w-44',
             'rounded-md border border-[#DADADA] bg-white',
             'shadow-lg',
