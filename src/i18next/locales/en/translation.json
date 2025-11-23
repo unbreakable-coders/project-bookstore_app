@@ -114,5 +114,32 @@
   "Book removed from cart": "Book removed from cart",
   "New books": "New books",
   "Also you might like it!": "Also you might like it!",
-  "You may also like": "You may also like"
-  }
+  "You may also like": "You may also like",
+  "sort": {
+    "name": "Name",
+    "price": "Price",
+    "year": "Year"
+  },
+  "auth": {
+    "login": "Login",
+    "registration": "Registration",
+    "signInToAccount": "Sign in to your account",
+    "createNewAccount": "Create a new account",
+    "fillAllFields": "Fill in all fields",
+    "invalidCredentials": "Invalid email or password",
+    "loginSuccess": "Login successful!",
+    "logoutSuccess": "You have logged out",
+    "passwordsNotMatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "emailAlreadyRegistered": "This email is already registered",
+    "registrationSuccess": "Registration successful! Check your email for confirmation",
+    "alreadyLoggedIn": "You are already logged in as",
+    "googleError": "Failed to login with Google",
+    "facebookError": "Failed to login with Facebook",
+    "loginWithGoogle": "Login with Google",
+    "loginWithFacebook": "Login with Facebook"
+  },
+  "Logout": "Logout",
+  "Minimum 6 characters": "Minimum 6 characters",
+  "Register": "Register"
+}
