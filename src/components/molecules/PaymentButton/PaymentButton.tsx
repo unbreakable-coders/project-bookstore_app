@@ -2,7 +2,7 @@ import { type FC, useState } from 'react';
 import { ButtonLoader } from '@/components/atoms/ButtonLoader/ButtonLoader';
 
 interface Props {
-  className?: string; // 👈 робимо опціональним
+  className?: string;
 }
 
 export const PaymentButton: FC<Props> = ({ className }) => {
@@ -12,14 +12,23 @@ export const PaymentButton: FC<Props> = ({ className }) => {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:4242/create-checkout-session', {
+      const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [] }), // 👉 додай свої товари
       });
+
+      if (!res.ok) {
+        throw new Error('Failed to create checkout session');
+      }
 
       const data = await res.json();
 
-      window.location.href = data.url;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('Stripe did not return any URL');
+      }
     } catch (error) {
       console.error('[PaymentButton] Checkout error:', error);
     } finally {
