@@ -19,7 +19,6 @@ export const useSupabaseHealthCheck = (): SupabaseHealthState => {
       const url = import.meta.env.VITE_SUPABASE_URL;
       const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-      // 1. Перевірка env-змінних
       if (!url || !anonKey) {
         const msg =
           'Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY environment variables.';
@@ -47,7 +46,6 @@ export const useSupabaseHealthCheck = (): SupabaseHealthState => {
         message: 'Checking Supabase connection…',
       });
 
-      // 2. Запит до Supabase
       const { data, error } = await supabase.auth.getSession();
 
       if (error) {

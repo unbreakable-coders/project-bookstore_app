@@ -1,9 +1,12 @@
 import type { FC } from 'react';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/context/CartContext';
 import { CartItem } from '@/components/organisms/Cart/CartItem';
 import { CartSummary } from '@/components/organisms/Cart/CartSummary';
+import { useTranslation } from 'react-i18next';
 
 export const CartPage: FC = () => {
+  const { t } = useTranslation();
+
   const {
     loading,
     cartItems,
@@ -16,7 +19,7 @@ export const CartPage: FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg text-foreground">Завантаження...</div>
+        <div className="text-lg text-foreground">{t('Loading...')}</div>
       </div>
     );
   }
@@ -44,14 +47,14 @@ export const CartPage: FC = () => {
               strokeLinejoin="round"
             />
           </svg>
-          <span className="text-sm font-semibold">Back</span>
+          <span className="text-sm font-semibold">{t('Back')}</span>
         </button>
 
-        <h1 className="mb-8">Cart</h1>
+        <h2 className="mb-8">{t('Cart')}</h2>
 
         {cartItems.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-secondary text-lg">Ваш кошик порожній</p>
+            <p className="text-secondary text-lg">{t('Your cart is empty')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

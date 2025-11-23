@@ -22,10 +22,13 @@ export const Category: FC<Props> = ({ category }) => {
     >
       <div
         className="
-        w-full aspect-[368/289] rounded-2xl overflow-hidden
-        max-xl:aspect-square
-        max-sm:aspect-square
-        max-xl:rounded-lg
+        w-full
+        aspect-368/289
+        max-xl:aspect-[1/1]
+        max-sm:aspect-[1/1]
+        overflow-hidden
+        rounded-2xl
+        max-xl:rounded-[8px]
       "
       >
         <Video src={category.videoSrc} className="w-full h-full object-cover" />
