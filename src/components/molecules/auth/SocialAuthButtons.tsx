@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
+import { useTranslation } from 'react-i18next';
 
 interface SocialAuthButtonsProps {
   loading: boolean;
@@ -12,9 +13,10 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
   onGoogle,
   onFacebook,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="mb-6 space-y-3">
-
       <Button
         type="button"
         variant="outline"
@@ -23,7 +25,9 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
         disabled={loading}
       >
         <span className="text-2xl font-bold text-[#4285F4]">G</span>
-        <span className="text-sm font-semibold">Увійти через Google</span>
+        <span className="text-sm font-semibold">
+          {t('auth.loginWithGoogle')}
+        </span>
       </Button>
 
       <Button
@@ -34,9 +38,10 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
         disabled={loading}
       >
         <span className="text-2xl font-bold text-[#1877F2]">f</span>
-        <span className="text-sm font-semibold">Увійти через Facebook</span>
+        <span className="text-sm font-semibold">
+          {t('auth.loginWithFacebook')}
+        </span>
       </Button>
-
     </div>
   );
 };
