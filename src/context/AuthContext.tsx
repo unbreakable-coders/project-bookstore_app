@@ -8,7 +8,7 @@ import {
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
 
-type AuthContextValue = {
+interface AuthContextValue {
   user: User | null;
   loading: boolean;
   error: string | null;
@@ -22,7 +22,7 @@ type AuthContextValue = {
     name?: string,
   ) => Promise<{ data: User | null; error: string | null }>;
   signOut: () => Promise<void>;
-};
+}
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
