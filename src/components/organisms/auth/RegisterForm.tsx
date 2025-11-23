@@ -1,25 +1,26 @@
 import type { FC, MouseEvent, KeyboardEvent } from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
+import { useTranslation } from 'react-i18next';
 
 type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
   | KeyboardEvent<HTMLInputElement>;
 
-export type RegisterFormValues = {
+export interface RegisterFormValues {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-};
+}
 
-type RegisterFormProps = {
+interface RegisterFormProps {
   values: RegisterFormValues;
   loading: boolean;
   isAuthenticated: boolean;
   onChange: (values: RegisterFormValues) => void;
   onSubmit: (e: SubmitEvent) => void;
-};
+}
 
 export const RegisterForm: FC<RegisterFormProps> = ({
   values,
@@ -28,6 +29,8 @@ export const RegisterForm: FC<RegisterFormProps> = ({
   onChange,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
+
   const handleFieldChange = <K extends keyof RegisterFormValues>(
     key: K,
     value: string,
@@ -47,12 +50,12 @@ export const RegisterForm: FC<RegisterFormProps> = ({
           htmlFor="register-name"
           className="text-sm font-semibold text-foreground"
         >
-          Ім&apos;я
+          {t('Name')}
         </label>
         <Input
           id="register-name"
           type="text"
-          placeholder="Іван Петренко"
+          placeholder={t('John Doe')}
           value={values.name}
           onChange={e => handleFieldChange('name', e.target.value)}
           disabled={loading || isAuthenticated}
@@ -64,7 +67,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
           htmlFor="register-email"
           className="text-sm font-semibold text-foreground"
         >
-          Email
+          {t('Email')}
         </label>
         <Input
           id="register-email"
@@ -81,12 +84,12 @@ export const RegisterForm: FC<RegisterFormProps> = ({
           htmlFor="register-password"
           className="text-sm font-semibold text-foreground"
         >
-          Пароль
+          {t('Password')}
         </label>
         <Input
           id="register-password"
           type="password"
-          placeholder="Мінімум 6 символів"
+          placeholder={t('Minimum 6 characters')}
           value={values.password}
           onChange={e => handleFieldChange('password', e.target.value)}
           disabled={loading || isAuthenticated}
@@ -98,16 +101,14 @@ export const RegisterForm: FC<RegisterFormProps> = ({
           htmlFor="register-confirm"
           className="text-sm font-semibold text-foreground"
         >
-          Підтвердіть пароль
+          {t('Confirm password')}
         </label>
         <Input
           id="register-confirm"
           type="password"
-          placeholder="Повторіть пароль"
+          placeholder={t('Repeat password')}
           value={values.confirmPassword}
-          onChange={e =>
-            handleFieldChange('confirmPassword', e.target.value)
-          }
+          onChange={e => handleFieldChange('confirmPassword', e.target.value)}
           disabled={loading || isAuthenticated}
           onKeyDown={e => {
             if (e.key === 'Enter' && canSubmit) {
@@ -122,7 +123,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
         disabled={loading || isAuthenticated}
         className="w-full"
       >
-        {loading ? 'Завантаження...' : 'Зареєструватися'}
+        {loading ? t('Loading...') : t('Register')}
       </Button>
     </div>
   );
