@@ -2,10 +2,11 @@ import { type FC, useState } from 'react';
 import { ButtonLoader } from '@/components/atoms/ButtonLoader/ButtonLoader';
 
 interface Props {
+  price: number;
   className?: string;
 }
 
-export const PaymentButton: FC<Props> = ({ className }) => {
+export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -20,8 +21,8 @@ export const PaymentButton: FC<Props> = ({ className }) => {
             {
               price_data: {
                 currency: 'usd',
-                product_data: { name: 'Book' },
-                unit_amount: 2200, // $22.00
+                product_data: { name: 'Books' },
+                unit_amount: price, // 100 is 1.00$
               },
               quantity: 1,
             },
