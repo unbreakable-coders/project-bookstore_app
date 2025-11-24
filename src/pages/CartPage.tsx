@@ -4,6 +4,7 @@ import { CartItem } from '@/components/organisms/Cart/CartItem';
 import { CartSummary } from '@/components/organisms/Cart/CartSummary';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
+import { BackButton } from '@/components/atoms/Form/BackButton';
 
 export const CartPage: FC = () => {
   const { t } = useTranslation();
@@ -28,28 +29,7 @@ export const CartPage: FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-8">
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center gap-2 text-secondary mb-6 hover:text-foreground transition-colors"
-          type="button"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.5 15L7.5 10L12.5 5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="text-sm font-semibold">{t('Back')}</span>
-        </button>
+        <BackButton onClick={() => window.history.back()} label={t('Back')} />
 
         <h2 className="mb-8">{t('Cart')}</h2>
 

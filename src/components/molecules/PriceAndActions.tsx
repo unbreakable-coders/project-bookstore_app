@@ -1,7 +1,14 @@
 import React from 'react';
 import { BookActions } from './BookActions';
-import { toastCartAdded, toastCartRemoved } from '../atoms/Toasts';
+import {
+  toastCartAdded,
+  toastCartRemoved,
+  toastWishlistAdded,
+  toastWishlistRemoved,
+} from '../atoms/Toasts';
+
 interface PriceAndActionsProps {
+  bookId: string;
   price: number;
   oldPrice: number | null;
   onAddToCart: () => void;
@@ -13,6 +20,7 @@ interface PriceAndActionsProps {
 }
 
 export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
+  bookId,
   price,
   oldPrice,
   onAddToCart,

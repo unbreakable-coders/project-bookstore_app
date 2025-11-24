@@ -1,9 +1,11 @@
 import type { FC } from 'react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
-import { OrderItemSummary } from '@/components/molecules/order/OrderItemSummary';
+import { Button } from '@/components/atoms/Button';
+import { BackButton } from '@/components/atoms/Form/BackButton';
+import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
+import { OrderSummary } from '@/components/molecules/Checkout/OrderSummary';
 
 export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
@@ -14,57 +16,73 @@ export const CheckoutPage: FC = () => {
     lastName: '',
     phone: '',
     email: '',
-    address: '',
-    deliveryMethod: '',
+    deliveryService: '',
+    novaPoshtaType: '',
+    deliveryDetail: '',
     paymentMethod: '',
   });
 
   const handleSubmit = () => {
-    // TODO: implement order submission logic (API call / redirect to payment)
-    void 0;
+    console.log('');
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setFormData(prev => {
+      if (name === 'deliveryService') {
+        return {
+          ...prev,
+          deliveryService: value,
+          novaPoshtaType: '',
+          deliveryDetail: '',
+        };
+      }
+
+      if (name === 'novaPoshtaType') {
+        return {
+          ...prev,
+          novaPoshtaType: value,
+          deliveryDetail: '',
+        };
+      }
+
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
   };
 
-  const deliveryPrice = formData.deliveryMethod === 'courier' ? 150 : 0;
+  const deliveryPrice =
+    formData.deliveryService === 'novaPoshta' &&
+    formData.novaPoshtaType === 'courier'
+      ? 150
+      : 0;
   const itemsTotalUAH = totalPriceUAH;
   const totalWithDelivery = itemsTotalUAH + deliveryPrice;
 
   const getItemTotalUAH = (item: (typeof cartItems)[number]) =>
     item.totalPriceUAH ?? 0;
 
+  if (cartItems.length === 0) {
+    return (
+      <div className="container py-16 text-center">
+        <h1 className="mb-4">{t('Checkout')}</h1>
+        <p className="text-lg text-secondary">
+          {t('Your cart is empty. Please add items to proceed to checkout.')}
+        </p>
+        <Button onClick={() => console.log('Go to main page')} className="mt-6">
+          {t('Continue shopping')}
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-8">
-        <button
-          onClick={() => window.history.back()}
-          className="mb-6 flex items-center gap-2 text-secondary transition-colors hover:text-foreground"
-          type="button"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.5 15L7.5 10L12.5 5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="text-sm font-semibold">{t('Back')}</span>
-        </button>
+        <BackButton onClick={() => window.history.back()} label={t('Back')} />
 
         <h2 className="mb-8">{t('Place an order')}</h2>
 
@@ -140,9 +158,7 @@ export const CheckoutPage: FC = () => {
             </div>
 
             <div className="rounded-lg border border-border bg-card p-6">
-              <h2 className="mb-4 text-xl font-semibold">
-                {t('Delivery')}
-              </h2>
+              <h2 className="mb-4 text-xl font-semibold">{t('Delivery')}</h2>
 
               <div className="space-y-4">
                 <div>
@@ -247,9 +263,7 @@ export const CheckoutPage: FC = () => {
                       />
                       <div>
                         <div>{t('Courier delivery')}</div>
-                        <div className="mt-1 text-sm text-secondary">
-                          150 ₴
-                        </div>
+                        <div className="mt-1 text-sm text-secondary">150 ₴</div>
                       </div>
                     </label>
                   </div>
@@ -258,9 +272,7 @@ export const CheckoutPage: FC = () => {
             </div>
 
             <div className="rounded-lg border border-border bg-card p-6">
-              <h2 className="mb-4 text-xl font-semibold">
-                {t('Payment')}
-              </h2>
+              <h2 className="mb-4 text-xl font-semibold">{t('Payment')}</h2>
 
               <div className="space-y-3">
                 <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4 transition-colors hover:border-primary">
@@ -274,9 +286,7 @@ export const CheckoutPage: FC = () => {
                   />
                   <div>
                     <div>{t('Online card payment')}</div>
-                    <div className="mt-1 text-secondary">
-                      Visa, Mastercard
-                    </div>
+                    <div className="mt-1 text-secondary">Visa, Mastercard</div>
                   </div>
                 </label>
 
@@ -314,9 +324,7 @@ export const CheckoutPage: FC = () => {
           <div className="lg:col-span-1">
             <div className="sticky top-8 space-y-4">
               <div className="rounded-lg border border-border bg-card p-6">
-                <h3 className="mb-4 text-lg font-semibold">
-                  {t('Total')}
-                </h3>
+                <h3 className="mb-4 text-lg font-semibold">{t('Total')}</h3>
 
                 <div className="mb-6 space-y-3">
                   <div className="flex justify-between text-sm">
@@ -325,15 +333,11 @@ export const CheckoutPage: FC = () => {
                         count: totalItems,
                       })}
                     </span>
-                    <span className="font-medium">
-                      {itemsTotalUAH} ₴
-                    </span>
+                    <span className="font-medium">{itemsTotalUAH} ₴</span>
                   </div>
 
                   <div className="flex justify-between text-sm">
-                    <span className="text-secondary">
-                      {t('Shipping cost')}
-                    </span>
+                    <span className="text-secondary">{t('Shipping cost')}</span>
                     <span className="font-medium">
                       {deliveryPrice === 0
                         ? t("at the carrier's rates")
@@ -343,9 +347,7 @@ export const CheckoutPage: FC = () => {
 
                   <div className="border-border pt-3">
                     <div className="flex justify-between border-t border-border pt-3">
-                      <span className="font-semibold">
-                        {t('Due')}
-                      </span>
+                      <span className="font-semibold">{t('Due')}</span>
                       <span className="text-2xl font-bold">
                         {totalWithDelivery} ₴
                       </span>
@@ -363,9 +365,7 @@ export const CheckoutPage: FC = () => {
               </div>
 
               <div className="rounded-lg border border-border bg-card p-4">
-                <h4 className="mb-3 font-semibold">
-                  {t('In your order')}
-                </h4>
+                <h4 className="mb-3 font-semibold">{t('In your order')}</h4>
 
                 <div className="max-h-64 space-y-3 overflow-y-auto">
                   {cartItems.map(item => (

@@ -14,7 +14,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactsPage } from './pages/system/ContactsPage';
 import { PageNotFound } from './pages/NotFoundPage';
 import DevPreviewPage from './pages/DevPreviewPage';
-import { GithubPage } from './pages/system/GithubPage';
+import { GitHubPage } from './pages/system/GithubPage';
 import { RightsPage } from './pages/system/RightsPage';
 
 import { CartProvider } from './context/CartContext';

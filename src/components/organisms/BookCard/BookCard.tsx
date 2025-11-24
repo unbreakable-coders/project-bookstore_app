@@ -39,7 +39,9 @@ export const BookCard: React.FC<BookCardProps> = ({
   }, [isInCart]);
 
   const openDetails = () => {
-    navigate(`/books/${book.namespaceId}`);
+    navigate(`/books/${book.namespaceId}?lang=${book.lang}`, {
+      state: { bookId: book.id },
+    });
   };
 
   const handleAddToCart = () => {
