@@ -11,7 +11,7 @@ export const ContactsPage = () => {
         className="mb-16 md:mb-20 text-center max-w-4xl mx-auto"
       />
 
-      <TeamGrid members={teamMembers} columns={2} />
+      <TeamGrid members={teamMembers} columns={3} />
     </div>
   );
 };
