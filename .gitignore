@@ -14,8 +14,9 @@ dist-ssr
 
 # Env files
 src/payment/.env
-.env.*
+.env *
 !.env.example
+
 
 # Editor directories and files
 .vscode/*
@@ -27,3 +28,4 @@ src/payment/.env
 *.njsproj
 *.sln
 *.sw?
+ENV
