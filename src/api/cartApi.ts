@@ -1,9 +1,9 @@
 import { supabase } from '@/supabaseClient';
 
-export type CartItem = {
+export interface CartItem {
   bookId: string;
   quantity: number;
-};
+}
 
 export const cartApi = {
   async getByUser(userId: string): Promise<CartItem[]> {

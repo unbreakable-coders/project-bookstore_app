@@ -52,7 +52,6 @@ export const booksData = async (): Promise<Book[]> => {
 
   if (!response.ok) {
     const text = await response.text();
-    // eslint-disable-next-line no-console
     console.error('[Supabase error]', response.status, text);
     throw new Error(`Failed to fetch books: ${response.status}`);
   }
@@ -61,8 +60,6 @@ export const booksData = async (): Promise<Book[]> => {
 
   return rawBooks.map(book => ({
     ...book,
-    images: Array.isArray(book.images)
-      ? book.images.map(resolveImage)
-      : [],
+    images: Array.isArray(book.images) ? book.images.map(resolveImage) : [],
   }));
 };

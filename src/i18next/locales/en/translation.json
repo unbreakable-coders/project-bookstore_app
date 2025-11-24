@@ -36,9 +36,6 @@
   "Paper books": "Paper books",
   "Audio books": "Audio books",
   "Kindle books": "Kindle books",
-  "1,044 books": "1,044 books",
-  "344 books": "344 books",
-  "265 books": "265 books",
   "Registration error": "Registration error",
   "Login error": "Login error",
   "Logout error": "Logout error",
@@ -46,6 +43,7 @@
   "Cart": "Cart",
   "Your cart is empty": "Your cart is empty",
   "Failed to load books. Please try again later": "Failed to load books. Please try again later",
+  "books_count": "{{count}} books",
   "{{count}} books": "{{count}} books",
   "Sort by": "Sort by",
   "Items on page": "Items on page",
@@ -114,5 +112,32 @@
   "Book removed from cart": "Book removed from cart",
   "New books": "New books",
   "Also you might like it!": "Also you might like it!",
-  "You may also like": "You may also like"
-  }
+  "You may also like": "You may also like",
+  "sort": {
+    "name": "Name",
+    "price": "Price",
+    "year": "Year"
+  },
+  "auth": {
+    "login": "Login",
+    "registration": "Registration",
+    "signInToAccount": "Sign in to your account",
+    "createNewAccount": "Create a new account",
+    "fillAllFields": "Fill in all fields",
+    "invalidCredentials": "Invalid email or password",
+    "loginSuccess": "Login successful!",
+    "logoutSuccess": "You have logged out",
+    "passwordsNotMatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "emailAlreadyRegistered": "This email is already registered",
+    "registrationSuccess": "Registration successful! Check your email for confirmation",
+    "alreadyLoggedIn": "You are already logged in as",
+    "googleError": "Failed to login with Google",
+    "facebookError": "Failed to login with Facebook",
+    "loginWithGoogle": "Login with Google",
+    "loginWithFacebook": "Login with Facebook"
+  },
+  "Logout": "Logout",
+  "Minimum 6 characters": "Minimum 6 characters",
+  "Register": "Register"
+}

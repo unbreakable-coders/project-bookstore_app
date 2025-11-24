@@ -1,30 +1,41 @@
 import { Link } from 'react-router-dom';
 import { Category, type CategoryType } from '@/components/molecules/Category';
 import { useTranslation } from 'react-i18next';
+import type { FC } from 'react';
 
 type CategoryWithLink = CategoryType & {
   to: string;
 };
 
-export const Categories = () => {
+export interface TypeBooks {
+  paper: number;
+  audio: number;
+  kindle: number;
+}
+
+interface Props {
+  typeBooks: TypeBooks;
+}
+
+export const Categories: FC<Props> = ({ typeBooks }) => {
   const { t } = useTranslation();
 
   const categories: CategoryWithLink[] = [
     {
       title: t('Paper books'),
-      countOfBooks: t('1,044 books'),
+      countOfBooks: t('books_count', { count: typeBooks.paper }),
       videoSrc: '/books/img/categories/paper.mp4',
       to: '/catalog/paper',
     },
     {
       title: t('Audio books'),
-      countOfBooks: t('344 books'),
+      countOfBooks: t('books_count', { count: typeBooks.audio }),
       videoSrc: '/books/img/categories/audio.mp4',
       to: '/catalog/audiobook',
     },
     {
       title: t('Kindle books'),
-      countOfBooks: t('265 books'),
+      countOfBooks: t('books_count', { count: typeBooks.kindle }),
       videoSrc: '/books/img/categories/kindlebook.mp4',
       to: '/catalog/kindle',
     },
