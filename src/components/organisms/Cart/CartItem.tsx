@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import type { CartItem as CartItemType } from '@/hooks/useCart';
+import { useTranslation } from 'react-i18next';
 
 interface CartItemProps {
   item: CartItemType;
@@ -17,6 +18,7 @@ export const CartItem: FC<CartItemProps> = ({
   onDecrease,
   onRemove,
 }) => {
+  const { t } = useTranslation();
   const { book, quantity } = item;
 
   const discountPriceUAH = book.priceDiscount
@@ -61,7 +63,66 @@ export const CartItem: FC<CartItemProps> = ({
 
       <div className="flex-1 min-w-0">
         <h4 className="text-foreground mb-1 truncate">{book.name}</h4>
-        <p className="text-sm text-secondary">{book.author}</p>
+        <p className="text-sm text-secondary mb-2">{book.author}</p>
+
+        {/* Тип та мова */}
+        <div className="flex gap-4 text-xs text-muted-foreground">
+          {book.type && (
+            <span className="flex items-center gap-1">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 2H12V12H2V2Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M7 2V12"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="font-semibold">{t('Type')}:</span> {book.type}
+            </span>
+          )}
+          {book.langAvailable && (
+            <span className="flex items-center gap-1">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="7"
+                  cy="7"
+                  r="5.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+                <path
+                  d="M2 7H12M7 2C8.5 3.5 9 5 9 7C9 9 8.5 10.5 7 12C5.5 10.5 5 9 5 7C5 5 5.5 3.5 7 2Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="font-semibold">{t('Language')}:</span>{' '}
+              {book.langAvailable}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-4">

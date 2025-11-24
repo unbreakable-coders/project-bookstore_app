@@ -9,7 +9,7 @@ import { WishlistPage } from './pages/WishlistPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutFormPage';
 import { LoginPage } from './pages/LoginPage';
-import { RegisterPage } from './pages/RegisterPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactsPage } from './pages/system/ContactsPage';
 import { PageNotFound } from './pages/NotFoundPage';
@@ -36,14 +36,17 @@ export default function App() {
                 <Route index element={<HomePage />} />
                 <Route path="catalog" element={<CatalogPage />} />
                 <Route path="catalog/:bookType" element={<CatalogPage />} />
-                <Route path="books/:namespaceId" element={<BookDetailsPage />} />
+                <Route
+                  path="books/:namespaceId"
+                  element={<BookDetailsPage />}
+                />
                 <Route path="wishlist" element={<WishlistPage />} />
                 <Route path="cart" element={<CartPage />} />
                 <Route path="checkout" element={<CheckoutPage />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="contacts" element={<ContactsPage />} />
                 <Route path="login" element={<LoginPage />} />
-                <Route path="register" element={<RegisterPage />} />
+                <Route path="profile" element={<ProfilePage />} />
                 <Route path="github" element={<GithubPage />} />
                 <Route path="rights" element={<RightsPage />} />
                 <Route path="dev/preview" element={<DevPreviewPage />} />
