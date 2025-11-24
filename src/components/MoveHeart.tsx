@@ -68,7 +68,7 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
         x: deltaX,
         y: deltaY,
         scale: 0.6,
-        ease: 'power2.inOut',
+        ease: 'power3.inOut',
         onComplete: () => {
           flyingHeart.remove();
 

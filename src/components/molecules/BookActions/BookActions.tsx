@@ -3,6 +3,7 @@ import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { useTranslation } from 'react-i18next';
 import { useMoveHeart } from '@/components/MoveHeart';
+import { useMoveBookToCart } from '@/components/MoveBookToCart';
 import {
   toastWishlistAdded,
   toastWishlistRemoved,
@@ -27,7 +28,9 @@ export const BookActions: React.FC<BookActionsProps> = ({
 }) => {
   const { t } = useTranslation();
   const heartButtonRef = useRef<HTMLButtonElement>(null);
+  const cartButtonRef = useRef<HTMLButtonElement>(null);
   const { flyToWishlist } = useMoveHeart();
+  const { flyToCart } = useMoveBookToCart();
 
   const heartIconName = isInWishlist ? 'heartRed' : 'heart';
   const canAddToCart = inStock || isInCart;
@@ -45,13 +48,23 @@ export const BookActions: React.FC<BookActionsProps> = ({
     }
   };
 
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!isInCart && inStock && cartButtonRef.current) {
+      // Тільки анімація, без тосту
+      flyToCart(cartButtonRef.current, bookId);
+    }
+
+    // Викликаємо onAddToCart (там вже є тости в BookCard)
+    onAddToCart();
+  };
+
   return (
     <div className="flex gap-3 pt-2">
       <Button
-        onClick={e => {
-          e.stopPropagation();
-          onAddToCart();
-        }}
+        ref={cartButtonRef}
+        onClick={handleCartClick}
         disabled={!canAddToCart}
         variant={isInCart ? 'added' : 'default'}
         size="default"
