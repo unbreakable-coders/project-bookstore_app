@@ -16,18 +16,7 @@ export const PaymentButton: FC<Props> = ({ price, className }) => {
       const res = await fetch('http://localhost:4242/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: [
-            {
-              price_data: {
-                currency: 'usd',
-                product_data: { name: 'Books' },
-                unit_amount: price, // 100 is 1.00$
-              },
-              quantity: 1,
-            },
-          ],
-        }),
+        body: JSON.stringify({ items: [] }),
       });
 
       const data = await res.json();

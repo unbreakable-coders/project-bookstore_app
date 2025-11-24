@@ -61,7 +61,6 @@ export const useAuth = () => {
     });
 
     if (profileError) {
-      // eslint-disable-next-line no-console
       console.error('[profiles insert error]', profileError.message);
     }
   };

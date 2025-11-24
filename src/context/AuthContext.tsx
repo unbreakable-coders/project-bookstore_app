@@ -80,11 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { data: loggedUser, error: null };
   };
 
-  const signUp: AuthContextValue['signUp'] = async (
-    email,
-    password,
-    name,
-  ) => {
+  const signUp: AuthContextValue['signUp'] = async (email, password, name) => {
     setLoading(true);
     setError(null);
 
@@ -111,7 +107,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (profileError) {
-        // eslint-disable-next-line no-console
         console.error('[profiles insert error]', profileError);
       }
 

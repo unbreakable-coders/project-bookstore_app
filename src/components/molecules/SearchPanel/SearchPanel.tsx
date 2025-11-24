@@ -152,7 +152,9 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
             {!loading &&
               searchQuery.trim() !== '' &&
               filteredBooks.length === 0 && (
-                <p className="px-1 text-sm text-[#8F8F8F]">{t('No books found')}</p>
+                <p className="px-1 text-sm text-[#8F8F8F]">
+                  {t('No books found')}
+                </p>
               )}
           </div>
         </div>
