@@ -5,23 +5,25 @@ import {
   useLocation,
   useSearchParams,
 } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
-import { SearchPanel } from '@/components/molecules/SearchPanel';
-import { booksData } from '@/books/data/books';
 import {
   DropdownCategories,
   type DropdownOption,
 } from '../../atoms/DropdownCategories';
+import { SearchPanel } from '@/components/molecules/SearchPanel';
 import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
-import { useTranslation } from 'react-i18next';
 import { useMoveHeart } from '../../MoveHeart';
+import { booksData } from '@/books/data/books';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeSwitcher } from '@/components/molecules/ThemeSwitcher';
+import { useMoveBookToCart } from '@/components/MoveBookToCart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -34,12 +36,22 @@ export const ICON_BUTTON_CLASS =
 
 export const Header = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { totalItems } = useCart();
   const { wishlist } = useWishlist();
   const { getCurrentUser } = useAuth();
+  const { headerHeartRef, hasItemsInWishlist } = useMoveHeart();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
+
+  const prevPathRef = useRef(location.pathname);
 
   const wishlistCount = wishlist.size;
   const cartCount = totalItems;
@@ -51,23 +63,12 @@ export const Header = () => {
     { label: t('Audiobook'), to: '/catalog/audiobook' },
   ];
 
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-
   const isCatalogPage = location.pathname.startsWith('/catalog');
   const catalogSearch = searchParams.get('search') ?? '';
 
-  const { headerHeartRef, hasItemsInWishlist } = useMoveHeart();
   const selectedCategoryParam = searchParams.get('category');
   const selectedCategory = selectedCategoryParam ?? 'all';
-
-  const prevPathRef = useRef(location.pathname);
+  const { headerCartRef } = useMoveBookToCart();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -224,7 +225,7 @@ export const Header = () => {
             <span
               className="
                 absolute -right-1 -top-1
-                min-w-[16px] h-4 px-[3px]
+                min-w-4 h-4 px-[3px]
                 rounded-full bg-[#FF5A5A]
                 text-[10px] leading-4 text-white
                 flex items-center justify-center
@@ -244,13 +245,14 @@ export const Header = () => {
           to="/cart"
           aria-label="Open cart"
           className={`${ICON_BUTTON_CLASS} relative`}
+          ref={headerCartRef as React.Ref<HTMLAnchorElement>}
         >
           <Icon name="cart" className="h-4 w-4" />
           {badgeCount > 0 && (
             <span
               className="
                 absolute -right-1 -top-1
-                min-w-[16px] h-4 px-[3px]
+                min-w-4 h-4 px-[3px]
                 rounded-full bg-[#FF5A5A]
                 text-[10px] leading-4 text-white
                 flex items-center justify-center
@@ -272,16 +274,15 @@ export const Header = () => {
           className={`${ICON_BUTTON_CLASS} relative`}
         >
           <Icon name="user" className="h-4 w-4" />
-
           {isLoggedIn && (
             <span
               className="
-            absolute -top-1 -right-1
-            h-4 w-4
-            rounded-full bg-[#27AE60]
-            text-[8px] leading-none text-white
-            flex items-center justify-center
-          "
+                absolute -top-1 -right-1
+                h-4 w-4
+                rounded-full bg-[#27AE60]
+                text-[8px] leading-none text-white
+                flex items-center justify-center
+              "
             >
               ✓
             </span>
@@ -338,12 +339,12 @@ export const Header = () => {
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">
               <Link to="/" aria-label="Go to home page">
-                <div className="h-8 w-[110px] flex items-center justify-start overflow-hidden flex-none">
+                <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
                   <Logo className="h-full w-auto" />
                 </div>
               </Link>
 
-              <nav className="hidden md:flex items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em]">
+              <nav className="hidden items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
                 {navItems.map(item => {
                   const active = isNavItemActive(item.to);
 
@@ -368,7 +369,7 @@ export const Header = () => {
             </div>
 
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="hidden lg:flex items-center gap-4">
+              <div className="hidden items-center gap-4 lg:flex">
                 {isCatalogPage ? (
                   <Input
                     withSearchIcon
@@ -397,7 +398,8 @@ export const Header = () => {
                   value={selectedCategory === 'all' ? '' : selectedCategory}
                 />
               </div>
-              <div className="hidden md:flex lg:hidden items-center gap-2">
+
+              <div className="hidden items-center gap-2 md:flex lg:hidden">
                 {HEADER_ICONS_MD.map(renderHeaderIcon)}
 
                 <Link
@@ -408,7 +410,8 @@ export const Header = () => {
                   <span className="text-lg">⚙️</span>
                 </Link>
               </div>
-              <div className="hidden lg:flex items-center gap-2">
+
+              <div className="hidden items-center gap-2 lg:flex">
                 {HEADER_ICONS_LG.map(renderHeaderIcon)}
 
                 <Link
@@ -424,7 +427,7 @@ export const Header = () => {
               <button
                 type="button"
                 onClick={toggleMobile}
-                className={ICON_BUTTON_CLASS + ' md:hidden'}
+                className={`${ICON_BUTTON_CLASS} md:hidden`}
                 aria-label="Toggle menu"
               >
                 <Icon
@@ -437,9 +440,9 @@ export const Header = () => {
         </div>
 
         {isMobileOpen && (
-          <div className="md:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-white border-t">
+          <div className="fixed inset-x-0 top-16 bottom-0 z-40 border-t bg-white md:hidden">
             <div className="flex h-full flex-col">
-              <div className="flex-1 overflow-auto px-4 pt-6 pb-4">
+              <div className="flex-1 overflow-auto px-4 pb-4 pt-6">
                 <nav className="space-y-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
                   {navItems.map(item => {
                     const active = isNavItemActive(item.to);
@@ -465,7 +468,7 @@ export const Header = () => {
                 <div className="mt-6">
                   <Input
                     withSearchIcon
-                    placeholder="Find a book or author"
+                    placeholder={t('Find a book or author')}
                     value={isCatalogPage ? catalogSearch : undefined}
                     onChange={
                       isCatalogPage
@@ -477,7 +480,7 @@ export const Header = () => {
 
                 <div className="mt-3">
                   <DropdownCategories
-                    placeholder="Categories"
+                    placeholder={t('Categories')}
                     options={categoryOptions}
                     onSelect={handleCategorySelect}
                     fullWidth
@@ -544,7 +547,7 @@ export const Header = () => {
                             <span
                               className="
                                 absolute -right-2 -top-1
-                                min-w-[16px] h-4 px-[3px]
+                                min-w-4 h-4 px-[3px]
                                 rounded-full bg-[#FF5A5A]
                                 text-[10px] leading-4 text-white
                                 flex items-center justify-center

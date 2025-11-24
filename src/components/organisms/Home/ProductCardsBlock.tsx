@@ -114,7 +114,7 @@ export const ProductCardsBlock = ({
           </div>
         </div>
 
-        <div className={`grid ${gridCols} gap-8 justify-items-center`}>
+        <div className={`grid ${gridCols} justify-items-center`}>
           {visibleBooks.map(book => (
             <div key={book.id} className="w-[272px]">
               <BookCard
