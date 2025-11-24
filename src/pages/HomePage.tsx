@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'; 
 import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
 import {
   Categories,
@@ -62,8 +62,6 @@ export const HomePage = () => {
 
     void loadBooks();
   }, []);
-
-  console.log(countTypeOfBooks);
 
   return (
     <main className="w-full flex justify-center container">

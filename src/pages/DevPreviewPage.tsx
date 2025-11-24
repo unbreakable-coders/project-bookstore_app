@@ -8,7 +8,7 @@ export default function DevPreviewPage() {
           Stripe Payment Test
         </h2>
 
-        <PaymentButton className="w-[220px]" />
+        <PaymentButton price={2200} className="w-[220px]" />
       </section>
     </div>
   );

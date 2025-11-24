@@ -13,8 +13,8 @@ import {
 
 interface BookActionsProps {
   bookId: string;
-  onAddToCart: () => void;
-  onToggleWishlist: () => void;
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
   isInCart: boolean;
   isInWishlist: boolean;
   inStock: boolean;
@@ -45,7 +45,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
         toastWishlistAdded();
       });
     } else {
-      onToggleWishlist();
+      onToggleWishlist(bookId);
       toastWishlistRemoved();
     }
   };
@@ -58,7 +58,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
         toastCartAdded();
       });
     } else {
-      onAddToCart();
+      onAddToCart(bookId);
       if (isInCart) {
         toastCartRemoved();
       }

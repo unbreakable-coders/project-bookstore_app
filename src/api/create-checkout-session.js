@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { items } = req.body;
+    const body = await req.json();
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
 
-    return res.status(200).json({ url: session.url });
+    return Response.json({ url: session.url });
   } catch (error) {
     console.error('Stripe error:', error);
     return res.status(500).json({ error: 'Stripe Error' });

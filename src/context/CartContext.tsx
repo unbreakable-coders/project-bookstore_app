@@ -39,7 +39,7 @@ const toUAH = (amount: number) => Math.ceil(amount * USD_TO_UAH_RATE);
 const CartContext = createContext<CartContextValue | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth(); // 🔹 важливо: підписуємося на зміну юзера
+  const { user } = useAuth();
 
   const userId = user?.id ?? null;
 
@@ -55,8 +55,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       try {
         const books = await fetchBooks();
         setAllBooks(books);
-      } catch (error) {
-        console.error('[CartProvider] Failed to load books:', error);
+      } catch {
+        // ignore
       } finally {
         setBooksLoading(false);
       }
@@ -65,20 +65,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     void loadBooks();
   }, []);
 
-  // 🔹 Ініціалізація корзини при кожній зміні userId
   useEffect(() => {
     const initCart = async () => {
       try {
         setCartInitialized(false);
 
         if (userId) {
-          console.log('[Cart] Logged in as:', userId);
-
-          // 1. Тягнемо Supabase
           const remote = await cartApi.getByUser(userId);
-          console.log('%c[Cart] Supabase →', 'color: cyan', remote);
 
-          // 2. Читаємо локальну корзину (якщо була до логіну)
           let localMap: CartMap = {};
           try {
             const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -88,9 +82,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           } catch {
             localMap = {};
           }
-          console.log('%c[Cart] LocalStorage →', 'color: gray', localMap);
 
-          // 3. Мерджимо
           const mergedMap: CartMap = {};
 
           for (const item of remote) {
@@ -102,11 +94,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             mergedMap[bookId] = Math.max(prev, qty as number);
           }
 
-          console.log('%c[Cart] MERGED MAP →', 'color: yellow', mergedMap);
-
           setCartMap(mergedMap);
 
-          // 4. Синкнемо назад у Supabase
           const entries = Object.entries(mergedMap);
           await Promise.all(
             entries.map(([bookId, quantity]) =>
@@ -114,11 +103,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             ),
           );
 
-          // 5. Гостьову корзину очищаємо
           localStorage.removeItem(CART_STORAGE_KEY);
         } else {
-          // 🔹 Гість → читаємо ТІЛЬКИ localStorage
-          console.log('[Cart] No user → using localStorage only');
           let localMap: CartMap = {};
           try {
             const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -130,8 +116,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           }
           setCartMap(localMap);
         }
-      } catch (e) {
-        console.error('[Cart] INIT ERROR', e);
+      } catch {
         setCartMap({});
       } finally {
         setCartInitialized(true);
@@ -143,13 +128,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const persistCartLocal = useCallback((next: CartMap) => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
-    console.log('%c[Cart] Saved to LS →', 'color: #4caf50', next);
   }, []);
 
   const syncCartItem = useCallback(
     (bookId: string, quantity: number) => {
       if (!userId) return;
-      console.log('[Cart] Supabase setItem', { bookId, quantity });
       void cartApi.setItem(userId, bookId, quantity);
     },
     [userId],
@@ -158,7 +141,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const deleteCartItem = useCallback(
     (bookId: string) => {
       if (!userId) return;
-      console.log('[Cart] Supabase remove', bookId);
       void cartApi.remove(userId, bookId);
     },
     [userId],
