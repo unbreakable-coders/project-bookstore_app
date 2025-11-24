@@ -12,25 +12,30 @@ export const PaymentButton: FC<Props> = ({ className }) => {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/create-checkout-session', {
+      const res = await fetch('http://localhost:4242/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [] }), 
+        body: JSON.stringify({
+          items: [
+            {
+              price_data: {
+                currency: 'usd',
+                product_data: { name: 'Book' },
+                unit_amount: 2200, // $22.00
+              },
+              quantity: 1,
+            },
+          ],
+        }),
       });
-
-      if (!res.ok) {
-        throw new Error('Failed to create checkout session');
-      }
 
       const data = await res.json();
 
-      if (data?.url) {
+      if (data.url) {
         window.location.href = data.url;
-      } else {
-        throw new Error('Stripe did not return any URL');
       }
-    } catch (error) {
-      console.error('[PaymentButton] Checkout error:', error);
+    } catch (e) {
+      console.error('[Checkout Error]', e);
     } finally {
       setIsLoading(false);
     }
