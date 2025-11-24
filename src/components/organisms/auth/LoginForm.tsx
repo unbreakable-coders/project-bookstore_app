@@ -1,6 +1,7 @@
 import type { FC, MouseEvent, KeyboardEvent } from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
+import { useTranslation } from 'react-i18next';
 
 type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
@@ -26,6 +27,8 @@ export const LoginForm: FC<LoginFormProps> = ({
   onChange,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
+
   const handleEmailChange = (value: string) => {
     onChange({
       ...values,
@@ -49,7 +52,7 @@ export const LoginForm: FC<LoginFormProps> = ({
           htmlFor="login-email"
           className="text-sm font-semibold text-foreground"
         >
-          Email
+          {t('Email')}
         </label>
         <Input
           id="login-email"
@@ -57,14 +60,10 @@ export const LoginForm: FC<LoginFormProps> = ({
           placeholder="name@example.com"
           value={values.email}
           onChange={
-            isAuthenticated
-              ? undefined
-              : e => handleEmailChange(e.target.value)
+            isAuthenticated ? undefined : e => handleEmailChange(e.target.value)
           }
           disabled={loading || isAuthenticated}
-          className={
-            isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''
-          }
+          className={isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''}
         />
       </div>
 
@@ -73,14 +72,12 @@ export const LoginForm: FC<LoginFormProps> = ({
           htmlFor="login-password"
           className="text-sm font-semibold text-foreground"
         >
-          Пароль
+          {t('Password')}
         </label>
         <Input
           id="login-password"
           type="password"
-          placeholder={
-            isAuthenticated ? '********' : 'Введіть пароль'
-          }
+          placeholder={isAuthenticated ? '********' : t('Enter password')}
           value={isAuthenticated ? '********' : values.password}
           onChange={
             isAuthenticated
@@ -88,9 +85,7 @@ export const LoginForm: FC<LoginFormProps> = ({
               : e => handlePasswordChange(e.target.value)
           }
           disabled={loading || isAuthenticated}
-          className={
-            isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''
-          }
+          className={isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''}
           onKeyDown={e => {
             if (e.key === 'Enter' && canSubmit) {
               onSubmit(e);
@@ -105,21 +100,13 @@ export const LoginForm: FC<LoginFormProps> = ({
             className="text-sm text-secondary hover:text-foreground transition-colors"
             disabled={loading}
           >
-            Забули пароль?
+            {t('Forgot password?')}
           </button>
         </div>
       )}
 
-      <Button
-        onClick={onSubmit}
-        disabled={loading}
-        className="w-full"
-      >
-        {isAuthenticated
-          ? 'Вийти'
-          : loading
-            ? 'Завантаження...'
-            : 'Увійти'}
+      <Button onClick={onSubmit} disabled={loading} className="w-full">
+        {isAuthenticated ? t('Logout') : loading ? t('Loading...') : t('Login')}
       </Button>
     </div>
   );
