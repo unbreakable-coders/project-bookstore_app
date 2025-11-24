@@ -46,7 +46,6 @@ export const BookCard: React.FC<BookCardProps> = ({
     const willBeInCart = !optimisticInCart;
     setOptimisticInCart(willBeInCart);
     onAddToCart?.(book.id);
-    // Прибрали тости - тепер в BookActions
   };
 
   const handleToggleWishlist = () => {

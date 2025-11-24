@@ -64,11 +64,11 @@ export const MoveHeartProvider = ({ children }: { children: ReactNode }) => {
       document.body.appendChild(flyingHeart);
 
       gsap.to(flyingHeart, {
-        duration: 2,
+        duration: 1,
         x: deltaX,
         y: deltaY,
         scale: 0.6,
-        ease: 'power3.inOut',
+        ease: 'power2.inOut',
         onComplete: () => {
           flyingHeart.remove();
 

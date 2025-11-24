@@ -1,4 +1,3 @@
-// src/components/MoveBookToCart.tsx
 import {
   createContext,
   useContext,
@@ -71,11 +70,12 @@ export const MoveBookToCartProvider = ({
       document.body.appendChild(flyingBook);
 
       gsap.to(flyingBook, {
-        duration: 1.5,
+        duration: 1,
         x: deltaX,
         y: deltaY,
-        scale: 0.5,
-        ease: 'power2.inOut',
+        scale: 0.4,
+        rotation: 360,
+        ease: 'power1.in',
         onComplete: () => {
           flyingBook.remove();
 

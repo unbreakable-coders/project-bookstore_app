@@ -22,7 +22,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { ScrollToTop } from './components/utils/ScrollToTop';
 import { AuthProvider } from './context/AuthContext';
 import { MoveHeartProvider } from './components/MoveHeart';
-import { MoveBookToCartProvider } from '@/components/MoveBookToCart';
+import { MoveBookToCartProvider } from './components/MoveBookToCart';
 
 export default function App() {
   return (

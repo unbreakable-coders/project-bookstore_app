@@ -22,7 +22,7 @@ import { booksData } from '@/books/data/books';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
-import { useMoveBookToCart } from '../../MoveBookToCart';
+import { useMoveBookToCart } from '@/components/MoveBookToCart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -224,7 +224,7 @@ export const Header = () => {
             <span
               className="
                 absolute -right-1 -top-1
-                min-w-[16px] h-4 px-[3px]
+                min-w-4 h-4 px-[3px]
                 rounded-full bg-[#FF5A5A]
                 text-[10px] leading-4 text-white
                 flex items-center justify-center
@@ -248,7 +248,17 @@ export const Header = () => {
         >
           <Icon name="cart" className="h-4 w-4" />
           {badgeCount > 0 && (
-            <span className="...">{badgeCount > 99 ? '99+' : badgeCount}</span>
+            <span
+              className="
+                absolute -right-1 -top-1
+                min-w-4 h-4 px-[3px]
+                rounded-full bg-[#FF5A5A]
+                text-[10px] leading-4 text-white
+                flex items-center justify-center
+              "
+            >
+              {badgeCount > 99 ? '99+' : badgeCount}
+            </span>
           )}
         </Link>
       );
@@ -537,7 +547,7 @@ export const Header = () => {
                             <span
                               className="
                                 absolute -right-2 -top-1
-                                min-w-[16px] h-4 px-[3px]
+                                min-w-4 h-4 px-[3px]
                                 rounded-full bg-[#FF5A5A]
                                 text-[10px] leading-4 text-white
                                 flex items-center justify-center

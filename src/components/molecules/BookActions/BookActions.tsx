@@ -7,6 +7,8 @@ import { useMoveBookToCart } from '@/components/MoveBookToCart';
 import {
   toastWishlistAdded,
   toastWishlistRemoved,
+  toastCartAdded,
+  toastCartRemoved,
 } from '@/components/atoms/Toasts';
 
 interface BookActionsProps {
@@ -52,12 +54,15 @@ export const BookActions: React.FC<BookActionsProps> = ({
     e.stopPropagation();
 
     if (!isInCart && inStock && cartButtonRef.current) {
-      // Тільки анімація, без тосту
-      flyToCart(cartButtonRef.current, bookId);
+      flyToCart(cartButtonRef.current, bookId, () => {
+        toastCartAdded();
+      });
+    } else {
+      onAddToCart();
+      if (isInCart) {
+        toastCartRemoved();
+      }
     }
-
-    // Викликаємо onAddToCart (там вже є тости в BookCard)
-    onAddToCart();
   };
 
   return (
