@@ -12,11 +12,12 @@ interface ProductInfoPanelProps {
   selectedLanguage: string;
   onLanguageChange: (lang: string) => void;
   onAddToCart: () => void;
-  onToggleWishlist: () => void;
-  isInWishlist: boolean;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
   visibleLabels?: string[];
-  isInCart: boolean;
+  isInCart: (bookId: string) => boolean;
   inStock?: boolean;
+  bookId: string;
 }
 
 export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
@@ -31,6 +32,7 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
   onToggleWishlist,
   isInWishlist,
   isInCart,
+  bookId,
   visibleLabels = [
     'Author',
     'Cover type',
@@ -70,6 +72,7 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
         isInWishlist={isInWishlist}
         isInCart={isInCart}
         inStock={true}
+        bookId={bookId}
       />
 
       {/* Product details */}

@@ -12,7 +12,7 @@ export const Price: React.FC<PriceProps> = ({
   const styles = {
     regular: 'text-2xl font-bold text-gray-900',
     discount: 'text-2xl font-bold text-gray-900',
-    old: 'text-sm text-gray-400 line-through',
+    old: 'text-sm text-muted line-through',
   };
 
   //return <span className={styles[variant]}>₴{amount}</span>;

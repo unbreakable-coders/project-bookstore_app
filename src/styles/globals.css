@@ -67,12 +67,12 @@
   --secondary: #74787b; /* Secondary */
   --accent: #b4bdc3; /* Icons */
 
-  --muted: #e2e6e9; /* Elements */
+  --muted: #b5b9bc; /* Elements */
   --muted-foreground: #89939a;
 
   --destructive: #eb5757;
   --border: #bebb94;
-  --input: #e2e6e9;
+  --input: #f5f6e1;
   --ring: #27ae60;
 
   --radius: 0.625rem;
@@ -96,19 +96,19 @@
     #4a3a35 50%,
     #3a2c2a 100%
   ); /* Теплий коричневий фон */
-  --foreground: #f5f1e8; /* Кремовий текст */
+  --foreground: #f4e4c0; /* Кремовий текст */
 
   --card: #e8dfd0; /* Світло-пісочні карточки */
   --primary: #8b4513; /* Шоколадний */
   --secondary: #a0522d; /* Темно-пісочний */
   --accent: #c19a6b; /* Золотистий акцент */
 
-  --muted: #d7ccc8; /* Світлий бежевий */
+  --muted: #beaba4; /* Світлий бежевий */
   --muted-foreground: #8d6e63; /* Темно-бежевий */
 
   --destructive: #b22222; /* Темно-червоний (бордо) */
   --border: #bcaaa4; /* Світло-коричневий бордер */
-  --input: #d7ccc8; /* Світлий бежевий для інпутів */
+  --input: #daceb6; /* Світлий бежевий для інпутів */
   --ring: #d4af37; /* Золотий для фокусу */
 }
 
@@ -195,8 +195,8 @@
 /* ===========================
   SMOOTH TRANSITIONS
    =========================== */
-/* * {
+* {
   transition-property: background-color, border-color, color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-} */
+  transition-duration: 1000ms;
+}

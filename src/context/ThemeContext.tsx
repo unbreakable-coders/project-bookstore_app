@@ -39,9 +39,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
     setActualTheme(applied);
 
-    // Видаляємо всі класи теми
     root.classList.remove('light', 'dark');
-    // Додаємо новий
+
     root.classList.add(applied);
 
     localStorage.setItem('theme', theme);

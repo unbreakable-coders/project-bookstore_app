@@ -3,6 +3,7 @@ import { useCart } from '@/context/CartContext';
 import { CartItem } from '@/components/organisms/Cart/CartItem';
 import { CartSummary } from '@/components/organisms/Cart/CartSummary';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 export const CartPage: FC = () => {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export const CartPage: FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg text-foreground">{t('Loading...')}</div>
+        <Loader />
       </div>
     );
   }

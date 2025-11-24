@@ -85,6 +85,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
 
           {/* Column 3: Product Info Panel (Organism) */}
           <ProductInfoPanel
+            bookId={book.id}
             category={book.category}
             price={book.price}
             oldPrice={book.oldPrice}
@@ -94,8 +95,8 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
             onLanguageChange={onSelectLanguage}
             onAddToCart={() => onAddToCart(book.id)}
             onToggleWishlist={() => onToggleWishlist(book.id)}
-            isInWishlist={isInWishlist(book.id)}
-            isInCart={isInCart(book.id)}
+            isInWishlist={isInWishlist}
+            isInCart={isInCart}
           />
         </div>
       </div>

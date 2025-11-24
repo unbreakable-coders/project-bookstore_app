@@ -14,7 +14,9 @@ export const StockStatus: React.FC<StockStatusProps> = ({ inStock }) => {
       <Icon name="truck" className="w-4 h-4" />
       <span
         className={
-          inStock ? 'text-green-600 font-medium' : 'text-red-600 font-medium'
+          inStock
+            ? 'text-green-600 font-medium'
+            : 'text-destructive font-medium'
         }
       >
         {inStock ? t('In stock') : t('Out of stock')}
