@@ -31,6 +31,8 @@
   --font-sans: 'Manrope', system-ui, sans-serif;
 
   --color-background: var(--background);
+  --color-header: var(--header-background);
+  --color-footer: var(--footer-background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
@@ -60,6 +62,10 @@
     #fff5e6 50%,
     #fffbf5 100%
   ); /* Hover + BG */
+
+  --header-background: #faebd5;
+  --footer-background: #faebd5;
+
   --foreground: #313237; /* Primary */
 
   --card: #ffffff; /* White */
@@ -95,21 +101,25 @@
     #3a2c2a 0%,
     #4a3a35 50%,
     #3a2c2a 100%
-  ); /* Теплий коричневий фон */
-  --foreground: #f4e4c0; /* Кремовий текст */
+  );
 
-  --card: #e8dfd0; /* Світло-пісочні карточки */
-  --primary: #8b4513; /* Шоколадний */
-  --secondary: #a0522d; /* Темно-пісочний */
-  --accent: #c19a6b; /* Золотистий акцент */
+  --header-background: #211917;
+  --footer-background: #211917;
 
-  --muted: #beaba4; /* Світлий бежевий */
-  --muted-foreground: #8d6e63; /* Темно-бежевий */
+  --foreground: #f4e4c0;
 
-  --destructive: #b22222; /* Темно-червоний (бордо) */
-  --border: #bcaaa4; /* Світло-коричневий бордер */
-  --input: #daceb6; /* Світлий бежевий для інпутів */
-  --ring: #d4af37; /* Золотий для фокусу */
+  --card: #e8dfd0;
+  --primary: #8b4513;
+  --secondary: #a0522d;
+  --accent: #c19a6b;
+
+  --muted: #beaba4;
+  --muted-foreground: #8d6e63;
+
+  --destructive: #b22222;
+  --border: #bcaaa4;
+  --input: #daceb6;
+  --ring: #d4af37;
 }
 
 @layer base {

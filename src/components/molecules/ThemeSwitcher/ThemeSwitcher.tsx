@@ -33,7 +33,6 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({
     setIsOpen(false);
   };
 
-  // Закрытие dropdown при клике вне элемента
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
