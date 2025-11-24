@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { Book } from '@/types/book';
 import { Icon } from '@/components/atoms/Icon';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
@@ -10,6 +10,25 @@ interface SearchPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+const mapLang = (lang: string): string => {
+  const lc = lang.toLowerCase();
+
+  if (lc === 'uk' || lc === 'ua' || lc === 'uk-ua') return 'UA';
+  if (lc === 'en' || lc === 'eng' || lc === 'en-us') return 'ENG';
+
+  return lang.toUpperCase();
+};
+
+const mapTypeIcon = (type: string): string => {
+  const t = type.toLowerCase();
+
+  if (t === 'paperback') return ' 📖';
+  if (t === 'kindle') return ' 📋';
+  if (t === 'audiobook') return ' 🔉';
+
+  return '';
+};
 
 export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
   const { t } = useTranslation();
@@ -42,16 +61,20 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
     }
   }, [open]);
 
-  const filtered =
-    searchQuery.trim() === ''
-      ? []
-      : allBooks.filter(b => {
-          const q = searchQuery.toLowerCase();
-          return (
-            b.name.toLowerCase().includes(q) ||
-            b.author.toLowerCase().includes(q)
-          );
-        });
+  const filteredBooks = useMemo(() => {
+    const trimmed = searchQuery.trim();
+
+    if (trimmed === '') return [];
+
+    const q = trimmed.toLowerCase();
+
+    return allBooks.filter(book => {
+      const name = book.name.toLowerCase();
+      const author = (book.author ?? '').toLowerCase();
+
+      return name.includes(q) || author.includes(q);
+    });
+  }, [searchQuery, allBooks]);
 
   const handleSelect = (book: Book) => {
     onOpenChange(false);
@@ -87,38 +110,52 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
             )}
 
             {!loading &&
-              filtered.map(book => (
-                <div
-                  key={book.id}
-                  onClick={() => handleSelect(book)}
-                  className="flex items-center gap-3 px-2 py-2 hover:bg-[#F8F9FB] cursor-pointer"
-                >
-                  <div className="h-10 w-8 bg-[#F0F0F0] rounded overflow-hidden">
-                    {book.images?.[0] && (
-                      <img
-                        src={book.images[0]}
-                        alt={book.name}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
+              filteredBooks.map(book => {
+                const lang = mapLang(book.lang);
+                const icon = mapTypeIcon(book.type);
 
-                  <div className="flex-1 overflow-hidden">
-                    <div className="truncate text-sm font-medium text-[#050505]">
-                      {book.name}
+                return (
+                  <div
+                    key={book.id}
+                    onClick={() => handleSelect(book)}
+                    className="flex items-center gap-3 px-2 py-2 hover:bg-[#F8F9FB] cursor-pointer"
+                  >
+                    <div className="h-10 w-8 bg-[#F0F0F0] rounded overflow-hidden">
+                      {book.images?.[0] && (
+                        <img
+                          src={book.images[0]}
+                          alt={book.name}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
                     </div>
-                    <div className="truncate text-xs text-[#8F8F8F]">
-                      {book.author}
+
+                    <div className="flex-1 overflow-hidden">
+                      <div className="truncate text-sm font-medium text-[#050505]">
+                        {book.name}
+                      </div>
+
+                      <div className="truncate text-xs text-[#8F8F8F] flex gap-1 items-center">
+                        <span>{book.author}</span>
+
+                        <span>•</span>
+                        <span>{lang}</span>
+
+                        <span>•</span>
+                        <span>{icon}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
-            {!loading && searchQuery && filtered.length === 0 && (
-              <p className="px-1 text-sm text-[#8F8F8F]">
-                {t('No books found')}
-              </p>
-            )}
+            {!loading &&
+              searchQuery.trim() !== '' &&
+              filteredBooks.length === 0 && (
+                <p className="px-1 text-sm text-[#8F8F8F]">
+                  {t('No books found')}
+                </p>
+              )}
           </div>
         </div>
       </DialogContent>

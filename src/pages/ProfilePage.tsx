@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -7,88 +7,57 @@ import {
 } from '@/components/molecules/BookPreview/Card';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
-
-// Mock дані для демонстрації
-const mockUser = {
-  full_name: 'Іван Петренко',
-  email: 'ivan.petrenko@example.com',
-  phone: '+380 95 123 45 67',
-  created_at: '2024-01-15',
-};
-
-const mockOrders = [
-  {
-    id: '1',
-    created_at: '2024-11-20T10:30:00',
-    status: 'completed',
-    total_amount: 599.0,
-    delivery_address: 'м. Київ, вул. Хрещатик, 22',
-    items: [
-      {
-        id: '1',
-        book_title: 'Кобзар',
-        book_cover_url:
-          'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=200',
-        quantity: 1,
-        price: 299.0,
-      },
-      {
-        id: '2',
-        book_title: 'Тіні забутих предків',
-        book_cover_url:
-          'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200',
-        quantity: 1,
-        price: 300.0,
-      },
-    ],
-  },
-  {
-    id: '2',
-    created_at: '2024-11-15T14:20:00',
-    status: 'processing',
-    total_amount: 450.0,
-    delivery_address: 'м. Київ, вул. Хрещатик, 22',
-    items: [
-      {
-        id: '3',
-        book_title: 'Захар Беркут',
-        book_cover_url:
-          'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=200',
-        quantity: 1,
-        price: 450.0,
-      },
-    ],
-  },
-  {
-    id: '3',
-    created_at: '2024-10-28T09:15:00',
-    status: 'cancelled',
-    total_amount: 350.0,
-    delivery_address: 'м. Київ, вул. Хрещатик, 22',
-    items: [
-      {
-        id: '4',
-        book_title: 'Лісова пісня',
-        book_cover_url:
-          'https://images.unsplash.com/photo-1589998059171-988d887df646?w=200',
-        quantity: 1,
-        price: 350.0,
-      },
-    ],
-  },
-];
+import { useProfile } from '@/hooks/useProfile';
+import { useOrders } from '@/hooks/useOrders';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfilePage = () => {
+  const navigate = useNavigate();
+  const { signOut, getCurrentUser } = useAuth();
+  const { profile, loading: profileLoading, updateProfile } = useProfile();
+  const { orders, loading: ordersLoading } = useOrders();
+
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: mockUser.full_name,
-    phone: mockUser.phone,
+    full_name: '',
+    phone: '',
   });
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
 
-  const handleSave = () => {
-    console.log('Збереження:', formData);
-    setIsEditing(false);
+  useEffect(() => {
+    const loadUserEmail = async () => {
+      const user = await getCurrentUser();
+      if (user?.email) {
+        setUserEmail(user.email);
+      }
+    };
+    loadUserEmail();
+  }, [getCurrentUser]);
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || '',
+        phone: profile.phone || '',
+      });
+    }
+  }, [profile]);
+
+  const handleSave = async () => {
+    const { error } = await updateProfile(formData);
+    if (!error) {
+      setIsEditing(false);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
   };
 
   const getStatusLabel = (status: string) => {
@@ -121,10 +90,17 @@ export const ProfilePage = () => {
     });
   };
 
+  if (profileLoading && !profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-muted-foreground">Завантаження...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-10 space-y-6 max-w-5xl mx-auto">
-        {/* Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-foreground">
             Особистий кабінет
@@ -134,7 +110,12 @@ export const ProfilePage = () => {
           </p>
         </div>
 
-        {/* Tabs */}
+        {saveSuccess && (
+          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm text-green-800">Профіль успішно оновлено!</p>
+          </div>
+        )}
+
         <div className="flex gap-2 p-1 bg-muted rounded-lg max-w-md">
           <button
             onClick={() => setActiveTab('profile')}
@@ -158,13 +139,12 @@ export const ProfilePage = () => {
           </button>
         </div>
 
-        {/* Profile Tab */}
         {activeTab === 'profile' && (
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Мій профіль</CardTitle>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleLogout}>
                   Вийти
                 </Button>
               </div>
@@ -176,19 +156,19 @@ export const ProfilePage = () => {
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">Ім'я</p>
                       <p className="text-base font-semibold">
-                        {mockUser.full_name}
+                        {profile?.full_name || '—'}
                       </p>
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">Email</p>
                       <p className="text-base font-semibold">
-                        {mockUser.email}
+                        {userEmail || '—'}
                       </p>
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">Телефон</p>
                       <p className="text-base font-semibold">
-                        {mockUser.phone}
+                        {profile?.phone || '—'}
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -196,9 +176,11 @@ export const ProfilePage = () => {
                         Дата реєстрації
                       </p>
                       <p className="text-base font-semibold">
-                        {new Date(mockUser.created_at).toLocaleDateString(
-                          'uk-UA',
-                        )}
+                        {profile?.created_at
+                          ? new Date(profile.created_at).toLocaleDateString(
+                              'uk-UA',
+                            )
+                          : '—'}
                       </p>
                     </div>
                   </div>
@@ -229,7 +211,7 @@ export const ProfilePage = () => {
                         Email
                       </label>
                       <Input
-                        value={mockUser.email}
+                        value={userEmail}
                         disabled
                         className="opacity-60"
                       />
@@ -251,10 +233,13 @@ export const ProfilePage = () => {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={handleSave}>Зберегти</Button>
+                    <Button onClick={handleSave} disabled={profileLoading}>
+                      {profileLoading ? 'Збереження...' : 'Зберегти'}
+                    </Button>
                     <Button
                       variant="outline"
                       onClick={() => setIsEditing(false)}
+                      disabled={profileLoading}
                     >
                       Скасувати
                     </Button>
@@ -265,39 +250,43 @@ export const ProfilePage = () => {
           </Card>
         )}
 
-        {/* Orders Tab */}
         {activeTab === 'orders' && (
           <Card>
             <CardHeader>
               <CardTitle>Історія замовлень</CardTitle>
             </CardHeader>
             <CardContent>
-              {mockOrders.length === 0 ? (
+              {ordersLoading ? (
+                <p className="text-muted-foreground">
+                  Завантаження замовлень...
+                </p>
+              ) : orders.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground mb-4">
                     У вас поки немає замовлень
                   </p>
-                  <Button>Почати покупки</Button>
+                  <Button onClick={() => navigate('/')}>Почати покупки</Button>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {mockOrders.map(order => (
+                  {orders.map(order => (
                     <div
                       key={order.id}
                       className="border border-border rounded-xl p-6 space-y-4 hover:shadow-md transition-shadow"
                     >
-                      {/* Order Header */}
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
                           <p className="text-sm font-semibold text-foreground">
-                            Замовлення #{order.id}
+                            Замовлення #{order.id.slice(0, 8)}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {formatDate(order.created_at)}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            📍 {order.delivery_address}
-                          </p>
+                          {order.delivery_address && (
+                            <p className="text-xs text-muted-foreground">
+                              📍 {order.delivery_address}
+                            </p>
+                          )}
                         </div>
                         <span
                           className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${getStatusColor(order.status)}`}
@@ -306,37 +295,44 @@ export const ProfilePage = () => {
                         </span>
                       </div>
 
-                      {/* Order Items */}
-                      <div className="space-y-3 pt-4 border-t border-border">
-                        {order.items.map(item => (
-                          <div
-                            key={item.id}
-                            className="flex items-center gap-4"
-                          >
-                            <img
-                              src={item.book_cover_url}
-                              alt={item.book_title}
-                              className="w-16 h-20 object-cover rounded shadow-sm"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold text-foreground truncate">
-                                {item.book_title}
-                              </p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {item.quantity} шт. × {item.price.toFixed(2)}{' '}
-                                грн
-                              </p>
+                      {order.items && order.items.length > 0 && (
+                        <div className="space-y-3 pt-4 border-t border-border">
+                          {order.items.map(item => (
+                            <div
+                              key={item.id}
+                              className="flex items-center gap-4"
+                            >
+                              {item.book_cover_url && (
+                                <img
+                                  src={item.book_cover_url}
+                                  alt={item.book_title}
+                                  className="w-16 h-20 object-cover rounded shadow-sm"
+                                />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-foreground truncate">
+                                  {item.book_title}
+                                </p>
+                                {item.book_author && (
+                                  <p className="text-xs text-muted-foreground">
+                                    {item.book_author}
+                                  </p>
+                                )}
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {item.quantity} шт. × {item.price.toFixed(2)}{' '}
+                                  грн
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-semibold">
+                                  {(item.quantity * item.price).toFixed(2)} грн
+                                </p>
+                              </div>
                             </div>
-                            <div className="text-right">
-                              <p className="text-sm font-semibold">
-                                {(item.quantity * item.price).toFixed(2)} грн
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
 
-                      {/* Order Total */}
                       <div className="pt-4 border-t border-border flex justify-between items-center">
                         <p className="text-sm text-muted-foreground">Всього:</p>
                         <p className="text-lg font-bold text-foreground">
@@ -344,7 +340,6 @@ export const ProfilePage = () => {
                         </p>
                       </div>
 
-                      {/* Actions */}
                       <div className="flex gap-2 pt-2">
                         <Button size="sm" variant="outline">
                           Деталі замовлення

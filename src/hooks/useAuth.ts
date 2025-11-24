@@ -1,18 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabaseClient';
 import { useTranslation } from 'react-i18next';
 
-type AuthResult<T> = {
+interface AuthResult<T> {
   data: T | null;
   error: string | null;
-};
+}
 
 export const useAuth = () => {
   const { t } = useTranslation();
 
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false); // для операцій (login/logout/signUp)
+  const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const init = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (isMounted) {
+          setUser(user ?? null);
+        }
+      } finally {
+        if (isMounted) {
+          setInitializing(false);
+        }
+      }
+    };
+
+    void init();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const createProfileIfNeeded = async (
     userId: string,
@@ -26,7 +61,6 @@ export const useAuth = () => {
     });
 
     if (profileError) {
-      // eslint-disable-next-line no-console
       console.error('[profiles insert error]', profileError.message);
     }
   };
@@ -136,6 +170,8 @@ export const useAuth = () => {
   };
 
   return {
+    user,
+    initializing,
     signUp,
     signIn,
     signOut,

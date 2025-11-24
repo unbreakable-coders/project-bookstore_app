@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
-import { Categories } from '@/components/organisms/Home/Categories';
+import {
+  Categories,
+  type TypeBooks,
+} from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
-import { PaymentButton } from '@/components/molecules/PaymentButton/PaymentButton.tsx';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
@@ -14,6 +16,11 @@ export const HomePage = () => {
 
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
+  const [countTypeOfBooks, setCountTypeOfBooks] = useState<TypeBooks>({
+    paper: 0,
+    audio: 0,
+    kindle: 0,
+  });
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -22,6 +29,22 @@ export const HomePage = () => {
     const loadBooks = async () => {
       try {
         const allBooks = await fetchBooks();
+
+        const paperBooksCounter = allBooks.filter(
+          book => book.type === 'paperback',
+        ).length;
+        const audioBooksCounter = allBooks.filter(
+          book => book.type === 'audiobook',
+        ).length;
+        const kindleBooksCounter = allBooks.filter(
+          book => book.type === 'kindle',
+        ).length;
+
+        setCountTypeOfBooks({
+          paper: paperBooksCounter,
+          audio: audioBooksCounter,
+          kindle: kindleBooksCounter,
+        });
 
         setNewBooks(
           [...allBooks]
@@ -40,6 +63,8 @@ export const HomePage = () => {
     void loadBooks();
   }, []);
 
+  console.log(countTypeOfBooks);
+
   return (
     <main className="w-full flex justify-center container">
       <div className="w-full max-w-[1136px] px-4 flex flex-col">
@@ -54,11 +79,7 @@ export const HomePage = () => {
           isInWishlist={isInWishlist}
         />
 
-        <Categories />
-
-        <div className="p-8">
-          <PaymentButton />
-        </div>
+        <Categories typeBooks={countTypeOfBooks} />
 
         <ProductCardsBlock
           title={t('Also you might like it!')}
