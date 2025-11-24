@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { BookCard } from '../components/organisms/BookCard';
-import { booksData } from '../books/data/books';
 import type { Book } from '../types/book';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
+import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 export const WishlistPage: React.FC = () => {
+  const { t } = useTranslation();
+
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +19,7 @@ export const WishlistPage: React.FC = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const books = await booksData();
+        const books = await fetchBooks();
         setAllBooks(books);
       } catch (error) {
         console.error('[WishlistPage] Failed to load books:', error);
@@ -32,24 +36,28 @@ export const WishlistPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Завантаження...</div>
+        <Loader />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 container">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Улюблені</h1>
-        <p className="text-gray-500">{favouriteBooks.length} елементів</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {t('Favorites')}
+        </h1>
+        <p className="text-gray-500">
+          {t('{{count}} items', { count: favouriteBooks.length })}
+        </p>
       </div>
 
       {favouriteBooks.length === 0 ? (
         <div className="text-center py-16 text-gray-500 text-lg">
-          У вас поки немає улюблених книжок
+          {t('You have no favorite books yet')}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
           {favouriteBooks.map(book => (
             <BookCard
               key={book.id}

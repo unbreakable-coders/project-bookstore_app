@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../atoms/Button';
 
 interface LanguageSelectorProps {
@@ -12,13 +13,15 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   selectedLanguage,
   onLanguageChange,
 }) => {
+  const { t } = useTranslation();
+
   const handleLanguageSelect = (lang: string) => {
     onLanguageChange(lang);
   };
 
   return (
     <div className="border-b border-border py-8">
-      <h5 className="font-bold text-secondary mb-2">Select language</h5>
+      <h5 className="font-bold text-secondary mb-2">{t('Select language')}</h5>
 
       <div className="flex gap-2">
         {languages.includes('uk') && (
@@ -28,7 +31,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             size="language"
             className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
-            UA
+            {t('UA')}
           </Button>
         )}
 
@@ -39,7 +42,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             size="language"
             className="cursor-pointer hover:opacity-80 active:scale-95 transition"
           >
-            ENG
+            {t('ENG')}
           </Button>
         )}
       </div>

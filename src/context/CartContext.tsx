@@ -4,77 +4,281 @@ import {
   useEffect,
   useState,
   useCallback,
+  useMemo,
   type ReactNode,
 } from 'react';
+import type { Book } from '@/types/book';
+import { fetchBooks } from '@/lib/booksApi';
+import { useAuth } from '@/hooks/useAuth';
+import { cartApi } from '@/api/cartApi';
 
 type CartMap = Record<string, number>;
 
-type CartContextValue = {
-  cart: CartMap;
+export interface CartItem {
+  book: Book;
+  quantity: number;
+  totalPriceUAH: number;
+}
+
+interface CartContextValue {
+  loading: boolean;
+  cartItems: CartItem[];
+  totalItems: number;
+  totalPriceUAH: number;
+  changeQuantity: (bookId: string, delta: number) => void;
+  removeItem: (bookId: string) => void;
   toggleCart: (bookId: string) => void;
   isInCart: (bookId: string) => boolean;
-};
+}
+
+const CART_STORAGE_KEY = 'cart';
+const USD_TO_UAH_RATE = 42;
+
+const toUAH = (amount: number) => Math.ceil(amount * USD_TO_UAH_RATE);
 
 const CartContext = createContext<CartContextValue | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  console.log('%c[CartProvider] mounted', 'color: #00bfff');
+  const { user } = useAuth();
 
-  // ініціалізація зі storage один раз
-  const [cart, setCart] = useState<CartMap>(() => {
-    try {
-      const saved = localStorage.getItem('cart');
+  const userId = user?.id ?? null;
 
-      if (!saved) {
-        console.log('[CartProvider] No cart in LS, using empty object');
-        return {};
-      }
+  const [allBooks, setAllBooks] = useState<Book[]>([]);
+  const [cartMap, setCartMap] = useState<CartMap>({});
+  const [booksLoading, setBooksLoading] = useState(true);
+  const [cartInitialized, setCartInitialized] = useState(false);
 
-      const parsed = JSON.parse(saved) as CartMap;
+  const loading = booksLoading || !cartInitialized;
 
-      console.log('[CartProvider] Loaded from LS:', parsed);
-      return parsed;
-    } catch (error) {
-      console.error('[CartProvider] Failed to parse cart from LS:', error);
-      return {};
-    }
-  });
-
-  // просто лог, щоб бачити зміни
   useEffect(() => {
-    console.log('[CartProvider] cart changed →', cart);
-  }, [cart]);
-
-  const toggleCart = useCallback((bookId: string) => {
-    console.log('%c[toggleCart] CLICKED →', 'color: #ff9800', bookId);
-
-    setCart(prev => {
-      const next: CartMap = { ...prev };
-
-      if (next[bookId]) {
-        console.log('[toggleCart] Removing from cart:', bookId);
-        delete next[bookId];
-      } else {
-        console.log('[toggleCart] Adding to cart:', bookId);
-        next[bookId] = 1;
+    const loadBooks = async () => {
+      try {
+        const books = await fetchBooks();
+        setAllBooks(books);
+      } catch {
+        // ignore
+      } finally {
+        setBooksLoading(false);
       }
+    };
 
-      localStorage.setItem('cart', JSON.stringify(next));
-      console.log('%c[CartProvider] Saved to LS →', 'color: #4caf50', next);
-
-      return next;
-    });
+    void loadBooks();
   }, []);
 
+  useEffect(() => {
+    const initCart = async () => {
+      try {
+        setCartInitialized(false);
+
+        if (userId) {
+          const remote = await cartApi.getByUser(userId);
+
+          let localMap: CartMap = {};
+          try {
+            const saved = localStorage.getItem(CART_STORAGE_KEY);
+            if (saved) {
+              localMap = JSON.parse(saved) as CartMap;
+            }
+          } catch {
+            localMap = {};
+          }
+
+          const mergedMap: CartMap = {};
+
+          for (const item of remote) {
+            mergedMap[item.bookId] = item.quantity;
+          }
+
+          for (const [bookId, qty] of Object.entries(localMap)) {
+            const prev = mergedMap[bookId] ?? 0;
+            mergedMap[bookId] = Math.max(prev, qty as number);
+          }
+
+          setCartMap(mergedMap);
+
+          const entries = Object.entries(mergedMap);
+          await Promise.all(
+            entries.map(([bookId, quantity]) =>
+              cartApi.setItem(userId, bookId, quantity),
+            ),
+          );
+
+          localStorage.removeItem(CART_STORAGE_KEY);
+        } else {
+          let localMap: CartMap = {};
+          try {
+            const saved = localStorage.getItem(CART_STORAGE_KEY);
+            if (saved) {
+              localMap = JSON.parse(saved) as CartMap;
+            }
+          } catch {
+            localMap = {};
+          }
+          setCartMap(localMap);
+        }
+      } catch {
+        setCartMap({});
+      } finally {
+        setCartInitialized(true);
+      }
+    };
+
+    void initCart();
+  }, [userId]);
+
+  const persistCartLocal = useCallback((next: CartMap) => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(next));
+  }, []);
+
+  const syncCartItem = useCallback(
+    (bookId: string, quantity: number) => {
+      if (!userId) return;
+      void cartApi.setItem(userId, bookId, quantity);
+    },
+    [userId],
+  );
+
+  const deleteCartItem = useCallback(
+    (bookId: string) => {
+      if (!userId) return;
+      void cartApi.remove(userId, bookId);
+    },
+    [userId],
+  );
+
+  const changeQuantity = useCallback(
+    (bookId: string, delta: number) => {
+      setCartMap(prev => {
+        const current = prev[bookId] ?? 0;
+        const nextQuantity = current + delta;
+        const next: CartMap = { ...prev };
+
+        if (nextQuantity <= 0) {
+          delete next[bookId];
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            deleteCartItem(bookId);
+          }
+        } else {
+          next[bookId] = nextQuantity;
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            syncCartItem(bookId, nextQuantity);
+          }
+        }
+
+        return next;
+      });
+    },
+    [userId, persistCartLocal, syncCartItem, deleteCartItem],
+  );
+
+  const removeItem = useCallback(
+    (bookId: string) => {
+      setCartMap(prev => {
+        if (!prev[bookId]) {
+          return prev;
+        }
+
+        const next: CartMap = { ...prev };
+        delete next[bookId];
+
+        if (!userId) {
+          persistCartLocal(next);
+        } else {
+          deleteCartItem(bookId);
+        }
+
+        return next;
+      });
+    },
+    [userId, persistCartLocal, deleteCartItem],
+  );
+
+  const toggleCart = useCallback(
+    (bookId: string) => {
+      setCartMap(prev => {
+        const exists = Boolean(prev[bookId]);
+        const next: CartMap = { ...prev };
+
+        if (exists) {
+          delete next[bookId];
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            deleteCartItem(bookId);
+          }
+        } else {
+          next[bookId] = 1;
+
+          if (!userId) {
+            persistCartLocal(next);
+          } else {
+            syncCartItem(bookId, 1);
+          }
+        }
+
+        return next;
+      });
+    },
+    [userId, persistCartLocal, syncCartItem, deleteCartItem],
+  );
+
   const isInCart = useCallback(
-    (bookId: string) => Boolean(cart[bookId]),
-    [cart],
+    (bookId: string) => Boolean(cartMap[bookId]),
+    [cartMap],
+  );
+
+  const cartItems: CartItem[] = useMemo(() => {
+    if (!allBooks.length) {
+      return [];
+    }
+
+    return Object.entries(cartMap)
+      .map(([bookId, quantity]) => {
+        const book = allBooks.find(b => b.id === bookId);
+        if (!book) {
+          return null;
+        }
+
+        const usdPrice =
+          typeof book.priceDiscount === 'number'
+            ? book.priceDiscount
+            : typeof book.priceRegular === 'number'
+              ? book.priceRegular
+              : 0;
+
+        const totalPriceUAH = toUAH(usdPrice * quantity);
+
+        return { book, quantity, totalPriceUAH };
+      })
+      .filter((item): item is CartItem => item !== null);
+  }, [allBooks, cartMap]);
+
+  const totalItems = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
+    [cartItems],
+  );
+
+  const totalPriceUAH = useMemo(
+    () => cartItems.reduce((sum, item) => sum + item.totalPriceUAH, 0),
+    [cartItems],
   );
 
   return (
     <CartContext.Provider
       value={{
-        cart,
+        loading,
+        cartItems,
+        totalItems,
+        totalPriceUAH,
+        changeQuantity,
+        removeItem,
         toggleCart,
         isInCart,
       }}

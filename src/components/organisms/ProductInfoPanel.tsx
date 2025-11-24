@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from '../molecules/LanguageSelector.tsx';
 import { PriceAndActions } from '../molecules/PriceAndActions.tsx';
 import { ProductDetailLabel } from '../molecules/ProductDetailLabel.tsx';
 
 interface ProductInfoPanelProps {
+  bookId: string;
   category: string;
   price: number;
   oldPrice: number | null;
@@ -14,9 +16,12 @@ interface ProductInfoPanelProps {
   onToggleWishlist: () => void;
   isInWishlist: boolean;
   visibleLabels?: string[];
+  isInCart: boolean;
+  inStock?: boolean;
 }
 
 export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
+  bookId,
   category,
   price,
   oldPrice,
@@ -27,6 +32,7 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
   onAddToCart,
   onToggleWishlist,
   isInWishlist,
+  isInCart,
   visibleLabels = [
     'Author',
     'Cover type',
@@ -34,37 +40,50 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
     'Year of publication',
   ],
 }) => {
+  const { t } = useTranslation();
+
+
+
+  const handleAddToCart = () => {
+ 
+    onAddToCart();
+  };
+
+  const handleToggleWishlist = () => {
+
+    onToggleWishlist();
+  };
+
   const filteredDetails = details.filter(detail =>
-    visibleLabels.includes(detail.label),
+    visibleLabels.some(labelKey => detail.label === t(labelKey)),
   );
 
   return (
-    <div className="mt-8 max-w-[280px] md:max-w-[267px] lg:max-w-[320px] w-full">
-      {/* Category */}
+    <div className="mt-8 md:mt-0 max-w-[280px] md:max-w-[267px] lg:max-w-[320px] w-full">
       <div className="border-b border-border pb-4">
-        <h5 className="font-bold text-secondary">Category</h5>
+        <h5 className="font-bold text-secondary">{t('Category')}</h5>
         <div className="inline-block mt-2 px-[10.5px] py-[5.5px] border border-border rounded-[5px]">
-          {category}
+          {t(`${category}`)}
         </div>
       </div>
 
-      {/* Language Selector (Molecule) */}
       <LanguageSelector
         languages={languages}
         selectedLanguage={selectedLanguage}
         onLanguageChange={onLanguageChange}
       />
 
-      {/* Price and Actions (Molecule) */}
-      <PriceAndActions
-        price={price}
-        oldPrice={oldPrice}
-        onAddToCart={onAddToCart}
-        onToggleWishlist={onToggleWishlist}
-        isInWishlist={isInWishlist}
-      />
+<PriceAndActions
+  bookId={bookId}
+  price={price}
+  oldPrice={oldPrice}
+  onAddToCart={handleAddToCart}
+  onToggleWishlist={handleToggleWishlist}
+  isInWishlist={isInWishlist}
+  isInCart={isInCart}
+  inStock={true}
+/>
 
-      {/* Product details */}
       <div className="mt-6">
         {filteredDetails.map((detail, index) => (
           <ProductDetailLabel

@@ -5,52 +5,128 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { wishlistApi } from '@/api/wishlistApi';
+import { supabase } from '@/supabaseClient';
 
-type WishlistContextValue = {
+interface WishlistContextValue {
   wishlist: Set<string>;
   toggleWishlist: (bookId: string) => void;
   isInWishlist: (bookId: string) => boolean;
-};
+}
 
 const WishlistContext = createContext<WishlistContextValue | null>(null);
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
-  console.log('%c[WishlistProvider] mounted', 'color: #00e676');
+  const { getCurrentUser } = useAuth();
 
   const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const [userId, setUserId] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
+  // --- AUTH RESOLUTION ---
   useEffect(() => {
-    const saved = localStorage.getItem('wishlist');
-    console.log('[WishlistProvider] Loaded from LS:', saved);
+    let isMounted = true;
 
-    if (saved) {
-      setWishlist(new Set(JSON.parse(saved)));
-    }
-  }, []);
+    const resolveUser = async () => {
+      try {
+        const user = await getCurrentUser().catch(() => null);
+        if (!isMounted) return;
 
+        const id = user?.id ?? null;
+        setUserId(id);
+      } finally {
+        if (isMounted) setAuthReady(true);
+      }
+    };
+
+    void resolveUser();
+
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!isMounted) return;
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        const id = session?.user?.id ?? null;
+        setUserId(id);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      data.subscription.unsubscribe();
+    };
+  }, [getCurrentUser]);
+
+  // --- INITIAL LOAD ---
+  useEffect(() => {
+    if (!authReady) return;
+
+    const initWishlist = async () => {
+      try {
+        setInitialized(false);
+
+        if (userId) {
+          const remote = await wishlistApi.getByUser(userId);
+
+          const localRaw = localStorage.getItem('wishlist');
+          const local: string[] = localRaw ? JSON.parse(localRaw) : [];
+
+          const merged = Array.from(new Set([...remote, ...local]));
+
+          setWishlist(new Set(merged));
+
+          // sync local items to supabase if needed
+          if (merged.length !== remote.length) {
+            await Promise.all(
+              merged.map(bookId => wishlistApi.add(userId, bookId)),
+            );
+          }
+
+          localStorage.removeItem('wishlist');
+        } else {
+          const saved = localStorage.getItem('wishlist');
+          const arr: string[] = saved ? JSON.parse(saved) : [];
+          setWishlist(new Set(arr));
+        }
+      } finally {
+        setInitialized(true);
+      }
+    };
+
+    void initWishlist();
+  }, [authReady, userId]);
+
+  // --- TOGGLE ---
   const toggleWishlist = (bookId: string) => {
-    console.log('%c[toggleWishlist] CLICKED →', 'color: #ff1744', bookId);
-
     setWishlist(prev => {
       const next = new Set(prev);
 
       if (next.has(bookId)) {
-        console.log('[toggleWishlist] Removing:', bookId);
         next.delete(bookId);
       } else {
-        console.log('[toggleWishlist] Adding:', bookId);
         next.add(bookId);
       }
 
-      const arr = [...next];
-      localStorage.setItem('wishlist', JSON.stringify(arr));
-      console.log('%c[WishlistProvider] Saved to LS →', 'color: #4caf50', arr);
+      if (!userId) {
+        const arr = [...next];
+        localStorage.setItem('wishlist', JSON.stringify(arr));
+      } else {
+        if (next.has(bookId)) {
+          void wishlistApi.add(userId, bookId);
+        } else {
+          void wishlistApi.remove(userId, bookId);
+        }
+      }
 
       return next;
     });
   };
 
   const isInWishlist = (bookId: string) => wishlist.has(bookId);
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <WishlistContext.Provider

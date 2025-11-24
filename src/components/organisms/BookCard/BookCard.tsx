@@ -11,13 +11,8 @@ import { StockStatus } from '../../molecules/StockStatus/StockStatus';
 import { BookActions } from '../../molecules/BookActions/BookActions';
 import type { Book } from '@/types/book';
 
-import {
-  toastWishlistAdded,
-  toastWishlistRemoved,
-  toastCartAdded,
-  toastCartRemoved,
-} from '../../atoms/Toasts';
 import { KindleBookImage } from '@/components/atoms/KindleBookImage';
+import { useTranslation } from 'react-i18next';
 
 interface BookCardProps {
   book: Book;
@@ -34,6 +29,8 @@ export const BookCard: React.FC<BookCardProps> = ({
   isInWishlist = false,
   isInCart = false,
 }) => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [optimisticInCart, setOptimisticInCart] = useState(isInCart);
 
@@ -42,32 +39,19 @@ export const BookCard: React.FC<BookCardProps> = ({
   }, [isInCart]);
 
   const openDetails = () => {
-    navigate(`/books/${book.namespaceId}`);
+    navigate(`/books/${book.namespaceId}?lang=${book.lang}`, {
+      state: { bookId: book.id },
+    });
   };
 
   const handleAddToCart = () => {
     const willBeInCart = !optimisticInCart;
-
     setOptimisticInCart(willBeInCart);
     onAddToCart?.(book.id);
-
-    if (willBeInCart) {
-      toastCartAdded();
-    } else {
-      toastCartRemoved();
-    }
   };
 
   const handleToggleWishlist = () => {
-    const willBeInWishlist = !isInWishlist;
-
     onToggleWishlist?.(book.id);
-
-    if (willBeInWishlist) {
-      toastWishlistAdded();
-    } else {
-      toastWishlistRemoved();
-    }
   };
 
   const inStock = book.inStock ?? true;
@@ -76,7 +60,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   return (
     <div
-      className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer w-[288px] lg:w-[272px]"
       onClick={openDetails}
     >
       <div className="relative">
@@ -90,7 +74,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
         <div className="absolute inset-0 pointer-events-none z-20">
           <div className="flex justify-between p-3">
-            {book.priceDiscount !== null && <Badge>Знижка</Badge>}
+            {book.priceDiscount !== null && <Badge>{t('Discount')}</Badge>}
             {isAudiobook && <AudioBadge />}
           </div>
         </div>
@@ -108,6 +92,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
         <BookActions
           onAddToCart={handleAddToCart}
+          bookId={book.id}
           onToggleWishlist={handleToggleWishlist}
           isInCart={optimisticInCart}
           isInWishlist={isInWishlist}

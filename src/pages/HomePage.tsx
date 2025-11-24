@@ -1,16 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'; 
 import { PromoSlider } from '@/components/organisms/Home/PromoSlider';
-import { Categories } from '@/components/organisms/Home/Categories';
+import {
+  Categories,
+  type TypeBooks,
+} from '@/components/organisms/Home/Categories';
 import { ProductCardsBlock } from '@/components/organisms/Home/ProductCardsBlock';
 import type { Book } from '@/types/book';
-import { booksData } from '@/books/data/books.ts';
-
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { fetchBooks } from '@/lib/booksApi';
+import { useTranslation } from 'react-i18next';
 
 export const HomePage = () => {
+  const { t } = useTranslation();
+
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
+  const [countTypeOfBooks, setCountTypeOfBooks] = useState<TypeBooks>({
+    paper: 0,
+    audio: 0,
+    kindle: 0,
+  });
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -18,7 +28,23 @@ export const HomePage = () => {
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const allBooks = await booksData();
+        const allBooks = await fetchBooks();
+
+        const paperBooksCounter = allBooks.filter(
+          book => book.type === 'paperback',
+        ).length;
+        const audioBooksCounter = allBooks.filter(
+          book => book.type === 'audiobook',
+        ).length;
+        const kindleBooksCounter = allBooks.filter(
+          book => book.type === 'kindle',
+        ).length;
+
+        setCountTypeOfBooks({
+          paper: paperBooksCounter,
+          audio: audioBooksCounter,
+          kindle: kindleBooksCounter,
+        });
 
         setNewBooks(
           [...allBooks]
@@ -43,7 +69,7 @@ export const HomePage = () => {
         <PromoSlider />
 
         <ProductCardsBlock
-          title="New books"
+          title={t('New books')}
           listOfBooks={newBooks}
           onAddToCart={toggleCart}
           onToggleWishlist={toggleWishlist}
@@ -51,10 +77,10 @@ export const HomePage = () => {
           isInWishlist={isInWishlist}
         />
 
-        <Categories />
+        <Categories typeBooks={countTypeOfBooks} />
 
         <ProductCardsBlock
-          title="Also you might like it!"
+          title={t('Also you might like it!')}
           listOfBooks={booksMightLike}
           onAddToCart={toggleCart}
           onToggleWishlist={toggleWishlist}

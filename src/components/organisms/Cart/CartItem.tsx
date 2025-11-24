@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 import type { CartItem as CartItemType } from '@/hooks/useCart';
+import { useTranslation } from 'react-i18next';
+import { Icon } from '@/components/atoms/Icon';
 
 interface CartItemProps {
   item: CartItemType;
@@ -17,6 +19,7 @@ export const CartItem: FC<CartItemProps> = ({
   onDecrease,
   onRemove,
 }) => {
+  const { t } = useTranslation();
   const { book, quantity } = item;
 
   const discountPriceUAH = book.priceDiscount
@@ -30,25 +33,11 @@ export const CartItem: FC<CartItemProps> = ({
     <div className="bg-card rounded-xl border border-border p-6 flex items-center gap-6">
       <button
         onClick={onRemove}
-        className="text-accent hover:text-destructive transition-colors"
+        className="text-accent hover:text-destructive transition-colors cursor-pointer hover:scale-110"
         aria-label="Remove item"
         type="button"
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18 6L6 18M6 6L18 18"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <Icon name="close" />
       </button>
 
       <div className="flex-shrink-0">
@@ -61,13 +50,29 @@ export const CartItem: FC<CartItemProps> = ({
 
       <div className="flex-1 min-w-0">
         <h4 className="text-foreground mb-1 truncate">{book.name}</h4>
-        <p className="text-sm text-secondary">{book.author}</p>
+        <p className="text-sm text-secondary mb-2">{book.author}</p>
+
+        <div className="flex gap-4 text-xs text-muted-foreground">
+          {book.type && (
+            <span className="flex items-center gap-1">
+              <Icon name="type" />
+              <span className="font-semibold">{t('Type')}:</span> {book.type}
+            </span>
+          )}
+          {book.lang && (
+            <span className="flex items-center gap-1">
+              <Icon name="lang" />
+              <span className="font-semibold">{t('Language')}:</span>{' '}
+              {book.lang}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
         <button
           onClick={onDecrease}
-          className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors cursor-pointer"
           aria-label="Decrease quantity"
           type="button"
         >
@@ -78,7 +83,7 @@ export const CartItem: FC<CartItemProps> = ({
         </span>
         <button
           onClick={onIncrease}
-          className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-full border border-border text-secondary hover:bg-muted transition-colors cursor-pointer"
           aria-label="Increase quantity"
           type="button"
         >

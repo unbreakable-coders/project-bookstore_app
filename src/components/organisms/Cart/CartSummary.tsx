@@ -1,5 +1,7 @@
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface CartSummaryProps {
   totalPriceUAH: number;
@@ -10,6 +12,7 @@ export const CartSummary: FC<CartSummaryProps> = ({
   totalPriceUAH,
   totalItems,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-card rounded-xl border border-border p-6 sticky top-8">
       <div className="mb-6">
@@ -17,22 +20,20 @@ export const CartSummary: FC<CartSummaryProps> = ({
           ₴{totalPriceUAH.toLocaleString()}
         </p>
         <p className="text-sm text-secondary mt-2">
-          Total for {totalItems} {totalItems === 1 ? 'item' : 'items'}
+          {t('Total for')} {totalItems}{' '}
+          {totalItems === 1 ? t('item') : t('items')}
         </p>
       </div>
 
-      <Button
-        className="w-full bg-foreground text-background hover:bg-primary"
-        size="lg"
-        type="button"
-        onClick={() => {
-          // тимчасовий плейсхолдер
-
-          alert('Checkout functionality coming soon!');
-        }}
-      >
-        Checkout
-      </Button>
+      <Link to="/checkout">
+        <Button
+          className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors cursor-pointer"
+          size="lg"
+          type="button"
+        >
+          {t('Checkout')}
+        </Button>
+      </Link>
     </div>
   );
 };
