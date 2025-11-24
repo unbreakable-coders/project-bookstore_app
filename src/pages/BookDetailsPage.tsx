@@ -35,7 +35,7 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
-        await new Promise(resolve => setTimeout(resolve, 500)); // імітація затримки
+        await new Promise(resolve => setTimeout(resolve, 5500)); // імітація затримки
 
         if (!data) {
           console.error(

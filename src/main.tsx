@@ -6,12 +6,15 @@ import './styles/globals.css';
 import App from './App';
 
 import './i18next';
+import { ThemeProvider } from './context/ThemeContext';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </StrictMode>,
 );
 

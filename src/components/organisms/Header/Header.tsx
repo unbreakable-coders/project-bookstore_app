@@ -21,6 +21,7 @@ import { useMoveHeart } from '../../MoveHeart';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeSwitcher } from '@/components/molecules/ThemeSwitcher';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -262,35 +263,32 @@ export const Header = () => {
       );
     }
 
-if (iconName === 'user') {
-  return (
-    <Link
-      key={iconName}
-      to="/login"
-      aria-label="Open login page"
-      className={`${ICON_BUTTON_CLASS} relative`}
-    >
-      <Icon
-        name="user"
-        className="h-4 w-4"
-      />
+    if (iconName === 'user') {
+      return (
+        <Link
+          key={iconName}
+          to="/login"
+          aria-label="Open login page"
+          className={`${ICON_BUTTON_CLASS} relative`}
+        >
+          <Icon name="user" className="h-4 w-4" />
 
-      {isLoggedIn && (
-        <span
-          className="
+          {isLoggedIn && (
+            <span
+              className="
             absolute -top-1 -right-1
             h-4 w-4
             rounded-full bg-[#27AE60]
             text-[8px] leading-none text-white
             flex items-center justify-center
           "
-        >
-          ✓
-        </span>
-      )}
-    </Link>
-  );
-}
+            >
+              ✓
+            </span>
+          )}
+        </Link>
+      );
+    }
 
     if (iconName === 'search') {
       if (isCatalogPage) {
@@ -399,7 +397,6 @@ if (iconName === 'user') {
                   value={selectedCategory === 'all' ? '' : selectedCategory}
                 />
               </div>
-
               <div className="hidden md:flex lg:hidden items-center gap-2">
                 {HEADER_ICONS_MD.map(renderHeaderIcon)}
 
@@ -411,7 +408,6 @@ if (iconName === 'user') {
                   <span className="text-lg">⚙️</span>
                 </Link>
               </div>
-
               <div className="hidden lg:flex items-center gap-2">
                 {HEADER_ICONS_LG.map(renderHeaderIcon)}
 
@@ -423,9 +419,8 @@ if (iconName === 'user') {
                   <span className="text-lg">⚙️</span>
                 </Link>
               </div>
-
               <GlobalLanguageSwitcher />
-
+              <ThemeSwitcher />
               <button
                 type="button"
                 onClick={toggleMobile}

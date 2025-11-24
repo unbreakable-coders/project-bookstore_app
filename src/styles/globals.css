@@ -50,9 +50,10 @@
 }
 
 /* ===========================
-  ROOT VARIABLES (Figma Palette)
+  ROOT VARIABLES (Figma Palette) - LIGHT THEME (Default)
    =========================== */
-:root {
+:root,
+.light {
   --background-gradient: linear-gradient(
     135deg,
     #fffbf5 0%,
@@ -83,6 +84,32 @@
   --z-modal: 40;
   --z-popover: 50;
   --z-toast: 60;
+}
+
+/* ===========================
+  DARK THEME
+   =========================== */
+.dark {
+  --background-gradient: linear-gradient(
+    135deg,
+    #3a2c2a 0%,
+    #4a3a35 50%,
+    #3a2c2a 100%
+  ); /* Теплий коричневий фон */
+  --foreground: #f5f1e8; /* Кремовий текст */
+
+  --card: #e8dfd0; /* Світло-пісочні карточки */
+  --primary: #8b4513; /* Шоколадний */
+  --secondary: #a0522d; /* Темно-пісочний */
+  --accent: #c19a6b; /* Золотистий акцент */
+
+  --muted: #d7ccc8; /* Світлий бежевий */
+  --muted-foreground: #8d6e63; /* Темно-бежевий */
+
+  --destructive: #b22222; /* Темно-червоний (бордо) */
+  --border: #bcaaa4; /* Світло-коричневий бордер */
+  --input: #d7ccc8; /* Світлий бежевий для інпутів */
+  --ring: #d4af37; /* Золотий для фокусу */
 }
 
 @layer base {
@@ -164,3 +191,12 @@
     }
   }
 }
+
+/* ===========================
+  SMOOTH TRANSITIONS
+   =========================== */
+/* * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+} */

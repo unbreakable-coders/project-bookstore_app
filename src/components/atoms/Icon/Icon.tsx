@@ -19,6 +19,9 @@ import IconEarphones from '../../../assets/icons/icon-earphones.svg';
 import WhiteHomeIcon from '../../../assets/icons/icon-home-white.svg';
 import IconEngLang from '../../../assets/icons/icon-eng.svg';
 import IconUkrLang from '../../../assets/icons/icon-ukr.svg';
+import IconDark from '../../../assets/icons/icon-candle-dark.svg';
+import IconLight from '../../../assets/icons/icon-candle-light.svg';
+import IconSystem from '../../../assets/icons/icon-system.svg';
 
 const iconMap = {
   arrowDown: ArrowDown,
@@ -40,6 +43,9 @@ const iconMap = {
   homeWhite: WhiteHomeIcon,
   engLang: IconEngLang,
   ukrLang: IconUkrLang,
+  candleLight: IconLight,
+  candleDark: IconDark,
+  system: IconSystem,
 } as const;
 
 export type IconName = keyof typeof iconMap;
