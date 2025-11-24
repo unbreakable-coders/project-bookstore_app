@@ -6,7 +6,9 @@ import {
   toastWishlistAdded,
   toastWishlistRemoved,
 } from '../atoms/Toasts';
+
 interface PriceAndActionsProps {
+  bookId: string;
   price: number;
   oldPrice: number | null;
   onAddToCart: () => void;
@@ -17,6 +19,7 @@ interface PriceAndActionsProps {
 }
 
 export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
+  bookId,
   price,
   oldPrice,
   onAddToCart,
@@ -63,6 +66,7 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
       </div>
 
       <BookActions
+        bookId={bookId}
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
         isInWishlist={isInWishlist}

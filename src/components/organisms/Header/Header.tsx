@@ -22,6 +22,7 @@ import { booksData } from '@/books/data/books';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
+import { useMoveBookToCart } from '@/components/MoveBookToCart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -45,8 +46,7 @@ export const Header = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMobileIcon, setActiveMobileIcon] =
-    useState<MobileIcon>('heart');
+  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
 
@@ -67,6 +67,7 @@ export const Header = () => {
 
   const selectedCategoryParam = searchParams.get('category');
   const selectedCategory = selectedCategoryParam ?? 'all';
+  const { headerCartRef } = useMoveBookToCart();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -223,7 +224,7 @@ export const Header = () => {
             <span
               className="
                 absolute -right-1 -top-1
-                min-w-[16px] h-4 px-[3px]
+                min-w-4 h-4 px-[3px]
                 rounded-full bg-[#FF5A5A]
                 text-[10px] leading-4 text-white
                 flex items-center justify-center
@@ -243,13 +244,14 @@ export const Header = () => {
           to="/cart"
           aria-label="Open cart"
           className={`${ICON_BUTTON_CLASS} relative`}
+          ref={headerCartRef as React.Ref<HTMLAnchorElement>}
         >
           <Icon name="cart" className="h-4 w-4" />
           {badgeCount > 0 && (
             <span
               className="
                 absolute -right-1 -top-1
-                min-w-[16px] h-4 px-[3px]
+                min-w-4 h-4 px-[3px]
                 rounded-full bg-[#FF5A5A]
                 text-[10px] leading-4 text-white
                 flex items-center justify-center
@@ -545,7 +547,7 @@ export const Header = () => {
                             <span
                               className="
                                 absolute -right-2 -top-1
-                                min-w-[16px] h-4 px-[3px]
+                                min-w-4 h-4 px-[3px]
                                 rounded-full bg-[#FF5A5A]
                                 text-[10px] leading-4 text-white
                                 flex items-center justify-center
