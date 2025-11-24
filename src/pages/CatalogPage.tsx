@@ -277,8 +277,8 @@ export const CatalogPage = () => {
           </div>
         </div>
 
-        <section className="pt-6 justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 justify-items-center">
+        <section className="pt-6 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-y-10 justify-items-center gap-6">
             {currentBooks.map(book => (
               <div key={book.id} className="w-full max-w-[272px]">
                 <BookCard
@@ -293,7 +293,7 @@ export const CatalogPage = () => {
           </div>
         </section>
 
-        {filteredBooks.length > 0 && (
+        {totalPages > 1 && (
           <section className="flex justify-center py-16 px-4">
             <Pagination>
               <PaginationList>
