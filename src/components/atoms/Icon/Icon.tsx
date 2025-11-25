@@ -23,6 +23,9 @@ import LinkedInIcon from '../../../assets/icons/icon-linked-in.svg';
 import GitHubIcon from '../../../assets/icons/icon-git-hub.svg';
 import IconEngLang from '../../../assets/icons/icon-eng.svg';
 import IconUkrLang from '../../../assets/icons/icon-ukr.svg';
+import IconDark from '../../../assets/icons/icon-candle-dark.svg';
+import IconLight from '../../../assets/icons/icon-candle-light.svg';
+import IconSystem from '../../../assets/icons/icon-system.svg';
 import IconLanguage from '../../../assets/icons/icon-language.svg';
 import IconType from '../../../assets/icons/icon-type.svg';
 
@@ -52,6 +55,9 @@ const iconMap = {
   underlineActive: UnderlineActive,
   underlineDisabled: UnderlineDisabled,
   ukrLang: IconUkrLang,
+  candleLight: IconLight,
+  candleDark: IconDark,
+  system: IconSystem,
   user: UserIcon,
 } as const;
 

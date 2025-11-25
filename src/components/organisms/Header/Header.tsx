@@ -22,6 +22,7 @@ import { booksData } from '@/books/data/books';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeSwitcher } from '@/components/molecules/ThemeSwitcher';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
@@ -31,7 +32,7 @@ const HEADER_ICONS_LG: IconName[] = ['heart', 'cart', 'user'];
 const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart', 'user'];
 
 export const ICON_BUTTON_CLASS =
-  'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-white hover:border-[#C5C5C5]';
+  'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
 
 export const Header = () => {
   const { t } = useTranslation();
@@ -333,7 +334,7 @@ export const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-gradient-to-r from-[#fef9e7] to-[#fdebd0]">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-header">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">
@@ -421,9 +422,8 @@ export const Header = () => {
                   <span className="text-lg">⚙️</span>
                 </Link>
               </div>
-
               <GlobalLanguageSwitcher />
-
+              <ThemeSwitcher />
               <button
                 type="button"
                 onClick={toggleMobile}

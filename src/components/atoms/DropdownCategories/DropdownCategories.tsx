@@ -29,7 +29,7 @@ export const DropdownCategories: FC<DropdownCategoriesProps> = ({
     <select
       value={value}
       onChange={handleChange}
-      className={`h-9 rounded-md border border-[#DADADA] bg-white px-3 text-xs text-[#050505] outline-none hover:border-[#C5C5C5] ${
+      className={`h-9 rounded-md border border-[#DADADA] bg-card px-3 text-xs text-[#050505] outline-none hover:border-[#C5C5C5] ${
         fullWidth ? 'w-full' : 'min-w-[180px]'
       }`}
     >

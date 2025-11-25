@@ -16,10 +16,10 @@ export const CartSummary: FC<CartSummaryProps> = ({
   return (
     <div className="bg-card rounded-xl border border-border p-6 sticky top-8">
       <div className="mb-6">
-        <p className="text-[32px] md:text-[48px] font-bold text-foreground leading-tight">
+        <p className="text-[32px] md:text-[48px] font-bold text-primary leading-tight">
           ₴{totalPriceUAH.toLocaleString()}
         </p>
-        <p className="text-sm text-secondary mt-2">
+        <p className="text-sm text-muted-foreground mt-2">
           {t('Total for')} {totalItems}{' '}
           {totalItems === 1 ? t('item') : t('items')}
         </p>

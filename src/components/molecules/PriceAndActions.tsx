@@ -12,10 +12,11 @@ interface PriceAndActionsProps {
   price: number;
   oldPrice: number | null;
   onAddToCart: () => void;
-  onToggleWishlist: () => void;
-  isInWishlist: boolean;
-  isInCart: boolean;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
+  isInCart: (bookId: string) => boolean;
   inStock?: boolean;
+  bookId: string;
 }
 
 export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
@@ -26,6 +27,7 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   onToggleWishlist,
   isInWishlist,
   isInCart,
+  bookId,
   inStock = true,
 }) => {
   const hasDiscount = oldPrice !== null && oldPrice !== undefined;
@@ -37,7 +39,7 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
 
   const handleAddToCart = () => {
     onAddToCart();
-    if (isInCart) {
+    if (isInCart(bookId)) {
       toastCartRemoved();
     } else {
       toastCartAdded();
@@ -45,12 +47,7 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   };
 
   const handleToggleWishlist = () => {
-    onToggleWishlist();
-    if (isInWishlist) {
-      toastWishlistRemoved();
-    } else {
-      toastWishlistAdded();
-    }
+    onToggleWishlist(bookId);
   };
 
   return (
@@ -69,8 +66,8 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
         bookId={bookId}
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
-        isInWishlist={isInWishlist}
-        isInCart={isInCart}
+        isInWishlist={isInWishlist(bookId)}
+        isInCart={isInCart(bookId)}
         inStock={inStock}
       />
     </>

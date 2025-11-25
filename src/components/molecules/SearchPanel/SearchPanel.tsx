@@ -84,7 +84,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl border-none bg-transparent shadow-none top-1 translate-y-0 p-0">
-        <div className="relative w-full rounded-xl border border-[#E3E3E3] bg-white px-6 py-4 shadow-lg">
+        <div className="relative w-full rounded-xl border border-[#E3E3E3] bg-card px-6 py-4 shadow-lg">
           <DialogClose
             className="absolute right-4 top-4 text-[#9F9F9F] hover:text-[#050505] focus:outline-none cursor-pointer"
             aria-label="Close search"
@@ -100,7 +100,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
               placeholder={t('Search books or authors...')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="h-9 flex-1 border-0 bg-transparent text-sm outline-none placeholder:text-[#B1B1B1]"
+              className="h-9 flex-1 border-0 bg-transparent text-sm outline-none placeholder:text-[#B1B1B1] text-primary"
             />
           </div>
 
@@ -135,7 +135,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
                         {book.name}
                       </div>
 
-                      <div className="truncate text-xs text-[#8F8F8F] flex gap-1 items-center">
+                      <div className="truncate text-xs text-secondary flex gap-1 items-center">
                         <span>{book.author}</span>
 
                         <span>•</span>

@@ -49,8 +49,8 @@ export const CartItem: FC<CartItemProps> = ({
       </div>
 
       <div className="flex-1 min-w-0">
-        <h4 className="text-foreground mb-1 truncate">{book.name}</h4>
-        <p className="text-sm text-secondary mb-2">{book.author}</p>
+        <h4 className="text-primary mb-1 truncate">{book.name}</h4>
+        <p className="text-sm text-secondary">{book.author}</p>
 
         <div className="flex gap-4 text-xs text-muted-foreground">
           {book.type && (
@@ -78,7 +78,7 @@ export const CartItem: FC<CartItemProps> = ({
         >
           −
         </button>
-        <span className="text-foreground font-semibold w-8 text-center">
+        <span className="text-muted-foreground font-semibold w-8 text-center">
           {quantity}
         </span>
         <button
@@ -94,17 +94,15 @@ export const CartItem: FC<CartItemProps> = ({
       <div className="text-right flex-shrink-0">
         {discountPriceUAH ? (
           <div className="space-y-1">
-            <p className="text-lg font-bold text-foreground">
+            <p className="text-lg font-bold text-primary">
               ₴{discountPriceUAH}
             </p>
-            <p className="text-sm text-secondary line-through">
+            <p className="text-sm text-muted line-through">
               ₴{regularPriceUAH}
             </p>
           </div>
         ) : (
-          <p className="text-lg font-bold text-foreground">
-            ₴{effectivePriceUAH}
-          </p>
+          <p className="text-lg font-bold text-primary">₴{effectivePriceUAH}</p>
         )}
       </div>
     </div>

@@ -116,8 +116,8 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
             onLanguageChange={onSelectLanguage}
             onAddToCart={() => onAddToCart(book.id)}
             onToggleWishlist={() => onToggleWishlist(book.id)}
-            isInWishlist={isInWishlist(book.id)}
-            isInCart={isInCart(book.id)}
+            isInWishlist={isInWishlist}
+            isInCart={isInCart}
           />
         </div>
       </div>

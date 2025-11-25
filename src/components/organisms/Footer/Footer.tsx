@@ -19,7 +19,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="border-t bg-gradient-to-r from-[#fef9e7] to-[#fdebd0] border-border">
+    <footer className="border-t bg-footer border-border">
       <div className="mx-auto max-w-6xl px-4 py-6">
         {/* Desktop */}
         <div className="hidden md:flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">

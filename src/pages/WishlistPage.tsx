@@ -44,10 +44,8 @@ export const WishlistPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 container">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {t('Favorites')}
-        </h1>
-        <p className="text-gray-500">
+        <h1 className="text-3xl font-bold text-foreground">{t('Favorites')}</h1>
+        <p className="text-muted-foreground">
           {t('{{count}} items', { count: favouriteBooks.length })}
         </p>
       </div>
