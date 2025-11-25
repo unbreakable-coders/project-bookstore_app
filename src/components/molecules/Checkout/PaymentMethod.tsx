@@ -1,12 +1,11 @@
-import type { FC } from 'react';
+import type { FC, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Radio } from '@/components/atoms/Form/Radio';
+import type { CheckoutFormData } from '@/components/organisms/CheckoutForm/CheckoutForm';
 
 interface PaymentMethodProps {
-  formData: {
-    paymentMethod: string;
-  };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: CheckoutFormData;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const PaymentMethod: FC<PaymentMethodProps> = ({
@@ -20,7 +19,7 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({
       <h2 className="mb-4 text-xl font-semibold">{t('Payment')}</h2>
 
       <div className="space-y-3">
-        <div className="rounded-lg border border-border  p-4">
+        <div className="rounded-lg border border-border p-4">
           <Radio
             name="paymentMethod"
             value="card"
