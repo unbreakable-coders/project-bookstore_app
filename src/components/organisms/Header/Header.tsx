@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Logo } from '../../atoms/Logo';
+// import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
@@ -23,6 +23,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
+import { LogoTheme } from '../../ChangeTheme/LogoTheme';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -224,7 +225,7 @@ export const Header = () => {
             <span
               className="
                 absolute -right-1 -top-1
-                min-w-4 h-4 px-[3px]
+                min-w-[16px] h-4 px-[3px]
                 rounded-full bg-[#FF5A5A]
                 text-[10px] leading-4 text-white
                 flex items-center justify-center
@@ -339,7 +340,7 @@ export const Header = () => {
             <div className="flex items-center gap-8">
               <Link to="/" aria-label="Go to home page">
                 <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
-                  <Logo className="h-full w-auto" />
+                  <LogoTheme className="h-full w-auto" />
                 </div>
               </Link>
 
@@ -547,7 +548,7 @@ export const Header = () => {
                             <span
                               className="
                                 absolute -right-2 -top-1
-                                min-w-4 h-4 px-[3px]
+                                min-w-[16px] h-4 px-[3px]
                                 rounded-full bg-[#FF5A5A]
                                 text-[10px] leading-4 text-white
                                 flex items-center justify-center

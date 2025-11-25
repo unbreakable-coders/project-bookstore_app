@@ -56,8 +56,7 @@ export const CatalogPage = () => {
   const currentPage = Number(searchParams.get('page')) || 1;
   const rawCategory = searchParams.get('category');
   const category = rawCategory === 'all' ? '' : rawCategory || '';
-  const searchQuery =
-    searchParams.get('search')?.trim().toLowerCase() || '';
+  const searchQuery = searchParams.get('search')?.trim().toLowerCase() || '';
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -136,7 +135,9 @@ export const CatalogPage = () => {
           ? rawCategory
           : [rawCategory];
 
-        return categoriesArray.some(catItem => slugify(catItem) === selectedSlug);
+        return categoriesArray.some(
+          catItem => slugify(catItem) === selectedSlug,
+        );
       });
     }
 

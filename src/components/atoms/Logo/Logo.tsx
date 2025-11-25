@@ -1,16 +1,16 @@
-import type { FC } from "react";
-import LogoSvg from "../../../assets/icons/logo-nice-book.svg";
+import type { FC } from 'react';
 
 interface LogoProps {
   className?: string;
+  src?: string;
 }
 
-export const Logo: FC<LogoProps> = ({ className }) => {
+export const Logo: FC<LogoProps> = ({ className, src }) => {
   return (
     <img
-      src={LogoSvg}
-      alt="Nice Boook Logo"
-      className={className ?? "h-6 w-auto"}
+      src={src ?? '/default-logo.svg'}
+      alt="Nice Bookstore Logo"
+      className={className ?? 'h-6 w-auto'}
     />
   );
 };
