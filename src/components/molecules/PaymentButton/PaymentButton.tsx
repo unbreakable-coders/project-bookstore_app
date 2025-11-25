@@ -9,16 +9,17 @@ interface Props {
 export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const apiBase =
-    import.meta.env.MODE === 'development'
-      ? 'http://localhost:4242'
-      : window.location.origin; // 👈 ось це правильне!
+  const isDev = import.meta.env.MODE === 'development';
+
+  const apiUrl = isDev
+    ? 'http://localhost:4242/create-checkout-session'
+    : '/api/create-checkout-session';
 
   const handleCheckout = async () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${apiBase}/api/create-checkout-session`, {
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amountUAH: price }),
@@ -26,7 +27,7 @@ export const PaymentButton: FC<Props> = ({ price, className }) => {
 
       if (!res.ok) {
         const text = await res.text();
-        console.error('[Checkout Error] Bad response:', res.status, text);
+        console.error('Checkout Error:', res.status, text);
         return;
       }
 
@@ -44,21 +45,14 @@ export const PaymentButton: FC<Props> = ({ price, className }) => {
     }
   };
 
-  const baseClasses =
-    'px-20 py-3 bg-black rounded-lg text-white min-w-[242px] h-12 ' +
-    'hover:scale-105 hover:shadow-xl hover:cursor-pointer shadow-stone-700 ' +
-    'transition duration-300';
-
   return (
     <button
       onClick={handleCheckout}
       type="button"
-      className={`${baseClasses} ${className ?? ''}`}
+      className={`px-20 py-3 bg-black rounded-lg text-white min-w-[242px] h-12 hover:scale-105 hover:shadow-xl shadow-stone-700 transition duration-300 ${className ?? ''}`}
       disabled={isLoading}
     >
-      <span className="flex items-center justify-center w-full">
-        {isLoading ? <ButtonLoader /> : `Checkout ${price}₴`}
-      </span>
+      {isLoading ? <ButtonLoader /> : `Checkout ${price}₴`}
     </button>
   );
 };
