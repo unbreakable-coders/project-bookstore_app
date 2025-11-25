@@ -1,0 +1,31 @@
+.blur-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.blur-start {
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  opacity: 1;
+}
+
+.blur-fade-out {
+  animation: blurFade 1850ms ease forwards;
+}
+
+@keyframes blurFade {
+  from {
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    opacity: 1;
+  }
+  to {
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    opacity: 0;
+  }
+}
