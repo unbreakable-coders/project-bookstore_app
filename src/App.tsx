@@ -17,6 +17,11 @@ import DevPreviewPage from './pages/DevPreviewPage';
 import { GitHubPage } from './pages/system/GithubPage';
 import { RightsPage } from './pages/system/RightsPage';
 
+// Mock Stripe pages
+import { MockStripeCheckout } from './pages/MockStripeCheckout/MockStripeCheckout';
+import { PaymentSuccess } from './pages/PaymentSuccess/PaymentSuccess';
+import { OrderSuccessPage } from './pages/OrderSuccessPage/OrderSuccessPage';
+
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ScrollToTop } from './components/utils/ScrollToTop';
@@ -42,10 +47,12 @@ export default function App() {
                     <Route index element={<HomePage />} />
                     <Route path="catalog" element={<CatalogPage />} />
                     <Route path="catalog/:bookType" element={<CatalogPage />} />
+
                     <Route
                       path="books/:namespaceId"
                       element={<BookDetailsPage />}
                     />
+
                     <Route path="wishlist" element={<WishlistPage />} />
                     <Route path="cart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage />} />
@@ -56,6 +63,21 @@ export default function App() {
                     <Route path="github" element={<GitHubPage />} />
                     <Route path="rights" element={<RightsPage />} />
                     <Route path="dev-preview" element={<DevPreviewPage />} />
+
+                    {/* Mock Stripe routes */}
+                    <Route
+                      path="mock-stripe-checkout"
+                      element={<MockStripeCheckout />}
+                    />
+                    <Route
+                      path="payment-success"
+                      element={<PaymentSuccess />}
+                    />
+                    <Route
+                      path="order-success/:orderId"
+                      element={<OrderSuccessPage />}
+                    />
+
                     <Route path="*" element={<PageNotFound />} />
                   </Route>
                 </Routes>
