@@ -10,7 +10,7 @@ export const Badge: React.FC<BadgeProps> = ({
   variant = 'discount',
 }) => {
   const styles = {
-    discount: 'bg-red-500 text-white',
+    discount: 'bg-destructive text-white',
     new: 'bg-blue-500 text-white',
   };
 

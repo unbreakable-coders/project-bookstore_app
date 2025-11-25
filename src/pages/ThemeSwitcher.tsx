@@ -1,14 +1,14 @@
-import { useTheme } from '@/context/ThemeContext';
+import { useThem } from '@/context/ThemContext';
 import { cn } from '@/lib/utils';
-import { themes } from '../components/ChangeTheme/themeConfig';
+import { thems } from '../components/ChangeTheme/themConfig';
 
 export const ThemeSwitcher = () => {
-  const { currentTheme, setTheme } = useTheme();
+  const { currentTheme, setTheme } = useThem();
 
   const cycleTheme = () => {
-    const currentIndex = themes.indexOf(currentTheme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex]);
+    const currentIndex = thems.indexOf(currentTheme);
+    const nextIndex = (currentIndex + 1) % thems.length;
+    setTheme(thems[nextIndex]);
   };
 
   return (

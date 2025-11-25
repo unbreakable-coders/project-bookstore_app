@@ -17,7 +17,7 @@ export const AuthTabs: FC<AuthTabsProps> = ({ isLogin, loading, onChange }) => {
         disabled={loading}
         className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-all ${
           isLogin
-            ? 'bg-card text-foreground shadow-sm'
+            ? 'bg-card text-secondary shadow-sm'
             : 'text-muted-foreground hover:text-foreground'
         } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
@@ -29,7 +29,7 @@ export const AuthTabs: FC<AuthTabsProps> = ({ isLogin, loading, onChange }) => {
         disabled={loading}
         className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-all ${
           !isLogin
-            ? 'bg-card text-foreground shadow-sm'
+            ? 'bg-card text-secondary shadow-sm'
             : 'text-muted-foreground hover:text-foreground'
         } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >

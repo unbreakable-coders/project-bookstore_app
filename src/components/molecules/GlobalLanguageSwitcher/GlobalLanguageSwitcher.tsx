@@ -19,10 +19,7 @@ export const GlobalLanguageSwitcher: React.FC = () => {
       className={`${ICON_BUTTON_CLASS} cursor-pointer`}
       title={isUK ? 'Switch to English' : 'Перейти на українську'}
     >
-      <Icon
-        name={isUK ? 'ukrLang' : 'engLang'}
-        className="h-5 w-5"
-      />
+      <Icon name={isUK ? 'ukrLang' : 'engLang'} className="h-5 w-5" />
     </button>
   );
 };

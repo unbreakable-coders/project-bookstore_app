@@ -17,6 +17,7 @@ import { Loader } from '@/components/atoms/Loader/Loader';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
+import { NoResult } from '@/components/atoms/NoResult/NoResult';
 
 const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
 
@@ -109,18 +110,15 @@ export const CatalogPage = () => {
     return sorted;
   }, [books, sortBy]);
 
-  // 🔍 ФІЛЬТР: type + category + search
   const filteredBooks = useMemo(() => {
     let result = [...sortedBooks];
 
-    // by format/type
     if (type === 'paperback' || type === 'kindle' || type === 'audiobook') {
       result = result.filter(
         book => book.format === type || book.type === type,
       );
     }
 
-    // by category from ?category=
     if (category) {
       const selectedSlug = category.toLowerCase().trim();
 
@@ -141,11 +139,9 @@ export const CatalogPage = () => {
       });
     }
 
-    // by search from ?search=
     if (searchQuery) {
       result = result.filter(book => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const desc = (book as any).description;
+        const desc = (book as BookWithMeta).description;
         const descText = Array.isArray(desc) ? desc.join(' ') : (desc ?? '');
 
         const haystack =
@@ -200,7 +196,6 @@ export const CatalogPage = () => {
     updateSearchParams({ page: '1' });
   };
 
-  // щоб href теж зберігав і category, і search
   const buildHref = (page: number) => {
     const params = new URLSearchParams();
     params.set('page', String(page));
@@ -277,23 +272,27 @@ export const CatalogPage = () => {
           </div>
         </div>
 
-        <section className="pt-6 gap-y-10 mx-auto justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {currentBooks.map(book => (
-              <div key={book.id} className="w-full max-w-[272px]">
-                <BookCard
-                  book={book}
-                  onAddToCart={() => toggleCart(book.id)}
-                  onToggleWishlist={() => toggleWishlist(book.id)}
-                  isInWishlist={isInWishlist(book.id)}
-                  isInCart={isInCart(book.id)}
-                />
-              </div>
-            ))}
-          </div>
+        <section className="pt-6">
+          {filteredBooks.length === 0 ? (
+            <NoResult />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-y-10 justify-items-center gap-6">
+              {currentBooks.map(book => (
+                <div key={book.id} className="w-full max-w-[272px]">
+                  <BookCard
+                    book={book}
+                    onAddToCart={() => toggleCart(book.id)}
+                    onToggleWishlist={() => toggleWishlist(book.id)}
+                    isInWishlist={isInWishlist(book.id)}
+                    isInCart={isInCart(book.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
-        {totalPages > 1 && (
+        {totalPages > 1 && filteredBooks.length > 0 && (
           <section className="flex justify-center py-16 px-4">
             <Pagination>
               <PaginationList>

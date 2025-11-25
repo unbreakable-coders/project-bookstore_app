@@ -63,8 +63,6 @@ export const HomePage = () => {
     void loadBooks();
   }, []);
 
-  console.log(countTypeOfBooks);
-
   return (
     <main className="w-full flex justify-center container">
       <div className="w-full max-w-[1136px] px-4 flex flex-col">
