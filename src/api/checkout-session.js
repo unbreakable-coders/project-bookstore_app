@@ -15,7 +15,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'session_id is required' });
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const id = Array.isArray(sessionId) ? sessionId[0] : sessionId;
+    const session = await stripe.checkout.sessions.retrieve(id);
 
     return res.status(200).json({
       id: session.id,
