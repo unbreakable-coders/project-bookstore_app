@@ -9,11 +9,10 @@ interface Props {
 export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  // автоматичне визначення базового URL
   const apiBase =
     import.meta.env.MODE === 'development'
       ? 'http://localhost:4242'
-      : ''; // на Vercel — порожній, бо /api/... працює від кореня
+      : window.location.origin; // 👈 ось це правильне!
 
   const handleCheckout = async () => {
     setIsLoading(true);
@@ -24,6 +23,12 @@ export const PaymentButton: FC<Props> = ({ price, className }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amountUAH: price }),
       });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error('[Checkout Error] Bad response:', res.status, text);
+        return;
+      }
 
       const data = await res.json();
 
