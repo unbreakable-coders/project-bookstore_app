@@ -98,9 +98,9 @@
 .dark {
   --background-gradient: linear-gradient(
     135deg,
-    #3a2c2a 0%,
-    #4a3a35 50%,
-    #3a2c2a 100%
+    #312625 0%,
+    #63514b 50%,
+    #4f3e3b 100%
   );
 
   --header-background: #211917;
@@ -110,7 +110,7 @@
 
   --card: #e8dfd0;
   --primary: #8b4513;
-  --secondary: #a0522d;
+  --secondary: #7e3f21;
   --accent: #c19a6b;
 
   --muted: #beaba4;
