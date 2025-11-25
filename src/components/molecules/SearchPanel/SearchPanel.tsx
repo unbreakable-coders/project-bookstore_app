@@ -84,7 +84,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl border-none bg-transparent shadow-none top-1 translate-y-0 p-0">
-        <div className="relative w-full rounded-xl border border-[#E3E3E3] bg-card px-6 py-4 shadow-lg">
+        <div className="relative w-full max-h-[380px] overflow-hidden rounded-xl border border-[#E3E3E3] bg-card px-6 py-3 shadow-lg">
           <DialogClose
             className="absolute right-4 top-4 text-[#9F9F9F] hover:text-[#050505] focus:outline-none cursor-pointer"
             aria-label="Close search"

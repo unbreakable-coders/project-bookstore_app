@@ -1,13 +1,7 @@
 import { Logo } from '../../atoms/Logo';
-import { Icon } from '../../atoms/Icon';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-const scrollToTop = () => {
-  if (typeof window !== 'undefined') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-};
+import { ScrollTopButton } from '@/components/atoms/ScrollTopButton/ScrollTopButton';
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -19,60 +13,50 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="border-t bg-footer border-border">
-      <div className="mx-auto max-w-6xl px-4 py-6">
-        {/* Desktop */}
-        <div className="hidden md:flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
-          <Logo className="h-7 w-auto" />
+    <>
+      <footer className="border-t bg-footer border-border">
+        <div className="mx-auto max-w-6xl px-4 py-10">
 
-          <nav className="flex items-center gap-10">
-            {footerLinks.map(link => (
-              <Link
-                key={link.label}
-                to={link.to}
-                className="hover:text-[#050505]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden md:flex items-center justify-between">
+            <Logo className="h-7 w-auto" />
 
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="flex items-center gap-1 text-[#9F9F9F] hover:text-[#050505]"
-          >
-            <span>{t('Back to top')}</span>
-            <Icon name="arrowUp" className="h-3 w-3" />
-          </button>
+            <nav className="flex items-center gap-10 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
+              {footerLinks.map(link => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="hover:text-[#050505]"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="w-7" />
+          </div>
+
+          {/* MOBILE */}
+          <div className="md:hidden">
+            <div className="flex items-center justify-start">
+              <Logo className="h-7 w-auto" />
+            </div>
+
+            <nav className="mt-6 flex flex-col items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
+              {footerLinks.map(link => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="hover:text-[#050505]"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
+      </footer>
 
-        {/* Mobile */}
-        <div className="md:hidden">
-          <Logo className="h-7 w-auto" />
-
-          <nav className="mt-4 space-y-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
-            {footerLinks.map(link => (
-              <Link
-                key={link.label}
-                to={link.to}
-                className="block text-left hover:text-[#050505]"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="mt-6 flex items-center  mx-auto justify-center  gap-1 text-[11px] font-semibold  tracking-[0.18em] text-[#898888] hover:text-[#050505]"
-          >
-            <span>{t('Back to top')}</span>
-            <Icon name="arrowUp" className="h-3 w-3" />
-          </button>
-        </div>
-      </div>
-    </footer>
+      <ScrollTopButton />
+    </>
   );
 };
