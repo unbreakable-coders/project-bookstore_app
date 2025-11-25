@@ -46,7 +46,7 @@ const iconMap = {
   homeWhite: WhiteHomeIcon,
   lang: IconLanguage,
   link: LinkIcon,
-  linkedIn: LinkedInIcon,
+  linked: LinkedInIcon,
   mail: MailIcon,
   menu: BurgerMenu,
   search: SearchIcon,
