@@ -1,23 +1,24 @@
+import type { FC, ChangeEvent } from 'react';
+
 import { ContactDetails } from '@/components/molecules/Checkout/ContactDetails';
-import { DeliveryMethod } from '@/components/molecules/Checkout/DeliveryMethod';
+import {
+  DeliveryMethod,
+  type DeliveryFormData,
+} from '@/components/molecules/Checkout/DeliveryMethod';
 import { OrderComment } from '@/components/molecules/Checkout/OrderComment';
 import { PaymentMethod } from '@/components/molecules/Checkout/PaymentMethod';
-import type { FC } from 'react';
 
-export interface CheckoutFormData {
+export interface CheckoutFormData extends DeliveryFormData {
   firstName: string;
   lastName: string;
   phone: string;
   email: string;
-  deliveryService: string;
-  novaPoshtaType: string;
-  deliveryDetail: string;
   paymentMethod: string;
 }
 
 export interface CheckoutFormProps {
   formData: CheckoutFormData;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
 export const CheckoutForm: FC<CheckoutFormProps> = ({ formData, onChange }) => (

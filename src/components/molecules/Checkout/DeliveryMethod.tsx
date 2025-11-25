@@ -1,15 +1,44 @@
-import type { FC } from 'react';
+import type { FC, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { Radio } from '@/components/atoms/Form/Radio';
 import { Input } from '@/components/atoms/Form/Input';
+import { supabase } from '@/supabaseClient';
+
+export interface DeliveryFormData {
+  deliveryService: 'novaPoshta' | 'ukrposhta' | '';
+  novaPoshtaType: 'branch' | 'locker' | 'courier' | '';
+
+  // Нова пошта
+  novaPoshtaCity: string;      // тут зберігаємо CityRef з таблиці np_cities
+  novaPoshtaBranch: string;    // number або id відділення
+  novaPoshtaLocker: string;    // number або id поштомата
+  novaPoshtaAddress: string;   // адреса для курʼєра
+
+  // Укрпошта
+  ukrposhtaCity: string;
+  ukrposhtaBranch: string;
+}
 
 interface DeliveryMethodProps {
-  formData: {
-    deliveryService: string;
-    novaPoshtaType: string;
-    deliveryDetail: string;
-  };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: DeliveryFormData;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+}
+
+interface NPCity {
+  ref: string;
+  description: string;
+  present: string;
+}
+
+interface NPWarehouse {
+  id: string;
+  city_ref: string;
+  description: string;
+  short_address: string | null;
+  number: string;
+  type: 'branch' | 'locker';
 }
 
 export const DeliveryMethod: FC<DeliveryMethodProps> = ({
@@ -17,6 +46,69 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
   onChange,
 }) => {
   const { t } = useTranslation();
+
+  const [cities, setCities] = useState<NPCity[]>([]);
+  const [branches, setBranches] = useState<NPWarehouse[]>([]);
+  const [lockers, setLockers] = useState<NPWarehouse[]>([]);
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [loadingWarehouses, setLoadingWarehouses] = useState(false);
+
+  // Завантажуємо всі міста (з нашої демо-таблиці np_cities)
+  useEffect(() => {
+    const loadCities = async () => {
+      setLoadingCities(true);
+
+      const { data, error } = await supabase
+        .from('np_cities')
+        .select('ref, description, present')
+        .order('description', { ascending: true });
+
+      if (!error && data) {
+        setCities(data as NPCity[]);
+      } else {
+        console.error('[NovaPoshta] load cities error:', error);
+      }
+
+      setLoadingCities(false);
+    };
+
+    void loadCities();
+  }, []);
+
+  // Завантажуємо відділення/поштомати для вибраного міста
+  useEffect(() => {
+    const loadWarehouses = async () => {
+      if (formData.deliveryService !== 'novaPoshta' || !formData.novaPoshtaCity) {
+        setBranches([]);
+        setLockers([]);
+        return;
+      }
+
+      setLoadingWarehouses(true);
+
+      const { data, error } = await supabase
+        .from('np_warehouses')
+        .select('id, city_ref, description, short_address, number, type')
+        .eq('city_ref', formData.novaPoshtaCity);
+
+      if (!error && data) {
+        const all = data as NPWarehouse[];
+
+        setBranches(all.filter(w => w.type === 'branch'));
+        setLockers(all.filter(w => w.type === 'locker'));
+      } else {
+        console.error('[NovaPoshta] load warehouses error:', error);
+        setBranches([]);
+        setLockers([]);
+      }
+
+      setLoadingWarehouses(false);
+    };
+
+    void loadWarehouses();
+  }, [formData.deliveryService, formData.novaPoshtaCity]);
+
+  const selectedCity = cities.find(c => c.ref === formData.novaPoshtaCity);
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
@@ -29,6 +121,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
           <label className="mb-3 block text-sm font-medium text-accent">
             {t('Delivery method *')}
           </label>
+
           <div className="space-y-3">
             {/* Nova Poshta */}
             <div className="rounded-lg border border-border bg-card p-4">
@@ -43,6 +136,35 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
               {formData.deliveryService === 'novaPoshta' && (
                 <div className="mt-4 space-y-4 ml-6">
+                  {/* Місто – спільне для всіх типів доставки НП */}
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-accent">
+                      {t('City *')}
+                    </label>
+
+                    <select
+                      name="novaPoshtaCity"
+                      value={formData.novaPoshtaCity}
+                      onChange={onChange}
+                      className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      required
+                    >
+                      <option value="">{t('Select city')}</option>
+                      {cities.map(city => (
+                        <option key={city.ref} value={city.ref}>
+                          {city.description}
+                        </option>
+                      ))}
+                    </select>
+
+                    {loadingCities && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {t('Loading cities...')}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Тип доставки НП */}
                   <div>
                     <Radio
                       name="novaPoshtaType"
@@ -51,16 +173,38 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                       onChange={onChange}
                       label={t('Nova Poshta branch')}
                     />
+
                     {formData.novaPoshtaType === 'branch' && (
-                      <div className="mt-3 ml-7">
-                        <Input
-                          label={t('Enter Nova Poshta branch number *')}
-                          name="deliveryDetail"
-                          value={formData.deliveryDetail}
+                      <div className="mt-3 ml-7 space-y-3">
+                        <label className="mb-1 block text-sm font-medium text-accent">
+                          {selectedCity
+                            ? t('Select branch in {{city}}', {
+                                city: selectedCity.description,
+                              })
+                            : t('Select branch')}
+                        </label>
+
+                        <select
+                          name="novaPoshtaBranch"
+                          value={formData.novaPoshtaBranch}
                           onChange={onChange}
-                          placeholder={t('Branch number')}
+                          className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                          disabled={!formData.novaPoshtaCity || loadingWarehouses}
                           required
-                        />
+                        >
+                          <option value="">{t('Select branch')}</option>
+                          {branches.map(w => (
+                            <option key={w.id} value={w.number}>
+                              {w.description} — {w.short_address || ''}
+                            </option>
+                          ))}
+                        </select>
+
+                        {loadingWarehouses && (
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            {t('Loading branches...')}
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -73,16 +217,38 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                       onChange={onChange}
                       label={t('Nova Poshta parcel locker')}
                     />
+
                     {formData.novaPoshtaType === 'locker' && (
-                      <div className="mt-3 ml-7">
-                        <Input
-                          label={t('Enter parcel locker number *')}
-                          name="deliveryDetail"
-                          value={formData.deliveryDetail}
+                      <div className="mt-3 ml-7 space-y-3">
+                        <label className="mb-1 block text-sm font-medium text-accent">
+                          {selectedCity
+                            ? t('Select parcel locker in {{city}}', {
+                                city: selectedCity.description,
+                              })
+                            : t('Select parcel locker')}
+                        </label>
+
+                        <select
+                          name="novaPoshtaLocker"
+                          value={formData.novaPoshtaLocker}
                           onChange={onChange}
-                          placeholder={t('Parcel locker number')}
+                          className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                          disabled={!formData.novaPoshtaCity || loadingWarehouses}
                           required
-                        />
+                        >
+                          <option value="">{t('Select parcel locker')}</option>
+                          {lockers.map(w => (
+                            <option key={w.id} value={w.number}>
+                              {w.description} — {w.short_address || ''}
+                            </option>
+                          ))}
+                        </select>
+
+                        {loadingWarehouses && (
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            {t('Loading parcel lockers...')}
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -96,12 +262,13 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                       label={t('Courier delivery')}
                       description="150 ₴"
                     />
+
                     {formData.novaPoshtaType === 'courier' && (
-                      <div className="mt-3 ml-7">
+                      <div className="mt-3 ml-7 space-y-3">
                         <Input
                           label={t('Enter delivery address *')}
-                          name="deliveryDetail"
-                          value={formData.deliveryDetail}
+                          name="novaPoshtaAddress"
+                          value={formData.novaPoshtaAddress}
                           onChange={onChange}
                           placeholder={t('Street, house number, apartment')}
                           required
@@ -123,12 +290,22 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                 label={t('Ukrposhta')}
                 description={t("at the carrier's rates")}
               />
+
               {formData.deliveryService === 'ukrposhta' && (
-                <div className="mt-3 ml-7">
+                <div className="mt-3 ml-7 space-y-3">
+                  <Input
+                    label={t('City *')}
+                    name="ukrposhtaCity"
+                    value={formData.ukrposhtaCity}
+                    onChange={onChange}
+                    placeholder={t('City')}
+                    required
+                  />
+
                   <Input
                     label={t('Enter Ukrposhta branch number *')}
-                    name="deliveryDetail"
-                    value={formData.deliveryDetail}
+                    name="ukrposhtaBranch"
+                    value={formData.ukrposhtaBranch}
                     onChange={onChange}
                     placeholder={t('Branch number')}
                     required
