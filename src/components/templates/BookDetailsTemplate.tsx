@@ -3,8 +3,8 @@ import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
 import { MainImageGallery } from '../molecules/ImageGallery/ImageGallery.tsx';
 import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
 import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
-import type { Book } from '@/types/book/book.ts';
 import { ProductCardsBlock } from '../organisms/Home/ProductCardsBlock.tsx';
+import type { Book } from '@/types/book/book.ts';
 import { useTranslation } from 'react-i18next';
 
 interface BookDetailsTemplateProps {
@@ -50,6 +50,7 @@ const getCatalogType = (bookType: string): string => {
 
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   book,
+  breadcrumbs,
   selectedLanguage,
   onSelectLanguage,
   onAddToCart,
@@ -57,13 +58,12 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   isInCart,
   isInWishlist,
   availableLanguages,
-  booksMightLike = [],
+  booksMightLike,
 }) => {
   const { t } = useTranslation();
 
   const bookType = book?.type || 'paperback';
   const bookCategory = book?.category || 'books';
-
   const catalogType = getCatalogType(bookType);
 
   const createCategorySlug = (category: string): string => {
@@ -76,7 +76,7 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
 
   const categorySlug = createCategorySlug(bookCategory);
 
-  const computedBreadcrumbs = [
+  const defaultBreadcrumbs = [
     {
       label: t(BOOK_TYPE_LABELS[book.type] || 'BOOKS'),
       href: `/catalog/${catalogType}`,
@@ -87,28 +87,26 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
     },
   ];
 
+  const breadcrumbItems = breadcrumbs.length ? breadcrumbs : defaultBreadcrumbs;
+
   return (
     <div className="container pt-6">
-      {/* Breadcrumb (Molecule) */}
-      <BreadcrumbNav items={computedBreadcrumbs} currentTitle={book.title} />
+      <BreadcrumbNav items={breadcrumbItems} currentTitle={book.title} />
 
-      {/* Title */}
       <h2 className="mt-4 md:mt-6 tracking-[0] md:tracking-[-0.01em]">
         {book.title}
       </h2>
       <p className="mt-1.5 opacity-60">{book.author}</p>
 
       <div className="px-4 md:px-6 lg:px-8 mt-[5px] md:mt-8 lg:mt-10 ">
-        {/* GRID: Main Content (Gallery + Info Panel) */}
         <div className="md:grid md:grid-cols-[auto_1fr_1fr] flex flex-col items-center md:flex-none md:flex-row md:items-start">
-          {/* Column 1 & 2: Image Gallery (Molecule) */}
           <MainImageGallery
             images={book.images}
             alt={`Обкладинка книги ${book.title}`}
           />
 
-          {/* Column 3: Product Info Panel (Organism) */}
           <ProductInfoPanel
+            bookId={book.id}
             category={book.category}
             price={book.price}
             oldPrice={book.oldPrice}
@@ -118,18 +116,18 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
             onLanguageChange={onSelectLanguage}
             onAddToCart={() => onAddToCart(book.id)}
             onToggleWishlist={() => onToggleWishlist(book.id)}
-            isInWishlist={isInWishlist(book.id)}
-            isInCart={isInCart(book.id)}
+            isInWishlist={isInWishlist}
+            isInCart={isInCart}
           />
         </div>
       </div>
 
-      {/* ABOUT + CHARACTERISTICS (Organism) */}
       <AboutAndCharacteristics
         aboutTitle={book.aboutTitle}
         aboutContent={book.aboutContent}
         characteristics={book.characteristics}
       />
+
       {booksMightLike.length > 0 && (
         <ProductCardsBlock
           title={t('You may also like')}

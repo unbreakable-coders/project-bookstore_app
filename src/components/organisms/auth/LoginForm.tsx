@@ -50,7 +50,7 @@ export const LoginForm: FC<LoginFormProps> = ({
       <div className="space-y-2">
         <label
           htmlFor="login-email"
-          className="text-sm font-semibold text-foreground"
+          className="text-sm font-semibold text-secondary"
         >
           {t('Email')}
         </label>
@@ -70,7 +70,7 @@ export const LoginForm: FC<LoginFormProps> = ({
       <div className="space-y-2">
         <label
           htmlFor="login-password"
-          className="text-sm font-semibold text-foreground"
+          className="text-sm font-semibold text-secondary"
         >
           {t('Password')}
         </label>
@@ -97,7 +97,7 @@ export const LoginForm: FC<LoginFormProps> = ({
       {!isAuthenticated && (
         <div className="text-right">
           <button
-            className="text-sm text-secondary hover:text-foreground transition-colors"
+            className="text-sm text-secondary hover:text-muted transition-colors"
             disabled={loading}
           >
             {t('Forgot password?')}

@@ -89,7 +89,7 @@ export const SortCategory: FC<SortCategoryProps> = ({
           className={[
             'absolute z-50 mt-1',
             fullWidth ? 'w-full' : 'w-44',
-            'rounded-md border border-[#DADADA] bg-white',
+            'rounded-md border border-border bg-card',
             'shadow-lg',
             'py-1',
           ].join(' ')}
@@ -101,9 +101,9 @@ export const SortCategory: FC<SortCategoryProps> = ({
               aria-selected={value === option.value}
               onClick={() => handleSelect(option.value)}
               className={[
-                'px-4 py-2 text-sm cursor-pointer',
-                'hover:bg-gray-100',
-                value === option.value ? 'bg-gray-50 font-medium' : '',
+                'px-4 py-2 text-sm cursor-pointer text-secondary',
+                'hover:bg-input',
+                value === option.value ? 'text-secondary font-medium' : '',
               ].join(' ')}
             >
               <div className="flex items-center justify-between">
