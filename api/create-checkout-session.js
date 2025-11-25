@@ -1,12 +1,21 @@
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
+
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+
+  if (!secretKey) {
+    console.error('[Stripe] STRIPE_SECRET_KEY is missing in environment');
+    return res
+      .status(500)
+      .json({ error: 'Stripe configuration error (no secret key)' });
+  }
+
+  const stripe = new Stripe(secretKey);
 
   try {
     const { amountUAH } = req.body;
@@ -38,7 +47,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ url: session.url });
   } catch (error) {
-    console.error('Stripe error:', error);
+    console.error('Stripe create session error:', error);
     return res.status(500).json({ error: error.message });
   }
 }
