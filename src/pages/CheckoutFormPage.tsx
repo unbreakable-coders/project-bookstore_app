@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/atoms/Button';
 import { BackButton } from '@/components/atoms/Form/BackButton';
 import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
-import { OrderItemSummary } from '@/components/molecules/order/OrderItemSummary';
+import { OrderSummary } from '@/components/molecules/Checkout/OrderSummary';
 import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 export const CheckoutPage: FC = () => {
