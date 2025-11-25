@@ -18,7 +18,6 @@ interface ProductInfoPanelProps {
   visibleLabels?: string[];
   isInCart: (bookId: string) => boolean;
   inStock?: boolean;
-  bookId: string;
 }
 
 export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
@@ -34,26 +33,22 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
   onToggleWishlist,
   isInWishlist,
   isInCart,
-  bookId,
   visibleLabels = [
     'Author',
     'Cover type',
     'Number of pages',
     'Year of publication',
   ],
+  inStock = true,
 }) => {
   const { t } = useTranslation();
 
-
-
   const handleAddToCart = () => {
- 
     onAddToCart();
   };
 
   const handleToggleWishlist = () => {
-
-    onToggleWishlist();
+    onToggleWishlist(bookId);
   };
 
   const filteredDetails = details.filter(detail =>
@@ -75,16 +70,16 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
         onLanguageChange={onLanguageChange}
       />
 
-<PriceAndActions
-  bookId={bookId}
-  price={price}
-  oldPrice={oldPrice}
-  onAddToCart={handleAddToCart}
-  onToggleWishlist={handleToggleWishlist}
-  isInWishlist={isInWishlist}
-  isInCart={isInCart}
-  inStock={true}
-/>
+      <PriceAndActions
+        bookId={bookId}
+        price={price}
+        oldPrice={oldPrice}
+        onAddToCart={handleAddToCart}
+        onToggleWishlist={handleToggleWishlist}
+        isInWishlist={isInWishlist}
+        isInCart={isInCart}
+        inStock={inStock}
+      />
 
       <div className="mt-6">
         {filteredDetails.map((detail, index) => (
