@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-// import { Logo } from '../../atoms/Logo';
+import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { Input } from '../../atoms/Input';
@@ -23,7 +23,6 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
-import { LogoTheme } from '../../ChangeTheme/LogoTheme';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
@@ -340,7 +339,7 @@ export const Header = () => {
             <div className="flex items-center gap-8">
               <Link to="/" aria-label="Go to home page">
                 <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
-                  <LogoTheme className="h-full w-auto" />
+                  <Logo className="h-full w-auto" />
                 </div>
               </Link>
 
