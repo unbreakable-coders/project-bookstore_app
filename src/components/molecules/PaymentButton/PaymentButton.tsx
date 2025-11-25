@@ -9,40 +9,14 @@ interface Props {
 export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const isDev = import.meta.env.MODE === 'development';
-
-  const apiUrl = isDev
-    ? 'http://localhost:4242/create-checkout-session'
-    : '/api/create-checkout-session';
-
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     setIsLoading(true);
 
-    try {
-      const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amountUAH: price }),
-      });
+    const fakeSessionId = 'mock_' + Date.now();
 
-      if (!res.ok) {
-        const text = await res.text();
-        console.error('Checkout Error:', res.status, text);
-        return;
-      }
-
-      const data = await res.json();
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        console.error('[Checkout Error] No URL returned:', data);
-      }
-    } catch (e) {
-      console.error('[Checkout Error]', e);
-    } finally {
-      setIsLoading(false);
-    }
+    setTimeout(() => {
+      window.location.href = `/mock-stripe-checkout?session_id=${fakeSessionId}&amount=${price}`;
+    }, 600);
   };
 
   return (
