@@ -1,51 +1,116 @@
-import type { FC } from 'react';
+import type { FC, ChangeEvent } from 'react';
 import { useState } from 'react';
-import { useCart } from '@/context/CartContext';
 import { useTranslation } from 'react-i18next';
+
+import { useCart } from '@/context/CartContext';
+import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
+
 import { Button } from '@/components/atoms/Button';
 import { BackButton } from '@/components/atoms/Form/BackButton';
 import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
 import { OrderSummary } from '@/components/molecules/Checkout/OrderSummary';
-import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
+
+interface CheckoutFormState {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+
+  deliveryService: 'novaPoshta' | 'ukrposhta' | '';
+  novaPoshtaType: 'branch' | 'locker' | 'courier' | '';
+
+  // Нова пошта
+  novaPoshtaCity: string;      // CityRef з np_cities
+  novaPoshtaBranch: string;    // number відділення
+  novaPoshtaLocker: string;    // number поштомата
+  novaPoshtaAddress: string;   // адреса для курʼєра
+
+  // Укрпошта
+  ukrposhtaCity: string;
+  ukrposhtaBranch: string;
+
+  paymentMethod: string;
+}
+
+const initialFormState: CheckoutFormState = {
+  firstName: '',
+  lastName: '',
+  phone: '',
+  email: '',
+
+  deliveryService: '',
+  novaPoshtaType: '',
+  novaPoshtaCity: '',
+  novaPoshtaBranch: '',
+  novaPoshtaLocker: '',
+  novaPoshtaAddress: '',
+
+  ukrposhtaCity: '',
+  ukrposhtaBranch: '',
+
+  paymentMethod: '',
+};
 
 export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
   const { cartItems, totalItems, totalPriceUAH } = useCart();
   const { hasActiveWelcomeDiscount } = useWelcomeDiscount();
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    deliveryService: '',
-    novaPoshtaType: '',
-    deliveryDetail: '',
-    paymentMethod: '',
-  });
+  const [formData, setFormData] = useState<CheckoutFormState>(initialFormState);
 
   const handleSubmit = () => {
-    console.log('');
+    // TODO: відправка замовлення в Supabase / бекенд
+    console.log('[Checkout submit]', formData);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
 
     setFormData(prev => {
+      // Зміна служби доставки: чистимо все, що до неї прив’язано
       if (name === 'deliveryService') {
         return {
           ...prev,
-          deliveryService: value,
+          deliveryService: value as CheckoutFormState['deliveryService'],
           novaPoshtaType: '',
-          deliveryDetail: '',
+          novaPoshtaCity: '',
+          novaPoshtaBranch: '',
+          novaPoshtaLocker: '',
+          novaPoshtaAddress: '',
+          ukrposhtaCity: '',
+          ukrposhtaBranch: '',
         };
       }
 
+      // Зміна типу доставки НП: чистимо взаємовиключні поля
       if (name === 'novaPoshtaType') {
         return {
           ...prev,
-          novaPoshtaType: value,
-          deliveryDetail: '',
+          novaPoshtaType: value as CheckoutFormState['novaPoshtaType'],
+          novaPoshtaBranch: '',
+          novaPoshtaLocker: '',
+          novaPoshtaAddress: '',
+        };
+      }
+
+      // Зміна міста НП: скидаємо відділення/поштомат
+      if (name === 'novaPoshtaCity') {
+        return {
+          ...prev,
+          novaPoshtaCity: value,
+          novaPoshtaBranch: '',
+          novaPoshtaLocker: '',
+        };
+      }
+
+      // Зміна міста Укрпошти: скидаємо відділення
+      if (name === 'ukrposhtaCity') {
+        return {
+          ...prev,
+          ukrposhtaCity: value,
+          ukrposhtaBranch: '',
         };
       }
 

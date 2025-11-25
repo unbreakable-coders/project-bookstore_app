@@ -19,9 +19,14 @@
     "@supabase/supabase-js": "^2.81.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
+   
     "express": "^5.1.0",
+
+    "dotenv": "^17.2.3",
+    "framer-motion": "^12.23.24",
+
     "gsap": "^3.13.0",
     "i18next": "^25.6.3",
     "i18next-browser-languagedetector": "^8.2.0",
