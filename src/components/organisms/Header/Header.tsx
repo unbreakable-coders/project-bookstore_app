@@ -42,12 +42,9 @@ export const Header = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMobileIcon, setActiveMobileIcon] =
-    useState<MobileIcon>('heart');
+  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>(
-    [],
-  );
+  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
 
   const prevPathRef = useRef(location.pathname);
 
@@ -241,8 +238,8 @@ export const Header = () => {
                       to={buildCatalogLink(item.to)}
                       className={`relative pb-1 transition-colors ${
                         active
-                          ? 'text-[#050505]'
-                          : 'text-[#9F9F9F] hover:text-[#050505]'
+                          ? 'text-primary'
+                          : 'text-[#9F9F9F] hover:text-primary'
                       }`}
                     >
                       {item.label}

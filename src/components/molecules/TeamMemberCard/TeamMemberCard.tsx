@@ -26,7 +26,7 @@ export const TeamMemberCard = ({
       </div>
 
       {/* Ім'я — h3 з дизайну */}
-      <h3 className="text-[20px] leading-[26px] md:text-[22px] md:leading-[31px] font-semibold mb-1">
+      <h3 className="text-[20px] text-accent leading-[26px] md:text-[22px] md:leading-[31px] font-semibold mb-1">
         {name}
       </h3>
 

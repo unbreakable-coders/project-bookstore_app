@@ -16,7 +16,6 @@ export const Footer = () => {
     <>
       <footer className="border-t bg-footer border-border">
         <div className="mx-auto max-w-6xl px-4 py-10">
-
           <div className="hidden md:flex items-center justify-between">
             <Logo className="h-7 w-auto" />
 
@@ -25,7 +24,7 @@ export const Footer = () => {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className="hover:text-[#050505]"
+                  className="hover:text-primary"
                 >
                   {link.label}
                 </Link>
@@ -46,7 +45,7 @@ export const Footer = () => {
                 <Link
                   key={link.label}
                   to={link.to}
-                  className="hover:text-[#050505]"
+                  className="hover:text-primary"
                 >
                   {link.label}
                 </Link>
