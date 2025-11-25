@@ -9,20 +9,28 @@ interface Props {
 export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
+  // автоматичне визначення базового URL
+  const apiBase =
+    import.meta.env.MODE === 'development'
+      ? 'http://localhost:4242'
+      : ''; // на Vercel — порожній, бо /api/... працює від кореня
+
   const handleCheckout = async () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch('http://localhost:4242/create-checkout-session', {
+      const res = await fetch(`${apiBase}/api/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [] }),
+        body: JSON.stringify({ amountUAH: price }),
       });
 
       const data = await res.json();
 
-      if (data.url) {
+      if (data?.url) {
         window.location.href = data.url;
+      } else {
+        console.error('[Checkout Error] No URL returned:', data);
       }
     } catch (e) {
       console.error('[Checkout Error]', e);
@@ -41,9 +49,10 @@ export const PaymentButton: FC<Props> = ({ price, className }) => {
       onClick={handleCheckout}
       type="button"
       className={`${baseClasses} ${className ?? ''}`}
+      disabled={isLoading}
     >
       <span className="flex items-center justify-center w-full">
-        {isLoading ? <ButtonLoader /> : 'Checkout'}
+        {isLoading ? <ButtonLoader /> : `Checkout ${price}₴`}
       </span>
     </button>
   );
