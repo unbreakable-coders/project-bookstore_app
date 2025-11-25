@@ -17,7 +17,6 @@ import DevPreviewPage from './pages/DevPreviewPage';
 import { GitHubPage } from './pages/system/GithubPage';
 import { RightsPage } from './pages/system/RightsPage';
 
-// Mock Stripe pages
 import { MockStripeCheckout } from './pages/MockStripeCheckout/MockStripeCheckout';
 import { PaymentSuccess } from './pages/PaymentSuccess/PaymentSuccess';
 import { OrderSuccessPage } from './pages/OrderSuccessPage/OrderSuccessPage';
@@ -64,7 +63,6 @@ export default function App() {
                     <Route path="rights" element={<RightsPage />} />
                     <Route path="dev-preview" element={<DevPreviewPage />} />
 
-                    {/* Mock Stripe routes */}
                     <Route
                       path="mock-stripe-checkout"
                       element={<MockStripeCheckout />}
