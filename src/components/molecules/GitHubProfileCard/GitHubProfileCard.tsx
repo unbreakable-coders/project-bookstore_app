@@ -19,7 +19,7 @@ export const GitHubProfileCard = ({
       <div className="flex items-center gap-4 mb-6">
         <Avatar initial={initial} size="md" />
         <div className="text-left">
-          <p className="font-semibold text-[16px] leading-[24px] text-foreground">
+          <p className="font-semibold text-[16px] leading-[24px] text-primary">
             {name}
           </p>
           <p className="text-[12px] leading-[15px] text-secondary mt-0.5">
