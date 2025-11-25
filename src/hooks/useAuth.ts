@@ -12,9 +12,46 @@ export const useAuth = () => {
   const { t } = useTranslation();
 
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false); // для операцій (login/logout/signUp)
+  const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const ensureWelcomeDiscount = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, welcome_discount_expires_at')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error('[welcome discount select error]', error.message);
+        return;
+      }
+
+      if (data?.welcome_discount_expires_at) {
+        return;
+      }
+
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+      const { error: upsertError } = await supabase
+        .from('profiles')
+        .upsert(
+          {
+            id: userId,
+            welcome_discount_expires_at: expiresAt,
+          },
+          { onConflict: 'id' },
+        );
+
+      if (upsertError) {
+        console.error('[welcome discount upsert error]', upsertError.message);
+      }
+    } catch (err) {
+      console.error('[welcome discount error]', err);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -27,6 +64,10 @@ export const useAuth = () => {
 
         if (isMounted) {
           setUser(user ?? null);
+
+          if (user?.id) {
+            await ensureWelcomeDiscount(user.id);
+          }
         }
       } finally {
         if (isMounted) {
@@ -40,7 +81,12 @@ export const useAuth = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+
+      if (currentUser?.id) {
+        void ensureWelcomeDiscount(currentUser.id);
+      }
     });
 
     return () => {
@@ -92,6 +138,7 @@ export const useAuth = () => {
 
       if (user) {
         await createProfileIfNeeded(user.id, user.email ?? null, name);
+        await ensureWelcomeDiscount(user.id);
       }
 
       return { data: user, error: null };

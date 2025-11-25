@@ -1,4 +1,3 @@
-// src/components/molecules/order/OrderItemSummary.tsx
 import type { FC } from 'react';
 
 interface OrderItemSummaryProps {
