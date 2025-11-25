@@ -6,17 +6,20 @@ import {
   toastWishlistAdded,
   toastWishlistRemoved,
 } from '../atoms/Toasts';
+
 interface PriceAndActionsProps {
+  bookId: string;
   price: number;
   oldPrice: number | null;
   onAddToCart: () => void;
-  onToggleWishlist: () => void;
-  isInWishlist: boolean;
-  isInCart: boolean;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
+  isInCart: (bookId: string) => boolean;
   inStock?: boolean;
 }
 
 export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
+  bookId,
   price,
   oldPrice,
   onAddToCart,
@@ -33,8 +36,11 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   const convertedRegularPrice = Math.ceil(price * 42);
 
   const handleAddToCart = () => {
+    const alreadyInCart = isInCart(bookId);
+
     onAddToCart();
-    if (isInCart) {
+
+    if (alreadyInCart) {
       toastCartRemoved();
     } else {
       toastCartAdded();
@@ -42,8 +48,11 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
   };
 
   const handleToggleWishlist = () => {
-    onToggleWishlist();
-    if (isInWishlist) {
+    const alreadyInWishlist = isInWishlist(bookId);
+
+    onToggleWishlist(bookId);
+
+    if (alreadyInWishlist) {
       toastWishlistRemoved();
     } else {
       toastWishlistAdded();
@@ -63,10 +72,11 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
       </div>
 
       <BookActions
+        bookId={bookId}
         onAddToCart={handleAddToCart}
         onToggleWishlist={handleToggleWishlist}
-        isInWishlist={isInWishlist}
-        isInCart={isInCart}
+        isInWishlist={isInWishlist(bookId)}
+        isInCart={isInCart(bookId)}
         inStock={inStock}
       />
     </>

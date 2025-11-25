@@ -4,6 +4,7 @@ import { PriceAndActions } from '../molecules/PriceAndActions.tsx';
 import { ProductDetailLabel } from '../molecules/ProductDetailLabel.tsx';
 
 interface ProductInfoPanelProps {
+  bookId: string;
   category: string;
   price: number;
   oldPrice: number | null;
@@ -12,14 +13,15 @@ interface ProductInfoPanelProps {
   selectedLanguage: string;
   onLanguageChange: (lang: string) => void;
   onAddToCart: () => void;
-  onToggleWishlist: () => void;
-  isInWishlist: boolean;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
   visibleLabels?: string[];
-  isInCart: boolean;
+  isInCart: (bookId: string) => boolean;
   inStock?: boolean;
 }
 
 export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
+  bookId,
   category,
   price,
   oldPrice,
@@ -37,8 +39,17 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
     'Number of pages',
     'Year of publication',
   ],
+  inStock = true,
 }) => {
   const { t } = useTranslation();
+
+  const handleAddToCart = () => {
+    onAddToCart();
+  };
+
+  const handleToggleWishlist = () => {
+    onToggleWishlist(bookId);
+  };
 
   const filteredDetails = details.filter(detail =>
     visibleLabels.some(labelKey => detail.label === t(labelKey)),
@@ -46,7 +57,6 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
 
   return (
     <div className="mt-8 md:mt-0 max-w-[280px] md:max-w-[267px] lg:max-w-[320px] w-full">
-      {/* Category */}
       <div className="border-b border-border pb-4">
         <h5 className="font-bold text-secondary">{t('Category')}</h5>
         <div className="inline-block mt-2 px-[10.5px] py-[5.5px] border border-border rounded-[5px]">
@@ -54,25 +64,23 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
         </div>
       </div>
 
-      {/* Language Selector (Molecule) */}
       <LanguageSelector
         languages={languages}
         selectedLanguage={selectedLanguage}
         onLanguageChange={onLanguageChange}
       />
 
-      {/* Price and Actions (Molecule) */}
       <PriceAndActions
+        bookId={bookId}
         price={price}
         oldPrice={oldPrice}
-        onAddToCart={onAddToCart}
-        onToggleWishlist={onToggleWishlist}
+        onAddToCart={handleAddToCart}
+        onToggleWishlist={handleToggleWishlist}
         isInWishlist={isInWishlist}
         isInCart={isInCart}
-        inStock={true}
+        inStock={inStock}
       />
 
-      {/* Product details */}
       <div className="mt-6">
         {filteredDetails.map((detail, index) => (
           <ProductDetailLabel

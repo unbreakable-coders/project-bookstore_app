@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/atoms/Button';
 import { BackButton } from '@/components/atoms/Form/BackButton';
 import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
-import { OrderSummary } from '@/components/molecules/Checkout/OrderSummary';
+import { OrderItemSummary } from '@/components/molecules/order/OrderItemSummary';
+import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
   const { cartItems, totalItems, totalPriceUAH } = useCart();
+  const { hasActiveWelcomeDiscount } = useWelcomeDiscount();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -59,8 +61,14 @@ export const CheckoutPage: FC = () => {
     formData.novaPoshtaType === 'courier'
       ? 150
       : 0;
+
   const itemsTotalUAH = totalPriceUAH;
-  const totalWithDelivery = itemsTotalUAH + deliveryPrice;
+
+  const discountUAH = hasActiveWelcomeDiscount
+    ? Math.min(Math.round(itemsTotalUAH * 0.1), itemsTotalUAH)
+    : 0;
+
+  const totalWithDelivery = itemsTotalUAH - discountUAH + deliveryPrice;
 
   const getItemTotalUAH = (item: (typeof cartItems)[number]) =>
     item.totalPriceUAH ?? 0;

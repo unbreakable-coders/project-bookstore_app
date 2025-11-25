@@ -70,7 +70,7 @@ export const SortPages: FC<SortPagesProps> = ({
           className={[
             'absolute z-50 mt-1',
             fullWidth ? 'w-full' : 'w-32',
-            'rounded-md border border-[#DADADA] bg-white',
+            'rounded-md border border-border bg-card',
             'shadow-lg',
             'py-1',
           ].join(' ')}
@@ -82,9 +82,9 @@ export const SortPages: FC<SortPagesProps> = ({
               aria-selected={value === option}
               onClick={() => handleSelect(option)}
               className={[
-                'px-4 py-2 text-sm cursor-pointer',
-                'hover:bg-gray-100',
-                value === option ? 'bg-gray-50 font-medium' : '',
+                'px-4 py-2 text-sm cursor-pointer text-secondary',
+                'hover:bg-input',
+                value === option ? 'text-secondary font-medium' : '',
               ].join(' ')}
             >
               {option}

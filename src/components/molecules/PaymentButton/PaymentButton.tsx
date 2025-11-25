@@ -2,35 +2,30 @@ import { type FC, useState } from 'react';
 import { ButtonLoader } from '@/components/atoms/ButtonLoader/ButtonLoader';
 
 interface Props {
+  price: number;
   className?: string;
 }
 
-export const PaymentButton: FC<Props> = ({ className }) => {
+export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/create-checkout-session', {
+      const res = await fetch('http://localhost:4242/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [] }), 
+        body: JSON.stringify({ items: [] }),
       });
-
-      if (!res.ok) {
-        throw new Error('Failed to create checkout session');
-      }
 
       const data = await res.json();
 
-      if (data?.url) {
+      if (data.url) {
         window.location.href = data.url;
-      } else {
-        throw new Error('Stripe did not return any URL');
       }
-    } catch (error) {
-      console.error('[PaymentButton] Checkout error:', error);
+    } catch (e) {
+      console.error('[Checkout Error]', e);
     } finally {
       setIsLoading(false);
     }

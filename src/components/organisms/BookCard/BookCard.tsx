@@ -11,7 +11,6 @@ import { StockStatus } from '../../molecules/StockStatus/StockStatus';
 import { BookActions } from '../../molecules/BookActions/BookActions';
 import type { Book } from '@/types/book';
 
-import { toastCartAdded, toastCartRemoved } from '../../atoms/Toasts';
 import { KindleBookImage } from '@/components/atoms/KindleBookImage';
 import { useTranslation } from 'react-i18next';
 
@@ -40,20 +39,15 @@ export const BookCard: React.FC<BookCardProps> = ({
   }, [isInCart]);
 
   const openDetails = () => {
-    navigate(`/books/${book.namespaceId}`);
+    navigate(`/books/${book.namespaceId}?lang=${book.lang}`, {
+      state: { bookId: book.id },
+    });
   };
 
   const handleAddToCart = () => {
     const willBeInCart = !optimisticInCart;
-
     setOptimisticInCart(willBeInCart);
     onAddToCart?.(book.id);
-
-    if (willBeInCart) {
-      toastCartAdded();
-    } else {
-      toastCartRemoved();
-    }
   };
 
   const handleToggleWishlist = () => {
@@ -66,7 +60,7 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   return (
     <div
-      className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer w-[288px] lg:w-[272px]"
+      className="bg-card rounded-2xl border border-border p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer w-[288px] lg:w-[272px]"
       onClick={openDetails}
     >
       <div className="relative">

@@ -25,7 +25,7 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
         disabled={loading}
       >
         <span className="text-2xl font-bold text-[#4285F4]">G</span>
-        <span className="text-sm font-semibold">
+        <span className="text-sm text-secondary font-semibold">
           {t('auth.loginWithGoogle')}
         </span>
       </Button>
@@ -38,7 +38,7 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
         disabled={loading}
       >
         <span className="text-2xl font-bold text-[#1877F2]">f</span>
-        <span className="text-sm font-semibold">
+        <span className="text-sm text-secondary font-semibold">
           {t('auth.loginWithFacebook')}
         </span>
       </Button>
