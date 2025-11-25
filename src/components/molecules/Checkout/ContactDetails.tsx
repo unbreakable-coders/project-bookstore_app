@@ -19,11 +19,13 @@ export const ContactDetails: FC<ContactDetailsProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <h2 className="mb-4 text-xl font-semibold">{t('Contact details')}</h2>
+    <div className="rounded-lg text-secondary border border-border bg-card p-6">
+      <h2 className="mb-4 text-xl text-secondary font-semibold">
+        {t('Contact details')}
+      </h2>
 
       <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 text-secondary  gap-4 md:grid-cols-2">
           <Input
             label={t('Name *')}
             name="firstName"

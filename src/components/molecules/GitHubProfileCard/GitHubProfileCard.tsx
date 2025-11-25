@@ -15,7 +15,7 @@ export const GitHubProfileCard = ({
   initial,
 }: GitHubProfileCardProps) => {
   return (
-    <div className="bg-card border border-border p-6 rounded-[10px] hover:shadow-lg transition-shadow">
+    <div className="bg-card border border-border p-6 rounded-[10px] hover:shadow-lg transition-shadow ">
       <div className="flex items-center gap-4 mb-6">
         <Avatar initial={initial} size="md" />
         <div className="text-left">

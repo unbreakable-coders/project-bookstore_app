@@ -85,7 +85,11 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
   ];
 
   const breadcrumbItems = breadcrumbs.length ? breadcrumbs : defaultBreadcrumbs;
-
+  console.log('Book type:', book.type);
+  console.log('Book category:', book.category);
+  console.log('Catalog type:', catalogType);
+  console.log('Category slug:', categorySlug);
+  console.log('Breadcrumbs:', defaultBreadcrumbs);
   return (
     <div className="container pt-6">
       <BreadcrumbNav items={breadcrumbItems} currentTitle={book.title} />

@@ -22,9 +22,9 @@ export const Radio: FC<RadioProps> = ({
         {...props}
       />
       <div className="flex-1">
-        <div className="font-medium text-foreground">{t(label)}</div>
+        <div className="font-medium text-secondary">{t(label)}</div>
         {description && (
-          <div className="mt-1 text-sm text-secondary">{t(description)}</div>
+          <div className="mt-1 text-sm text-accent">{t(description)}</div>
         )}
       </div>
     </label>
