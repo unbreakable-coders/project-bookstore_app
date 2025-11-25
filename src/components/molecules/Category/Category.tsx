@@ -37,7 +37,9 @@ export const Category: FC<Props> = ({ category }) => {
       <h3 className="mt-4 text-lg font-semibold text-center">
         {category.title}
       </h3>
-      <p className="text-gray-600 text-center">{category.countOfBooks}</p>
+      <p className="text-muted-foreground text-center">
+        {category.countOfBooks}
+      </p>
     </div>
   );
 };

@@ -3,15 +3,18 @@ import { Button } from '../../atoms/Button/Button';
 import { Icon } from '../../atoms/Icon/Icon';
 import { useTranslation } from 'react-i18next';
 import { useMoveHeart } from '@/components/MoveHeart';
+import { useMoveBookToCart } from '@/components/MoveBookToCart';
 import {
   toastWishlistAdded,
   toastWishlistRemoved,
+  toastCartAdded,
+  toastCartRemoved,
 } from '@/components/atoms/Toasts';
 
 interface BookActionsProps {
   bookId: string;
-  onAddToCart: () => void;
-  onToggleWishlist: () => void;
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
   isInCart: boolean;
   isInWishlist: boolean;
   inStock: boolean;
@@ -27,7 +30,9 @@ export const BookActions: React.FC<BookActionsProps> = ({
 }) => {
   const { t } = useTranslation();
   const heartButtonRef = useRef<HTMLButtonElement>(null);
+  const cartButtonRef = useRef<HTMLButtonElement>(null);
   const { flyToWishlist } = useMoveHeart();
+  const { flyToCart } = useMoveBookToCart();
 
   const heartIconName = isInWishlist ? 'heartRed' : 'heart';
   const canAddToCart = inStock || isInCart;
@@ -40,22 +45,35 @@ export const BookActions: React.FC<BookActionsProps> = ({
         toastWishlistAdded();
       });
     } else {
-      onToggleWishlist();
+      onToggleWishlist(bookId);
       toastWishlistRemoved();
+    }
+  };
+
+  const handleCartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!isInCart && inStock && cartButtonRef.current) {
+      flyToCart(cartButtonRef.current, bookId, () => {
+        toastCartAdded();
+      });
+    } else {
+      onAddToCart(bookId);
+      if (isInCart) {
+        toastCartRemoved();
+      }
     }
   };
 
   return (
     <div className="flex gap-3 pt-2">
       <Button
-        onClick={e => {
-          e.stopPropagation();
-          onAddToCart();
-        }}
+        ref={cartButtonRef}
+        onClick={handleCartClick}
         disabled={!canAddToCart}
         variant={isInCart ? 'added' : 'default'}
         size="default"
-        className={`flex-1 h-10 text-sm font-bold rounded-lg transition-all duration-200 ${
+        className={`flex-1 h-10 text-sm  font-bold rounded-lg transition-all duration-200 ${
           canAddToCart ? 'cursor-pointer' : 'opacity-60 cursor-not-allowed'
         }`}
       >
@@ -67,7 +85,7 @@ export const BookActions: React.FC<BookActionsProps> = ({
         onClick={handleWishlistClick}
         variant="outline"
         size="icon"
-        className="rounded-lg h-10 w-10 shrink-0 border border-input hover:bg-accent/50 transition-colors cursor-pointer"
+        className="rounded-lg h-10 w-10 shrink-0 border border-input hover:bg-accent/50 transition-colors cursor-pointer bg-card"
       >
         <Icon
           name={heartIconName}

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
 import { useTranslation } from 'react-i18next';
@@ -10,14 +10,25 @@ import { useWishlist } from '@/context/WishlistContext';
 
 type LanguageCode = 'uk' | 'en' | string;
 
+const BOOK_TYPE_LABELS: Record<string, string> = {
+  paperback: 'PAPER BOOKS',
+  kindle: 'KINDLE EDITION',
+  audiobook: 'AUDIOBOOKS',
+};
+
 export const BookDetailsPage = () => {
   const { namespaceId } = useParams<{ namespaceId: string }>();
   const { t, i18n } = useTranslation();
   const { books: recommendedBooks } = useRecommendedBooks(16);
 
+  const [searchParams] = useSearchParams();
+  const urlLangParam = searchParams.get('lang') as LanguageCode | null;
+
   const [product, setProduct] = useState<BookProduct | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>('uk');
+  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(
+    urlLangParam || (i18n.language as LanguageCode) || 'uk',
+  );
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
@@ -25,7 +36,6 @@ export const BookDetailsPage = () => {
   const loadProductData = useCallback(
     async (lang: LanguageCode) => {
       if (!namespaceId) {
-        console.error('No namespaceId in route params');
         setProduct(null);
         setLoading(false);
         return;
@@ -35,19 +45,15 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
-        await new Promise(resolve => setTimeout(resolve, 500)); // імітація затримки
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         if (!data) {
-          console.error(
-            `Product variant for ns="${namespaceId}" and lang="${lang}" not found.`,
-          );
           setProduct(null);
           return;
         }
 
         setProduct(data);
-      } catch (error) {
-        console.error('Failed to fetch product data:', error);
+      } catch {
         setProduct(null);
       } finally {
         setLoading(false);
@@ -108,15 +114,25 @@ export const BookDetailsPage = () => {
 
   const bookId = product.id;
 
-  const handleToggleWishlist = (id: string) => toggleWishlist(id);
+  const handleToggleWishlist = (id: string) => {
+    if (!id) {
+      return;
+    }
+    toggleWishlist(id);
+  };
 
-  const handleAddToCart = (id: string) => toggleCart(id);
+  const handleAddToCart = (id: string) => {
+    if (!id) {
+      return;
+    }
+    toggleCart(id);
+  };
 
   const detailsList = [
     { label: t('Author'), value: getDisplayValue(product.author) },
     {
       label: t('Cover type'),
-      value: getTranslatedValue(t(product.details.coverType)),
+      value: getTranslatedValue(product.details.coverType),
     },
     {
       label: t('Number of pages'),
@@ -131,16 +147,42 @@ export const BookDetailsPage = () => {
       value: getTranslatedValue(product.details.publication),
     },
     { label: t('Format'), value: getTranslatedValue(product.details.format) },
-    { label: t('Language'), value: getTranslatedValue(t(product.lang)) },
+    { label: t('Language'), value: getTranslatedValue(product.lang) },
     {
       label: t('Illustrations'),
       value: product.details.illustrations ? t('yes') : t('no'),
     },
   ];
 
+  const createCategorySlug = (category: string): string => {
+    return category
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^\w]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
+
+  const getCatalogType = (bookType: string): string => {
+    const typeMap: Record<string, string> = {
+      paperback: 'paper',
+      kindle: 'kindle',
+      audiobook: 'audiobook',
+    };
+    return typeMap[bookType] || 'paper';
+  };
+
+  const catalogType = getCatalogType(product.type);
+  const categorySlug = createCategorySlug(product.category[0] || 'books');
+
   const breadcrumbs = [
-    { label: t('Paper books'), href: '/books' },
-    { label: t('Tech/business'), href: '/books/tech-business' },
+    {
+      label: t(BOOK_TYPE_LABELS[product.type] || 'BOOKS'),
+      href: `/catalog/${catalogType}`,
+    },
+    {
+      label: t(product.category[0] || 'BOOKS').toUpperCase(),
+      href: `/catalog/${catalogType}?category=${categorySlug}&page=1`,
+    },
   ];
 
   const templateData = {
@@ -163,8 +205,8 @@ export const BookDetailsPage = () => {
     onSelectLanguage: handleLanguageChange,
     onAddToCart: handleAddToCart,
     onToggleWishlist: handleToggleWishlist,
-    isInCart: isInCart,
-    isInWishlist: isInWishlist,
+    isInCart,
+    isInWishlist,
     availableLanguages: product.availableLanguages,
     booksMightLike: recommendedBooks,
   };

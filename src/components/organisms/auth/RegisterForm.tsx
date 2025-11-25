@@ -48,7 +48,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
       <div className="space-y-2">
         <label
           htmlFor="register-name"
-          className="text-sm font-semibold text-foreground"
+          className="text-sm font-semibold text-secondary"
         >
           {t('Name')}
         </label>
@@ -65,7 +65,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
       <div className="space-y-2">
         <label
           htmlFor="register-email"
-          className="text-sm font-semibold text-foreground"
+          className="text-sm font-semibold text-secondary"
         >
           {t('Email')}
         </label>
@@ -82,7 +82,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
       <div className="space-y-2">
         <label
           htmlFor="register-password"
-          className="text-sm font-semibold text-foreground"
+          className="text-sm font-semibold text-secondary"
         >
           {t('Password')}
         </label>
@@ -99,7 +99,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
       <div className="space-y-2">
         <label
           htmlFor="register-confirm"
-          className="text-sm font-semibold text-foreground"
+          className="text-sm font-semibold text-secondary"
         >
           {t('Confirm password')}
         </label>
