@@ -139,5 +139,20 @@
   },
   "Logout": "Logout",
   "Minimum 6 characters": "Minimum 6 characters",
-  "Register": "Register"
+  "Register": "Register",
+  "Your discount is active": "Your discount is active",
+  "Welcome to our store": "Welcome to our store",
+  "You received 10% discount on purchases. Hurry up to use it while time is running.": "You received 10% discount on purchases. Hurry up to use it while time is running.",
+  "To catalog": "To catalog",
+  "Register now and get 10% discount on purchases for 24 hours.": "Register now and get 10% discount on purchases for 24 hours.",
+  "Get 10% discount": "Get 10% discount",
+  "Maybe later": "Maybe later",
+  "Copyright and License": "Copyright and License",
+  "Information about the use of materials and intellectual property of the project": "Information about the use of materials and intellectual property of the project",
+  "© Copyright": "© Copyright",
+  "All materials presented on this website, including text, graphics, logos, icons, images, and code, are the property of the Bookstore Project Team.": "All materials presented on this website, including text, graphics, logos, icons, images, and code, are the property of the Bookstore Project Team.",
+  "© {{year}} Bookstore Project Team. All rights reserved.": "© {{year}} Bookstore Project Team. All rights reserved.",
+  "MIT License": "MIT License",
+  "Copyright (c)": "Copyright (c)",
+  "Permission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.": "Permission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
 }

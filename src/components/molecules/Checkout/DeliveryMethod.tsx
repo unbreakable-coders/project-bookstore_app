@@ -20,11 +20,13 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
-      <h2 className="mb-4 text-xl font-semibold">{t('Delivery')}</h2>
+      <h2 className="mb-4 text-xl text-secondary font-semibold">
+        {t('Delivery')}
+      </h2>
 
       <div className="space-y-4">
         <div>
-          <label className="mb-3 block text-sm font-medium text-secondary">
+          <label className="mb-3 block text-sm font-medium text-accent">
             {t('Delivery method *')}
           </label>
           <div className="space-y-3">
