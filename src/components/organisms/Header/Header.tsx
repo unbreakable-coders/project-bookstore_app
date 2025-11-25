@@ -10,11 +10,6 @@ import { useTranslation } from 'react-i18next';
 import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
-import { Input } from '../../atoms/Input';
-import {
-  DropdownCategories,
-  type DropdownOption,
-} from '../../atoms/DropdownCategories';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
 import { useMoveHeart } from '../../MoveHeart';
 import { booksData } from '@/books/data/books';
@@ -22,13 +17,13 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
-import { HeaderActionsDropdown } from '@/components/molecules/HeaderActionsDropdown/HeaderActionsDropdown';
+import { HeaderDiscountBar } from '@/components/molecules/HeaderDiscountBar';
+import { HeaderIconButtons } from '@/components/molecules/HeaderIconButtons';
+import { HeaderDesktopSearch } from '@/components/molecules/HeaderDesktopSearch';
+import { HeaderMobileMenu } from '@/components/molecules/HeaderMobileMenu';
+import type { DropdownOption } from '@/components/atoms/DropdownCategories';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
-
-const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart'];
-const HEADER_ICONS_LG: IconName[] = ['heart', 'cart'];
-const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart'];
 
 export const ICON_BUTTON_CLASS =
   'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
@@ -42,7 +37,8 @@ export const Header = () => {
   const { totalItems } = useCart();
   const { wishlist } = useWishlist();
   const { getCurrentUser } = useAuth();
-  const { headerHeartRef, hasItemsInWishlist } = useMoveHeart();
+  const { headerHeartRef } = useMoveHeart();
+  const { headerCartRef } = useMoveBookToCart();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -70,7 +66,6 @@ export const Header = () => {
 
   const selectedCategoryParam = searchParams.get('category');
   const selectedCategory = selectedCategoryParam ?? 'all';
-  const { headerCartRef } = useMoveBookToCart();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -141,9 +136,9 @@ export const Header = () => {
 
     if (prevPath !== location.pathname) {
       const wasCatalog = prevPath.startsWith('/catalog');
-      const isCatalog = location.pathname.startsWith('/catalog');
+      const nowCatalog = location.pathname.startsWith('/catalog');
 
-      if (wasCatalog && !isCatalog) {
+      if (wasCatalog && !nowCatalog) {
         const params = new URLSearchParams(searchParams);
 
         if (params.has('category')) {
@@ -202,118 +197,6 @@ export const Header = () => {
     };
   };
 
-  const renderHeaderIcon = (iconName: IconName) => {
-    const badgeCount =
-      iconName === 'cart'
-        ? cartCount
-        : iconName === 'heart'
-          ? wishlistCount
-          : 0;
-
-    if (iconName === 'heart') {
-      return (
-        <Link
-          key={iconName}
-          to="/wishlist"
-          aria-label="Open wishlist"
-          className={`${ICON_BUTTON_CLASS} relative`}
-          ref={headerHeartRef as React.Ref<HTMLAnchorElement>}
-        >
-          <Icon
-            name={hasItemsInWishlist ? 'heartRed' : 'heart'}
-            className="h-4 w-4"
-          />
-          {badgeCount > 0 && (
-            <span
-              className="
-                absolute -right-1 -top-1
-                min-w-4 h-4 px-[3px]
-                rounded-full bg-[#FF5A5A]
-                text-[10px] leading-4 text-white
-                flex items-center justify-center
-              "
-            >
-              {badgeCount > 99 ? '99+' : badgeCount}
-            </span>
-          )}
-        </Link>
-      );
-    }
-
-    if (iconName === 'cart') {
-      return (
-        <Link
-          key={iconName}
-          to="/cart"
-          aria-label="Open cart"
-          className={`${ICON_BUTTON_CLASS} relative`}
-          ref={headerCartRef as React.Ref<HTMLAnchorElement>}
-        >
-          <Icon name="cart" className="h-4 w-4" />
-          {badgeCount > 0 && (
-            <span
-              className="
-                absolute -right-1 -top-1
-                min-w-4 h-4 px-[3px]
-                rounded-full bg-[#FF5A5A]
-                text-[10px] leading-4 text-white
-                flex items-center justify-center
-              "
-            >
-              {badgeCount > 99 ? '99+' : badgeCount}
-            </span>
-          )}
-        </Link>
-      );
-    }
-
-    if (iconName === 'user') {
-      return (
-        <Link
-          key={iconName}
-          to="/login"
-          aria-label="Open login page"
-          className={`${ICON_BUTTON_CLASS} relative`}
-        >
-          <Icon name="user" className="h-4 w-4" />
-          {isLoggedIn && (
-            <span
-              className="
-                absolute -top-1 -right-1
-                h-4 w-4
-                rounded-full bg-[#27AE60]
-                text-[8px] leading-none text-white
-                flex items-center justify-center
-              "
-            >
-              ✓
-            </span>
-          )}
-        </Link>
-      );
-    }
-
-    if (iconName === 'search') {
-      if (isCatalogPage) {
-        return null;
-      }
-
-      return (
-        <button
-          key={iconName}
-          type="button"
-          onClick={() => setIsSearchOpen(true)}
-          className={ICON_BUTTON_CLASS}
-          aria-label="Open search"
-        >
-          <Icon name="search" className="h-4 w-4" />
-        </button>
-      );
-    }
-
-    return null;
-  };
-
   const handleCategorySelect = (slug: string) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', '1');
@@ -333,6 +216,8 @@ export const Header = () => {
       search: params.toString(),
     });
   };
+
+  const openSearch = () => setIsSearchOpen(true);
 
   return (
     <>
@@ -371,47 +256,26 @@ export const Header = () => {
             </div>
 
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="hidden items-center gap-4 lg:flex">
-                {isCatalogPage ? (
-                  <Input
-                    withSearchIcon
-                    placeholder={t('Find a book or author')}
-                    value={catalogSearch}
-                    onChange={e =>
-                      handleCatalogSearchChange(e.target.value)
-                    }
-                  />
-                ) : (
-                  <button
-                    type="button"
-                    className="w-[289px] text-left"
-                    onClick={() => setIsSearchOpen(true)}
-                  >
-                    <Input
-                      withSearchIcon
-                      placeholder={t('Find a book or author')}
-                      readOnly
-                    />
-                  </button>
-                )}
+              <HeaderDesktopSearch
+                isCatalogPage={isCatalogPage}
+                catalogSearch={catalogSearch}
+                onCatalogSearchChange={handleCatalogSearchChange}
+                selectedCategory={selectedCategory}
+                categoryOptions={categoryOptions}
+                onCategorySelect={handleCategorySelect}
+                onOpenSearch={openSearch}
+              />
 
-                <DropdownCategories
-                  placeholder={t('Categories')}
-                  options={categoryOptions}
-                  onSelect={handleCategorySelect}
-                  value={selectedCategory === 'all' ? '' : selectedCategory}
-                />
-              </div>
-
-              <div className="hidden items-center gap-2 md:flex lg:hidden">
-                {HEADER_ICONS_MD.map(renderHeaderIcon)}
-                <HeaderActionsDropdown isLoggedIn={isLoggedIn} />
-              </div>
-
-              <div className="hidden items-center gap-2 lg:flex">
-                {HEADER_ICONS_LG.map(renderHeaderIcon)}
-                <HeaderActionsDropdown isLoggedIn={isLoggedIn} />
-              </div>
+              <HeaderIconButtons
+                isCatalogPage={isCatalogPage}
+                cartCount={cartCount}
+                wishlistCount={wishlistCount}
+                isLoggedIn={isLoggedIn}
+                onOpenSearch={openSearch}
+                iconButtonClass={ICON_BUTTON_CLASS}
+                headerHeartRef={headerHeartRef}
+                headerCartRef={headerCartRef}
+              />
 
               <button
                 type="button"
@@ -427,171 +291,28 @@ export const Header = () => {
             </div>
           </div>
         </div>
-
-        {isMobileOpen && (
-          <div className="fixed inset-x-0 top-16 bottom-0 z-40 border-t bg-white md:hidden">
-            <div className="flex h-full flex-col">
-              <div className="flex-1 overflow-auto px-4 pb-4 pt-6">
-                <nav className="space-y-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9F9F9F]">
-                  {navItems.map(item => {
-                    const active = isNavItemActive(item.to);
-
-                    return (
-                      <Link
-                        key={item.label}
-                        to={buildCatalogLink(item.to)}
-                        onClick={closeMobile}
-                        className={`block w-full text-left ${
-                          active
-                            ? 'text-[#050505]'
-                            : 'hover:text-[#050505]'
-                        }`}
-                      >
-                        {item.label}
-                        {active && (
-                          <span className="mt-1 block h-0.5 w-10 bg-[#050505]" />
-                        )}
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                <div className="mt-6">
-                  <Input
-                    withSearchIcon
-                    placeholder={t('Find a book or author')}
-                    value={isCatalogPage ? catalogSearch : undefined}
-                    onChange={
-                      isCatalogPage
-                        ? e =>
-                            handleCatalogSearchChange(
-                              e.target.value,
-                            )
-                        : undefined
-                    }
-                  />
-                </div>
-
-                <div className="mt-3">
-                  <DropdownCategories
-                    placeholder={t('Categories')}
-                    options={categoryOptions}
-                    onSelect={handleCategorySelect}
-                    fullWidth
-                    value={
-                      selectedCategory === 'all'
-                        ? ''
-                        : selectedCategory
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="border-t">
-                <div className="grid grid-cols-4">
-                  {MOBILE_BOTTOM_ICONS.map(name => {
-                    const isActive = activeMobileIcon === name;
-
-                    const handleClick = () => {
-                      setActiveMobileIcon(name);
-
-                      if (name === 'heart') {
-                        navigate('/wishlist');
-                        return;
-                      }
-
-                      if (name === 'cart') {
-                        navigate('/cart');
-                        return;
-                      }
-
-                      if (name === 'user') {
-                        navigate('/login');
-                      }
-                    };
-
-                    const ariaLabel =
-                      name === 'user'
-                        ? 'Open login page'
-                        : name === 'cart'
-                          ? 'Open cart'
-                          : 'Open wishlist';
-
-                    const badgeCount =
-                      name === 'cart'
-                        ? cartCount
-                        : name === 'heart'
-                          ? wishlistCount
-                          : 0;
-
-                    const isUserLogged =
-                      name === 'user' && isLoggedIn;
-
-                    return (
-                      <button
-                        key={name}
-                        type="button"
-                        onClick={handleClick}
-                        className="relative flex h-14 flex-col items-center justify-center"
-                        aria-label={ariaLabel}
-                      >
-                        <span className="relative inline-flex">
-                          <Icon
-                            name={name}
-                            className={`h-5 w-5 ${
-                              isUserLogged
-                                ? 'text-[#27AE60]'
-                                : ''
-                            }`}
-                          />
-                          {badgeCount > 0 && (
-                            <span
-                              className="
-                                absolute -right-2 -top-1
-                                min-w-4 h-4 px-[3px]
-                                rounded-full bg-[#FF5A5A]
-                                text-[10px] leading-4 text-white
-                                flex items-center justify-center
-                              "
-                            >
-                              {badgeCount > 99
-                                ? '99+'
-                                : badgeCount}
-                            </span>
-                          )}
-                          {isUserLogged && (
-                            <span className="absolute -right-1 -bottom-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#27AE60] text-[8px] leading-none text-white">
-                              ✓
-                            </span>
-                          )}
-                        </span>
-                        <span
-                          className={`mt-2 h-0.5 w-12 ${
-                            isActive
-                              ? 'bg-[#050505]'
-                              : 'bg-transparent'
-                          }`}
-                        />
-                      </button>
-                    );
-                  })}
-
-                  <HeaderActionsDropdown
-                    isLoggedIn={isLoggedIn}
-                    variant="mobile"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
+      <HeaderMobileMenu
+        isOpen={isMobileOpen}
+        currentPath={location.pathname}
+        navItems={navItems}
+        buildCatalogLink={buildCatalogLink}
+        isLoggedIn={isLoggedIn}
+        activeIcon={activeMobileIcon}
+        onIconChange={setActiveMobileIcon}
+        wishlistCount={wishlistCount}
+        cartCount={cartCount}
+        iconButtonClass={ICON_BUTTON_CLASS}
+        headerHeartRef={headerHeartRef}
+        headerCartRef={headerCartRef}
+        onClose={closeMobile}
+      />
+
+      <HeaderDiscountBar />
+
       {!isCatalogPage && (
-        <SearchPanel
-          open={isSearchOpen}
-          onOpenChange={setIsSearchOpen}
-        />
+        <SearchPanel open={isSearchOpen} onOpenChange={setIsSearchOpen} />
       )}
     </>
   );

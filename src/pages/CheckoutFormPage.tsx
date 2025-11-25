@@ -4,12 +4,14 @@ import { useCart } from '@/context/CartContext';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/atoms/Button';
 import { BackButton } from '@/components/atoms/Form/BackButton';
-import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
-import { OrderSummary } from '@/components/molecules/Checkout/OrderSummary';
+// import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
+import { OrderItemSummary } from '@/components/molecules/order/OrderItemSummary';
+import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
   const { cartItems, totalItems, totalPriceUAH } = useCart();
+  const { hasActiveWelcomeDiscount } = useWelcomeDiscount();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -59,8 +61,14 @@ export const CheckoutPage: FC = () => {
     formData.novaPoshtaType === 'courier'
       ? 150
       : 0;
+
   const itemsTotalUAH = totalPriceUAH;
-  const totalWithDelivery = itemsTotalUAH + deliveryPrice;
+
+  const discountUAH = hasActiveWelcomeDiscount
+    ? Math.min(Math.round(itemsTotalUAH * 0.1), itemsTotalUAH)
+    : 0;
+
+  const totalWithDelivery = itemsTotalUAH - discountUAH + deliveryPrice;
 
   const getItemTotalUAH = (item: (typeof cartItems)[number]) =>
     item.totalPriceUAH ?? 0;
@@ -188,7 +196,7 @@ export const CheckoutPage: FC = () => {
                     <input
                       type="text"
                       name="address"
-                      value={formData.address}
+                      value={(formData as any).address ?? ''}
                       onChange={handleChange}
                       className="w-full rounded-lg border border-border bg-background py-3 pl-12 pr-4 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                       placeholder={t('Please Enter Your Address')}
@@ -204,9 +212,9 @@ export const CheckoutPage: FC = () => {
                     <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4 transition-colors hover:border-primary">
                       <input
                         type="radio"
-                        name="deliveryMethod"
+                        name="deliveryService"
                         value="novaposhta"
-                        checked={formData.deliveryMethod === 'novaposhta'}
+                        checked={formData.deliveryService === 'novaposhta'}
                         onChange={handleChange}
                         className="mt-1 h-4 w-4 text-primary accent-[#0f9952]"
                       />
@@ -221,9 +229,9 @@ export const CheckoutPage: FC = () => {
                     <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4 transition-colors hover:border-primary">
                       <input
                         type="radio"
-                        name="deliveryMethod"
+                        name="deliveryService"
                         value="novaposhta_po"
-                        checked={formData.deliveryMethod === 'novaposhta_po'}
+                        checked={formData.deliveryService === 'novaposhta_po'}
                         onChange={handleChange}
                         className="mt-1 h-4 w-4 text-primary accent-[#0f9952]"
                       />
@@ -238,9 +246,9 @@ export const CheckoutPage: FC = () => {
                     <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4 transition-colors hover:border-primary">
                       <input
                         type="radio"
-                        name="deliveryMethod"
+                        name="deliveryService"
                         value="ukrposhta"
-                        checked={formData.deliveryMethod === 'ukrposhta'}
+                        checked={formData.deliveryService === 'ukrposhta'}
                         onChange={handleChange}
                         className="mt-1 h-4 w-4 text-primary accent-[#0f9952]"
                       />
@@ -255,9 +263,9 @@ export const CheckoutPage: FC = () => {
                     <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-4 transition-colors hover:border-primary">
                       <input
                         type="radio"
-                        name="deliveryMethod"
+                        name="deliveryService"
                         value="courier"
-                        checked={formData.deliveryMethod === 'courier'}
+                        checked={formData.deliveryService === 'courier'}
                         onChange={handleChange}
                         className="mt-1 h-4 w-4 text-primary accent-[#0f9952]"
                       />
@@ -335,6 +343,13 @@ export const CheckoutPage: FC = () => {
                     </span>
                     <span className="font-medium">{itemsTotalUAH} ₴</span>
                   </div>
+
+                  {discountUAH > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>{t('Welcome discount -10%')}</span>
+                      <span>-{discountUAH} ₴</span>
+                    </div>
+                  )}
 
                   <div className="flex justify-between text-sm">
                     <span className="text-secondary">{t('Shipping cost')}</span>
