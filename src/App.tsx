@@ -55,7 +55,7 @@ export default function App() {
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="github" element={<GitHubPage />} />
                     <Route path="rights" element={<RightsPage />} />
-                    <Route path="dev/preview" element={<DevPreviewPage />} />
+                    <Route path="/dev-preview" element={<DevPreviewPage />} />
                     <Route path="*" element={<PageNotFound />} />
                   </Route>
                 </Routes>
