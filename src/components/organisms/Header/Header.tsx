@@ -16,20 +16,19 @@ import {
   type DropdownOption,
 } from '../../atoms/DropdownCategories';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
-import { GlobalLanguageSwitcher } from '@/components/molecules/GlobalLanguageSwitcher';
 import { useMoveHeart } from '../../MoveHeart';
 import { booksData } from '@/books/data/books';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
-import { ThemeSwitcher } from '@/components/molecules/ThemeSwitcher';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
+import { HeaderActionsDropdown } from '@/components/molecules/HeaderActionsDropdown/HeaderActionsDropdown';
 
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
-const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart', 'user'];
-const HEADER_ICONS_LG: IconName[] = ['heart', 'cart', 'user'];
-const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart', 'user'];
+const HEADER_ICONS_MD: IconName[] = ['search', 'heart', 'cart'];
+const HEADER_ICONS_LG: IconName[] = ['heart', 'cart'];
+const MOBILE_BOTTOM_ICONS: MobileIcon[] = ['heart', 'cart'];
 
 export const ICON_BUTTON_CLASS =
   'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
@@ -47,9 +46,12 @@ export const Header = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeMobileIcon, setActiveMobileIcon] = useState<MobileIcon>('heart');
+  const [activeMobileIcon, setActiveMobileIcon] =
+    useState<MobileIcon>('heart');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<DropdownOption[]>(
+    [],
+  );
 
   const prevPathRef = useRef(location.pathname);
 
@@ -344,7 +346,7 @@ export const Header = () => {
                 </div>
               </Link>
 
-              <nav className="hidden items-center gap-6 text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
+              <nav className="hidden w-[360px] items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
                 {navItems.map(item => {
                   const active = isNavItemActive(item.to);
 
@@ -375,7 +377,9 @@ export const Header = () => {
                     withSearchIcon
                     placeholder={t('Find a book or author')}
                     value={catalogSearch}
-                    onChange={e => handleCatalogSearchChange(e.target.value)}
+                    onChange={e =>
+                      handleCatalogSearchChange(e.target.value)
+                    }
                   />
                 ) : (
                   <button
@@ -401,29 +405,14 @@ export const Header = () => {
 
               <div className="hidden items-center gap-2 md:flex lg:hidden">
                 {HEADER_ICONS_MD.map(renderHeaderIcon)}
-
-                <Link
-                  to="/dev/preview"
-                  aria-label="Open dev preview"
-                  className={ICON_BUTTON_CLASS}
-                >
-                  <span className="text-lg">⚙️</span>
-                </Link>
+                <HeaderActionsDropdown isLoggedIn={isLoggedIn} />
               </div>
 
               <div className="hidden items-center gap-2 lg:flex">
                 {HEADER_ICONS_LG.map(renderHeaderIcon)}
-
-                <Link
-                  to="/dev/preview"
-                  aria-label="Open dev preview"
-                  className={ICON_BUTTON_CLASS}
-                >
-                  <span className="text-lg">⚙️</span>
-                </Link>
+                <HeaderActionsDropdown isLoggedIn={isLoggedIn} />
               </div>
-              <GlobalLanguageSwitcher />
-              <ThemeSwitcher />
+
               <button
                 type="button"
                 onClick={toggleMobile}
@@ -453,7 +442,9 @@ export const Header = () => {
                         to={buildCatalogLink(item.to)}
                         onClick={closeMobile}
                         className={`block w-full text-left ${
-                          active ? 'text-[#050505]' : 'hover:text-[#050505]'
+                          active
+                            ? 'text-[#050505]'
+                            : 'hover:text-[#050505]'
                         }`}
                       >
                         {item.label}
@@ -472,7 +463,10 @@ export const Header = () => {
                     value={isCatalogPage ? catalogSearch : undefined}
                     onChange={
                       isCatalogPage
-                        ? e => handleCatalogSearchChange(e.target.value)
+                        ? e =>
+                            handleCatalogSearchChange(
+                              e.target.value,
+                            )
                         : undefined
                     }
                   />
@@ -484,7 +478,11 @@ export const Header = () => {
                     options={categoryOptions}
                     onSelect={handleCategorySelect}
                     fullWidth
-                    value={selectedCategory === 'all' ? '' : selectedCategory}
+                    value={
+                      selectedCategory === 'all'
+                        ? ''
+                        : selectedCategory
+                    }
                   />
                 </div>
               </div>
@@ -526,7 +524,8 @@ export const Header = () => {
                           ? wishlistCount
                           : 0;
 
-                    const isUserLogged = name === 'user' && isLoggedIn;
+                    const isUserLogged =
+                      name === 'user' && isLoggedIn;
 
                     return (
                       <button
@@ -540,7 +539,9 @@ export const Header = () => {
                           <Icon
                             name={name}
                             className={`h-5 w-5 ${
-                              isUserLogged ? 'text-[#27AE60]' : ''
+                              isUserLogged
+                                ? 'text-[#27AE60]'
+                                : ''
                             }`}
                           />
                           {badgeCount > 0 && (
@@ -553,7 +554,9 @@ export const Header = () => {
                                 flex items-center justify-center
                               "
                             >
-                              {badgeCount > 99 ? '99+' : badgeCount}
+                              {badgeCount > 99
+                                ? '99+'
+                                : badgeCount}
                             </span>
                           )}
                           {isUserLogged && (
@@ -564,22 +567,19 @@ export const Header = () => {
                         </span>
                         <span
                           className={`mt-2 h-0.5 w-12 ${
-                            isActive ? 'bg-[#050505]' : 'bg-transparent'
+                            isActive
+                              ? 'bg-[#050505]'
+                              : 'bg-transparent'
                           }`}
                         />
                       </button>
                     );
                   })}
 
-                  <button
-                    type="button"
-                    onClick={() => navigate('/dev/preview')}
-                    className="flex h-14 flex-col items-center justify-center"
-                    aria-label="Open dev preview"
-                  >
-                    <span className="text-2xl">⚙️</span>
-                    <span className="mt-2 h-0.5 w-12 bg-transparent" />
-                  </button>
+                  <HeaderActionsDropdown
+                    isLoggedIn={isLoggedIn}
+                    variant="mobile"
+                  />
                 </div>
               </div>
             </div>
@@ -588,7 +588,10 @@ export const Header = () => {
       </header>
 
       {!isCatalogPage && (
-        <SearchPanel open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+        <SearchPanel
+          open={isSearchOpen}
+          onOpenChange={setIsSearchOpen}
+        />
       )}
     </>
   );
