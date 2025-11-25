@@ -135,7 +135,7 @@ export const ProfilePage = () => {
           </button>
           <button
             onClick={() => setActiveTab('orders')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold transition-all cursor-pointer ${
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-semibold text-primary transition-all cursor-pointer ${
               activeTab === 'orders'
                 ? 'bg-card text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'

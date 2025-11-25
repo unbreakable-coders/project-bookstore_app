@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProductDetailLabel } from '../molecules/ProductDetailLabel';
+import { ProductDetailLabel } from '../../molecules/ProductDetailLabel/ProductDetailLabel';
 import { useTranslation } from 'react-i18next';
 
 interface AboutAndCharacteristicsProps {

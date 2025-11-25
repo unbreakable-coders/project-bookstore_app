@@ -1,0 +1,1 @@
+export { ProductDetailLabel } from './ProductDetailLabel';

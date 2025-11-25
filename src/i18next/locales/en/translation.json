@@ -1,7 +1,13 @@
 {
   "addTAdd to Cart": "Add to cart",
   "Author": "Author",
+  "uk": "Ukrainian",
+  "en": "English",
+  "yes": "Yes",
+  "no": "No",
   "Cover type": "Cover type",
+  "paperback": "Paperback",
+  "hardcover": "Hardcover",
   "Number of pages": "Number of pages",
   "Year of publication": "Year of publication",
   "Publisher": "Publisher",

@@ -24,7 +24,7 @@ import { AuthProvider } from './context/AuthContext';
 import { MoveHeartProvider } from './components/MoveHeart';
 import { MoveBookToCartProvider } from './components/MoveBookToCart';
 import { WelcomeDiscountProvider } from './context/WelcomeDiscountContext';
-import { WelcomeDiscountModal } from './components/organisms/WelcomeDiscountModal';
+import { WelcomeDiscountModal } from './components/organisms/WelcomeDiscountModal/WelcomeDiscountModal';
 
 export default function App() {
   return (

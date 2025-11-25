@@ -1,9 +1,9 @@
 import React from 'react';
-import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
-import { MainImageGallery } from '../molecules/ImageGallery/ImageGallery.tsx';
-import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
-import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
-import { ProductCardsBlock } from '../organisms/Home/ProductCardsBlock.tsx';
+import { BreadcrumbNav } from '../../molecules/BreadcrumbNav/BreadcrumbNav.tsx';
+import { MainImageGallery } from '../../molecules/ImageGallery/ImageGallery.tsx';
+import { ProductInfoPanel } from '../../organisms/ProductInfoPanel/ProductInfoPanel.tsx';
+import { AboutAndCharacteristics } from '../../organisms/AboutAndCharacteristics/AboutAndCharacteristics.tsx';
+import { ProductCardsBlock } from '../../organisms/Home/ProductCardsBlock.tsx';
 import type { Book } from '@/types/book/book.ts';
 import { useTranslation } from 'react-i18next';
 

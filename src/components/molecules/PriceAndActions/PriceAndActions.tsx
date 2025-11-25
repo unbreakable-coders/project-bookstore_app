@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookActions } from './BookActions';
+import { BookActions } from '../BookActions';
 
 interface PriceAndActionsProps {
   bookId: string;

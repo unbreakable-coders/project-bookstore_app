@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { LanguageSelector } from '../molecules/LanguageSelector.tsx';
-import { PriceAndActions } from '../molecules/PriceAndActions.tsx';
-import { ProductDetailLabel } from '../molecules/ProductDetailLabel.tsx';
+import { LanguageSelector } from '../../molecules/LanguageSelector/LanguageSelector.tsx';
+import { PriceAndActions } from '../../molecules/PriceAndActions/PriceAndActions.tsx';
+import { ProductDetailLabel } from '../../molecules/ProductDetailLabel/ProductDetailLabel.tsx';
 
 interface ProductInfoPanelProps {
   bookId: string;

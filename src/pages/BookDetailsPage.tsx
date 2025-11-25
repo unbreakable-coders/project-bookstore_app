@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
-import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
+import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate/BookDetailsTemplate';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useRecommendedBooks } from '@/hooks/useRecommendedBooks';

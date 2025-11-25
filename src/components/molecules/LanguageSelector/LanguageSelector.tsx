@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../atoms/Button';
+import { Button } from '../../atoms/Button';
 
 interface LanguageSelectorProps {
   languages: string[];
