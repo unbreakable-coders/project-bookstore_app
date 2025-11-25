@@ -23,13 +23,13 @@ const maskMap = {
 const maskStyles: Record<ThemName, string> = {
   default: '',
   school:
-    'absolute w-[180%] h-[180%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    'absolute w-[180%] h-[180%] top-1/2 left-1/2 -translate-x-[53%] -translate-y-[42%]',
   halloween:
-    'absolute w-[180%] h-[180%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;',
+    'absolute w-[162%] h-[162%] top-1/2 left-1/2 -translate-x-[54%] -translate-y-[43%]',
   christmas:
-    'absolute w-[180%] h-[180%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;',
+    'absolute w-[150%] h-[150%] top-1/2 left-1/2 -translate-x-[54%] -translate-y-[43%]',
   valentine:
-    'absolute w-[180%] h-[180%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;',
+    'absolute w-[140%] h-[140%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-[46%]',
 };
 
 export const Logo: FC<LogoProps> = ({ className }) => {
@@ -41,14 +41,12 @@ export const Logo: FC<LogoProps> = ({ className }) => {
     <div
       className={`relative flex items-center justify-center overflow-visible ${className ?? 'h-8 w-[110px]'}`}
     >
-      {/* Базовий логотип — завжди присутній */}
       <img
         src={BaseLogo}
         alt="Nice Bookstore Logo"
         className="h-full w-auto z-0"
       />
 
-      {/* Маска — накладається поверх */}
       {maskSrc && (
         <img
           src={maskSrc}
