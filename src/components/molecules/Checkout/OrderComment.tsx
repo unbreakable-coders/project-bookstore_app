@@ -6,7 +6,7 @@ export const OrderComment: FC = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-lg text-secondary border border-border bg-card p-6">
+    <div className="rounded-lg text-primary border border-border bg-card p-6">
       <Textarea
         label={t('Comment on the order')}
         rows={4}

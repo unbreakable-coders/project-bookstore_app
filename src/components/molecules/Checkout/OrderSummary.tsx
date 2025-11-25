@@ -60,7 +60,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
           <div className="pt-3 border-t border-border">
             <div className="flex justify-between items-center pt-3">
               <span className="font-semibold text-accent">{t('Due')}</span>
-              <span className="text-2xl font-bold text-secondary">
+              <span className="text-2xl font-bold text-primary">
                 {totalWithDelivery} ₴
               </span>
             </div>
