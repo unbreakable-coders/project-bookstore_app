@@ -16,11 +16,11 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
+    <div className="rounded-lg text-secondary border border-border bg-card p-6">
       <h2 className="mb-4 text-xl font-semibold">{t('Payment')}</h2>
 
       <div className="space-y-3">
-        <div className="rounded-lg border border-border p-4">
+        <div className="rounded-lg border border-border  p-4">
           <Radio
             name="paymentMethod"
             value="card"
