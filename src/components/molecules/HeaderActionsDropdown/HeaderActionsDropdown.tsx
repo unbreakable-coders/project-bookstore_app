@@ -52,7 +52,7 @@ export const HeaderActionsDropdown: FC<HeaderActionsDropdownProps> = ({
   };
 
   const handleDevPreviewClick = () => {
-    navigate('/dev/preview');
+    navigate('/dev-preview');
     setOpen(false);
   };
 

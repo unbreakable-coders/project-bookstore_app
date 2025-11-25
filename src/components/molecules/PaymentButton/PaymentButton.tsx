@@ -9,49 +9,24 @@ interface Props {
 export const PaymentButton: FC<Props> = ({ price, className }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  // автоматичне визначення базового URL
-  const apiBase =
-    import.meta.env.MODE === 'development' ? 'http://localhost:4242' : ''; // на Vercel — порожній, бо /api/... працює від кореня
-
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     setIsLoading(true);
 
-    try {
-      const res = await fetch(`${apiBase}/api/create-checkout-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amountUAH: price }),
-      });
+    const fakeSessionId = 'mock_' + Date.now();
 
-      const data = await res.json();
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        console.error('[Checkout Error] No URL returned:', data);
-      }
-    } catch (e) {
-      console.error('[Checkout Error]', e);
-    } finally {
-      setIsLoading(false);
-    }
+    setTimeout(() => {
+      window.location.href = `/mock-stripe-checkout?session_id=${fakeSessionId}&amount=${price}`;
+    }, 600);
   };
-
-  const baseClasses =
-    'px-20 py-3 bg-black rounded-lg text-white min-w-[242px] h-12 ' +
-    'hover:scale-105 hover:shadow-xl hover:cursor-pointer shadow-stone-700 ' +
-    'transition duration-300';
 
   return (
     <button
       onClick={handleCheckout}
       type="button"
-      className={`${baseClasses} ${className ?? ''}`}
+      className={`px-20 py-3 bg-black rounded-lg text-white min-w-[242px] h-12 hover:scale-105 hover:shadow-xl shadow-stone-700 transition duration-300 ${className ?? ''}`}
       disabled={isLoading}
     >
-      <span className="flex items-center justify-center w-full">
-        {isLoading ? <ButtonLoader /> : `Checkout ${price}₴`}
-      </span>
+      {isLoading ? <ButtonLoader /> : `Checkout ${price}₴`}
     </button>
   );
 };

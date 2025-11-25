@@ -18,6 +18,10 @@ import DevPreviewPage from './pages/DevPreviewPage';
 import { GitHubPage } from './pages/system/GithubPage';
 import { RightsPage } from './pages/system/RightsPage';
 
+// import { MockStripeCheckout } from './pages/MockStripeCheckout/MockStripeCheckout';
+// import { PaymentSuccess } from './pages/PaymentSuccess/PaymentSuccess';
+// import { OrderSuccessPage } from './pages/OrderSuccessPage/OrderSuccessPage';
+
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { ScrollToTop } from './components/utils/ScrollToTop';
@@ -63,7 +67,7 @@ export default function App() {
                       <Route path="profile" element={<ProfilePage />} />
                       <Route path="github" element={<GitHubPage />} />
                       <Route path="rights" element={<RightsPage />} />
-                      <Route path="dev/preview" element={<DevPreviewPage />} />
+                      <Route path="dev-preview" element={<DevPreviewPage />} />
                       <Route path="*" element={<PageNotFound />} />
                     </Route>
                   </Routes>
