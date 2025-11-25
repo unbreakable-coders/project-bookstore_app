@@ -49,7 +49,7 @@ export default function App() {
                   <Route path="contacts" element={<ContactsPage />} />
                   <Route path="login" element={<LoginPage />} />
                   <Route path="profile" element={<ProfilePage />} />
-                  <Route path="github" element={<GithubPage />} />
+                  <Route path="github" element={<GitHubPage />} />
                   <Route path="rights" element={<RightsPage />} />
                   <Route path="dev/preview" element={<DevPreviewPage />} />
                   <Route path="*" element={<PageNotFound />} />
