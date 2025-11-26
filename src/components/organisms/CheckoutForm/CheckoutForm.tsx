@@ -14,11 +14,14 @@ export interface CheckoutFormData extends DeliveryFormData {
   phone: string;
   email: string;
   paymentMethod: string;
+  comment?: string;
 }
 
 export interface CheckoutFormProps {
   formData: CheckoutFormData;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => void;
 }
 
 export const CheckoutForm: FC<CheckoutFormProps> = ({ formData, onChange }) => (

@@ -10,13 +10,11 @@ export interface DeliveryFormData {
   deliveryService: 'novaPoshta' | 'ukrposhta' | '';
   novaPoshtaType: 'branch' | 'locker' | 'courier' | '';
 
-  // Нова пошта
-  novaPoshtaCity: string; // тут зберігаємо CityRef з таблиці np_cities
-  novaPoshtaBranch: string; // number або id відділення
-  novaPoshtaLocker: string; // number або id поштомата
-  novaPoshtaAddress: string; // адреса для курʼєра
+  novaPoshtaCity: string;
+  novaPoshtaBranch: string;
+  novaPoshtaLocker: string;
+  novaPoshtaAddress: string;
 
-  // Укрпошта
   ukrposhtaCity: string;
   ukrposhtaBranch: string;
 }
@@ -52,8 +50,8 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
   const [lockers, setLockers] = useState<NPWarehouse[]>([]);
   const [loadingCities, setLoadingCities] = useState(false);
   const [loadingWarehouses, setLoadingWarehouses] = useState(false);
+  const [selectedCityRef, setSelectedCityRef] = useState('');
 
-  // Завантажуємо всі міста (з нашої демо-таблиці np_cities)
   useEffect(() => {
     const loadCities = async () => {
       setLoadingCities(true);
@@ -75,13 +73,9 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
     void loadCities();
   }, []);
 
-  // Завантажуємо відділення/поштомати для вибраного міста
   useEffect(() => {
     const loadWarehouses = async () => {
-      if (
-        formData.deliveryService !== 'novaPoshta' ||
-        !formData.novaPoshtaCity
-      ) {
+      if (formData.deliveryService !== 'novaPoshta' || !selectedCityRef) {
         setBranches([]);
         setLockers([]);
         return;
@@ -92,7 +86,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
       const { data, error } = await supabase
         .from('np_warehouses')
         .select('id, city_ref, description, short_address, number, type')
-        .eq('city_ref', formData.novaPoshtaCity);
+        .eq('city_ref', selectedCityRef);
 
       if (!error && data) {
         const all = data as NPWarehouse[];
@@ -109,9 +103,25 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
     };
 
     void loadWarehouses();
-  }, [formData.deliveryService, formData.novaPoshtaCity]);
+  }, [formData.deliveryService, selectedCityRef]);
 
-  const selectedCity = cities.find(c => c.ref === formData.novaPoshtaCity);
+  const handleCityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const ref = e.target.value;
+    setSelectedCityRef(ref);
+
+    const city = cities.find(c => c.ref === ref) || null;
+
+    const syntheticEvent = {
+      target: {
+        name: 'novaPoshtaCity',
+        value: city ? city.present : '',
+      },
+    } as unknown as ChangeEvent<HTMLSelectElement>;
+
+    onChange(syntheticEvent);
+  };
+
+  const selectedCity = cities.find(c => c.ref === selectedCityRef);
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
@@ -126,7 +136,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
           </label>
 
           <div className="space-y-3">
-            {/* Nova Poshta */}
             <div className="rounded-lg border border-border bg-card p-4">
               <Radio
                 className="cursor-pointer"
@@ -140,7 +149,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
               {formData.deliveryService === 'novaPoshta' && (
                 <div className="mt-4 space-y-4 ml-6">
-                  {/* Місто – спільне для всіх типів доставки НП */}
                   <div>
                     <label className="mb-1 block text-sm font-medium text-muted">
                       {t('City *')}
@@ -148,8 +156,8 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
                     <select
                       name="novaPoshtaCity"
-                      value={formData.novaPoshtaCity}
-                      onChange={onChange}
+                      value={selectedCityRef}
+                      onChange={handleCityChange}
                       className="w-full text-primary cursor-pointer rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                       required
                     >
@@ -172,7 +180,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                     )}
                   </div>
 
-                  {/* Тип доставки НП */}
                   <div>
                     <Radio
                       className="cursor-pointer"
@@ -198,14 +205,12 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                           value={formData.novaPoshtaBranch}
                           onChange={onChange}
                           className="w-full cursor-pointer text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
-                          disabled={
-                            !formData.novaPoshtaCity || loadingWarehouses
-                          }
+                          disabled={!selectedCityRef || loadingWarehouses}
                           required
                         >
                           <option value="">{t('Select branch')}</option>
                           {branches.map(w => (
-                            <option key={w.id} value={w.number}>
+                            <option key={w.id} value={w.description}>
                               {w.description} — {w.short_address || ''}
                             </option>
                           ))}
@@ -245,9 +250,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                           value={formData.novaPoshtaLocker}
                           onChange={onChange}
                           className="w-full text-primary cursor-pointer rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
-                          disabled={
-                            !formData.novaPoshtaCity || loadingWarehouses
-                          }
+                          disabled={!selectedCityRef || loadingWarehouses}
                           required
                         >
                           <option value="">{t('Select parcel locker')}</option>
@@ -295,7 +298,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
               )}
             </div>
 
-            {/* Ukrposhta */}
             <div className="rounded-lg border border-border bg-card p-4">
               <Radio
                 className="cursor-pointer"
