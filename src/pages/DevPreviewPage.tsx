@@ -10,14 +10,12 @@ export default function DevPreviewPage() {
         <h2 className="text-2xl font-semibold text-foreground text-center">
           Mock Payment Test
         </h2>
-
+        <ThemeTester />
         <PaymentButton price={2200} className="w-[220px]" />
 
         <div className="text-sm text-center text-muted-foreground">
           This page now uses mock payment flow.
         </div>
-
-        <ThemeTester />
       </section>
     </div>
   );
