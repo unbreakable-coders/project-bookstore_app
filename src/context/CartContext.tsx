@@ -56,7 +56,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       try {
         const books = await fetchBooks();
         setAllBooks(books);
-      } catch {
+      } catch (error) {
+        console.error('[CartProvider] Failed to load books', error);
       } finally {
         setBooksLoading(false);
       }

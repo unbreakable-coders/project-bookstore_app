@@ -1,5 +1,4 @@
-import type { FC, MouseEventHandler } from 'react';
-import type { Ref } from 'react';
+import type { FC, MouseEventHandler, Ref, RefObject } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Icon } from '@/components/atoms/Icon';
@@ -29,9 +28,9 @@ interface HeaderMobileMenuProps {
   wishlistCount: number;
   cartCount: number;
 
-  iconButtonClass: string; // залишаємо для сумісності, але всередині не використовуємо
-  headerHeartRef: Ref<HTMLAnchorElement>;
-  headerCartRef: Ref<HTMLAnchorElement>;
+  iconButtonClass: string;
+  headerHeartRef: RefObject<HTMLElement> | null;
+  headerCartRef: RefObject<HTMLElement> | null;
 
   onClose: () => void;
 }
@@ -46,7 +45,6 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
   onIconChange,
   wishlistCount,
   cartCount,
-  // iconButtonClass,
   headerHeartRef,
   headerCartRef,
   onClose,
@@ -74,7 +72,7 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
           key={icon}
           to="/wishlist"
           aria-label="Open wishlist"
-          ref={headerHeartRef}
+          ref={headerHeartRef as Ref<HTMLAnchorElement>}
           onClick={() => onIconChange(icon)}
           className="relative flex flex-1 items-center justify-center"
         >
@@ -112,7 +110,7 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
           key={icon}
           to="/cart"
           aria-label="Open cart"
-          ref={headerCartRef}
+          ref={headerCartRef as Ref<HTMLAnchorElement>}
           onClick={() => onIconChange(icon)}
           className="relative flex flex-1 items-center justify-center"
         >
@@ -184,7 +182,6 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
         onClick={stopPropagation}
       >
         <div className="mx-auto flex h-full max-w-6xl flex-col justify-between px-4 pb-14 pt-4">
-          {/* Навігація як на макеті: центрована, з активним bold + underline */}
           <nav className="flex flex-col items-center gap-6 text-sm font-semibold uppercase tracking-[0.18em]">
             {navItems.map(item => {
               const isRoot = item.to === '/';
@@ -213,7 +210,6 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
           </nav>
         </div>
 
-        {/* Нижня панель з іконками (як на макеті Nice Gadgets) */}
         <div className="absolute inset-x-0 bottom-0 h-14 border-t border-[#E5E5E5] bg-[#FFFFFF]">
           <div className="mx-auto flex h-full max-w-6xl">
             {MOBILE_BOTTOM_ICONS.map(renderBottomIcon)}

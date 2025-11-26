@@ -1,5 +1,3 @@
-// src/components/molecules/profile/OrdersHistory.tsx
-
 import type { FC } from 'react';
 import {
   Card,
