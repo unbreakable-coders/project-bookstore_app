@@ -129,6 +129,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
             {/* Nova Poshta */}
             <div className="rounded-lg border border-border bg-card p-4">
               <Radio
+                className="cursor-pointer"
                 name="deliveryService"
                 value="novaPoshta"
                 checked={formData.deliveryService === 'novaPoshta'}
@@ -149,12 +150,16 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                       name="novaPoshtaCity"
                       value={formData.novaPoshtaCity}
                       onChange={onChange}
-                      className="w-full text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                      className="w-full text-primary cursor-pointer rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                       required
                     >
                       <option value="">{t('Select city')}</option>
                       {cities.map(city => (
-                        <option key={city.ref} value={city.ref}>
+                        <option
+                          className="cursor-pointer"
+                          key={city.ref}
+                          value={city.ref}
+                        >
                           {city.description}
                         </option>
                       ))}
@@ -170,6 +175,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                   {/* Тип доставки НП */}
                   <div>
                     <Radio
+                      className="cursor-pointer"
                       name="novaPoshtaType"
                       value="branch"
                       checked={formData.novaPoshtaType === 'branch'}
@@ -191,7 +197,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                           name="novaPoshtaBranch"
                           value={formData.novaPoshtaBranch}
                           onChange={onChange}
-                          className="w-full text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                          className="w-full cursor-pointer text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                           disabled={
                             !formData.novaPoshtaCity || loadingWarehouses
                           }
@@ -216,6 +222,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
                   <div>
                     <Radio
+                      className="cursor-pointer"
                       name="novaPoshtaType"
                       value="locker"
                       checked={formData.novaPoshtaType === 'locker'}
@@ -237,7 +244,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                           name="novaPoshtaLocker"
                           value={formData.novaPoshtaLocker}
                           onChange={onChange}
-                          className="w-full text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                          className="w-full text-primary cursor-pointer rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                           disabled={
                             !formData.novaPoshtaCity || loadingWarehouses
                           }
@@ -262,6 +269,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
                   <div>
                     <Radio
+                      className="cursor-pointer"
                       name="novaPoshtaType"
                       value="courier"
                       checked={formData.novaPoshtaType === 'courier'}
@@ -290,6 +298,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
             {/* Ukrposhta */}
             <div className="rounded-lg border border-border bg-card p-4">
               <Radio
+                className="cursor-pointer"
                 name="deliveryService"
                 value="ukrposhta"
                 checked={formData.deliveryService === 'ukrposhta'}

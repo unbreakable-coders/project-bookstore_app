@@ -23,7 +23,7 @@ export const PaymentButton: FC<Props> = ({ price, className }) => {
     <button
       onClick={handleCheckout}
       type="button"
-      className={`px-20 py-3 bg-black rounded-lg text-white min-w-[242px] h-12 hover:scale-105 hover:shadow-xl shadow-stone-700 transition duration-300 ${className ?? ''}`}
+      className={`px-20 py-3 bg-black cursor-pointer rounded-lg text-white min-w-[242px] h-12 hover:scale-105 hover:shadow-xl shadow-stone-700 transition duration-300 ${className ?? ''}`}
       disabled={isLoading}
     >
       {isLoading ? <ButtonLoader /> : `Checkout ${price}₴`}

@@ -58,7 +58,7 @@ export const ProductInfoPanel: React.FC<ProductInfoPanelProps> = ({
   return (
     <div className="mt-8 md:mt-0 max-w-[280px] md:max-w-[267px] lg:max-w-[320px] w-full">
       <div className="border-b border-border pb-4">
-        <h5 className="font-bold text-secondary">{t('Category')}</h5>
+        <h5 className="font-bold text-accent">{t('Category')}</h5>
         <div className="inline-block mt-2 px-[10.5px] py-[5.5px] border border-border rounded-[5px]">
           {t(`${category}`)}
         </div>

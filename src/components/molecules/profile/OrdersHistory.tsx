@@ -1,4 +1,3 @@
-
 import type { FC } from 'react';
 import {
   Card,
@@ -198,15 +197,12 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <Button>{t('Order details')}</Button>
+                    <Button className="cursor-pointer">
+                      {t('Order details')}
+                    </Button>
 
                     {order.status === 'paid' && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        // className="bg-primary shadow hover:bg-primary/90
-                        // border-none"
-                      >
+                      <Button size="sm" variant="outline">
                         {t('Repeat order')}
                       </Button>
                     )}

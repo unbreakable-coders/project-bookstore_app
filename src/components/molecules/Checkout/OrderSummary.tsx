@@ -18,9 +18,9 @@ interface OrderSummaryProps {
   totalWithDelivery: number;
   getItemTotalUAH: (item: CartItem) => number;
 
-  onSubmit: () => void;          
-  isCardPaymentSelected: boolean; 
-  onCardPayment: () => void;     
+  onSubmit: () => void;
+  isCardPaymentSelected: boolean;
+  onCardPayment: () => void;
 }
 
 export const OrderSummary: FC<OrderSummaryProps> = ({
@@ -83,11 +83,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
         <Button
           onClick={handleClick}
           size="lg"
-          className="w-full rounded-lg bg-primary py-4 font-bold text-white transition-colors hover:bg-primary/90"
+          className="w-full cursor-pointer rounded-lg bg-primary py-4 font-bold text-white transition-colors hover:bg-primary/90"
         >
-          {isCardPaymentSelected
-            ? t('Pay by card')      // додай ключ у i18n
-            : t('I confirm the order')}
+          {isCardPaymentSelected ? t('Pay by card') : t('I confirm the order')}
         </Button>
       </div>
 

@@ -14,15 +14,15 @@ export const ThemeSwitcher: React.FC<{ className?: string }> = ({
   const themes: { value: Theme; icon: React.ReactNode }[] = [
     {
       value: 'light',
-      icon: <Icon name="candleLight" className="w-5 h-5" />,
+      icon: <Icon name="candleLight" className="w-5 h-5 cursor-pointer" />,
     },
     {
       value: 'dark',
-      icon: <Icon name="candleDark" className="w-5 h-5" />,
+      icon: <Icon name="candleDark" className="w-5 h-5 cursor-pointer" />,
     },
     {
       value: 'system',
-      icon: <Icon name="system" className="w-5 h-5" />,
+      icon: <Icon name="system" className="w-5 h-5 cursor-pointer" />,
     },
   ];
 

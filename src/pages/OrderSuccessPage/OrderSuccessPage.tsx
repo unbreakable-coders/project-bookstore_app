@@ -23,14 +23,14 @@ export const OrderSuccessPage = () => {
       <div className="flex gap-4 mt-4">
         <button
           onClick={() => navigate('/')}
-          className="px-8 py-3 bg-black text-white rounded-lg"
+          className="px-8 cursor-pointer py-3 bg-black text-white rounded-lg"
         >
           {t('Go to Home')}
         </button>
 
         <button
           onClick={() => navigate('/catalog')}
-          className="px-8 py-3 border border-black rounded-lg"
+          className="px-8 cursor-pointer py-3 border border-black rounded-lg"
         >
           {t('Go to Catalog')}
         </button>

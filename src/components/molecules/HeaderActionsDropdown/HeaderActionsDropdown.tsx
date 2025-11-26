@@ -99,7 +99,7 @@ export const HeaderActionsDropdown: FC<HeaderActionsDropdownProps> = ({
           <button
             type="button"
             onClick={handleProfileClick}
-            className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-[#f7f4ef]"
+            className="flex h-9 w-9 items-center  cursor-pointer justify-center rounded-md hover:bg-[#f7f4ef]"
             aria-label="Open profile or login"
           >
             <Icon name="user" className="h-5 w-5" />
@@ -108,7 +108,7 @@ export const HeaderActionsDropdown: FC<HeaderActionsDropdownProps> = ({
           <button
             type="button"
             onClick={handleDevPreviewClick}
-            className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-[#f7f4ef]"
+            className="flex h-9 w-9 items-center cursor-pointer justify-center rounded-md hover:bg-[#f7f4ef]"
             aria-label="Open dev preview"
           >
             <span className="text-lg">⚙️</span>
@@ -118,7 +118,7 @@ export const HeaderActionsDropdown: FC<HeaderActionsDropdownProps> = ({
             <GlobalLanguageSwitcher />
           </div>
 
-          <div className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-[#f7f4ef]">
+          <div className="flex h-9 w-9 items-center cursor-pointer justify-center rounded-md hover:bg-[#f7f4ef]">
             <ThemeSwitcher />
           </div>
         </div>

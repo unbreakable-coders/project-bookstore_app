@@ -111,10 +111,15 @@ export const PaymentSuccess = () => {
             <p className="text-accent">{t("Wait for the manager's call")}</p>
 
             <div className="mt-6 flex justify-end gap-3">
-              <Button onClick={() => navigate('/profile')}>
+              <Button
+                className="cursor-pointer"
+                onClick={() => navigate('/profile')}
+              >
                 {t('Profile')}
               </Button>
-              <Button onClick={() => navigate('/')}>{t('Home')}</Button>
+              <Button className="cursor-pointer" onClick={() => navigate('/')}>
+                {t('Home')}
+              </Button>
             </div>
           </div>
         </div>

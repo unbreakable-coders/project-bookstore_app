@@ -64,7 +64,11 @@ export const LoginForm: FC<LoginFormProps> = ({
             isAuthenticated ? undefined : e => handleEmailChange(e.target.value)
           }
           disabled={loading || isAuthenticated}
-          className={isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''}
+          className={
+            isAuthenticated
+              ? 'opacity-60 cursor-not-allowed'
+              : 'w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1'
+          }
         />
       </div>
 
@@ -86,7 +90,11 @@ export const LoginForm: FC<LoginFormProps> = ({
               : e => handlePasswordChange(e.target.value)
           }
           disabled={loading || isAuthenticated}
-          className={isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''}
+          className={
+            isAuthenticated
+              ? 'opacity-60 cursor-not-allowed'
+              : 'w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1'
+          }
           onKeyDown={e => {
             if (e.key === 'Enter' && canSubmit) {
               onSubmit(e);

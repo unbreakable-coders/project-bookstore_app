@@ -106,7 +106,7 @@ export const WelcomeDiscountModal = () => {
           <button
             type="button"
             onClick={isTimerMode ? handleCloseTimer : handleCloseGuest}
-            className="text-xl text-gray-400 transition hover:text-gray-600"
+            className="text-xl w-5 h-5 cursor-pointer text-gray-400 transition hover:text-gray-600"
           >
             ×
           </button>
@@ -129,7 +129,7 @@ export const WelcomeDiscountModal = () => {
             <button
               type="button"
               onClick={handleGoToCatalog}
-              className="flex w-full items-center justify-center rounded-lg bg-primary px-4 py-3 text-sm font-medium text-white transition hover:bg-[#230c02]"
+              className="flex w-full cursor-pointer items-center justify-center rounded-lg bg-primary px-4 py-3 text-sm font-medium text-white transition hover:bg-[#230c02]"
             >
               {t('To catalog')}
             </button>

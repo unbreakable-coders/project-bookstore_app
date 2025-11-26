@@ -297,7 +297,9 @@ export const MockStripeCheckout = () => {
             <p className="text-xs text-accent">
               {t('This is a demo payment form. No real charge will be made.')}
             </p>
-            <Button type="submit">{t('Pay')}</Button>
+            <Button className="cursor-pointer" type="submit">
+              {t('Pay')}
+            </Button>
           </div>
         </form>
       </div>

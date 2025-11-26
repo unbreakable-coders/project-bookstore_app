@@ -1,0 +1,95 @@
+[33m8d81ffc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m HEAD@{0}: pull origin develop: Fast-forward
+[33m343588c[m HEAD@{1}: checkout: moving from PaymentHistory to develop
+[33m55caec3[m[33m ([m[1;31morigin/PaymentHistory[m[33m, [m[1;32mPaymentHistory[m[33m)[m HEAD@{2}: checkout: moving from develop to PaymentHistory
+[33m343588c[m HEAD@{3}: checkout: moving from PaymentHistory to develop
+[33m55caec3[m[33m ([m[1;31morigin/PaymentHistory[m[33m, [m[1;32mPaymentHistory[m[33m)[m HEAD@{4}: checkout: moving from BackToTop to PaymentHistory
+[33m98c2d23[m[33m ([m[1;31morigin/BackToTop[m[33m, [m[1;32mBackToTop[m[33m)[m HEAD@{5}: checkout: moving from develop to BackToTop
+[33m343588c[m HEAD@{6}: pull --rebase: Fast-forward
+[33mdfa2b4b[m HEAD@{7}: checkout: moving from PaymentHistory to develop
+[33m55caec3[m[33m ([m[1;31morigin/PaymentHistory[m[33m, [m[1;32mPaymentHistory[m[33m)[m HEAD@{8}: commit: fix Checkout
+[33ma0bc170[m HEAD@{9}: checkout: moving from develop to PaymentHistory
+[33mdfa2b4b[m HEAD@{10}: reset: moving to HEAD~1
+[33ma0bc170[m HEAD@{11}: checkout: moving from PaymentHistory to develop
+[33ma0bc170[m HEAD@{12}: checkout: moving from develop to PaymentHistory
+[33ma0bc170[m HEAD@{13}: commit: add translate and dark theme to Payment, history orders
+[33mdfa2b4b[m HEAD@{14}: checkout: moving from BackToTop to develop
+[33m98c2d23[m[33m ([m[1;31morigin/BackToTop[m[33m, [m[1;32mBackToTop[m[33m)[m HEAD@{15}: commit: updade button Back to Top
+[33mdfa2b4b[m HEAD@{16}: checkout: moving from develop to BackToTop
+[33mdfa2b4b[m HEAD@{17}: pull origin develop: Fast-forward
+[33m895999e[m HEAD@{18}: pull origin develop: Fast-forward
+[33m9fadb5f[m HEAD@{19}: checkout: moving from LittleChanges to develop
+[33mfc524a9[m[33m ([m[1;31morigin/LittleChanges[m[33m, [m[1;32mLittleChanges[m[33m)[m HEAD@{20}: commit: add changes color, folders
+[33m9fadb5f[m HEAD@{21}: checkout: moving from develop to LittleChanges
+[33m9fadb5f[m HEAD@{22}: checkout: moving from Loader to develop
+[33m89f6914[m[33m ([m[1;31morigin/Loader[m[33m, [m[1;32mLoader[m[33m)[m HEAD@{23}: commit: add Loader component
+[33m9fadb5f[m HEAD@{24}: checkout: moving from develop to Loader
+[33m9fadb5f[m HEAD@{25}: pull origin develop: Fast-forward
+[33mffb215c[m HEAD@{26}: pull origin develop: Fast-forward
+[33m45d15a8[m HEAD@{27}: checkout: moving from CatalogSpace to develop
+[33m7e3f694[m[33m ([m[1;31morigin/CatalogSpace[m[33m, [m[1;32mCatalogSpace[m[33m)[m HEAD@{28}: pull origin develop: Merge made by the 'ort' strategy.
+[33m645a5b5[m HEAD@{29}: pull origin develop: Merge made by the 'ort' strategy.
+[33m354c4e9[m HEAD@{30}: commit: fix catalog
+[33m45d15a8[m HEAD@{31}: checkout: moving from develop to CatalogSpace
+[33m45d15a8[m HEAD@{32}: checkout: moving from develop to develop
+[33m45d15a8[m HEAD@{33}: checkout: moving from develop to develop
+[33m45d15a8[m HEAD@{34}: pull origin develop: Fast-forward
+[33ma05194a[m HEAD@{35}: checkout: moving from LinksBreadCrumbles to develop
+[33m16eb652[m[33m ([m[1;31morigin/LinksBreadCrumbles[m[33m, [m[1;32mLinksBreadCrumbles[m[33m)[m HEAD@{36}: commit (merge): Merge branch 'develop' of https://github.com/unbreakable-coders/project-bookstore_app into LinksBreadCrumbles
+[33m215cad4[m HEAD@{37}: commit: fix Breadcrumb links
+[33ma05194a[m HEAD@{38}: checkout: moving from develop to LinksBreadCrumbles
+[33ma05194a[m HEAD@{39}: checkout: moving from lastDark to develop
+[33m3ff7376[m[33m ([m[1;31morigin/lastDark[m[33m, [m[1;32mlastDark[m[33m)[m HEAD@{40}: commit: add changes
+[33ma05194a[m HEAD@{41}: reset: moving to HEAD
+[33ma05194a[m HEAD@{42}: reset: moving to HEAD
+[33ma05194a[m HEAD@{43}: checkout: moving from develop to lastDark
+[33ma05194a[m HEAD@{44}: checkout: moving from ImplamLang to develop
+[33ma04a00a[m[33m ([m[1;32mImplamLang[m[33m)[m HEAD@{45}: checkout: moving from DarkTheme to ImplamLang
+[33m4f62316[m[33m ([m[1;31morigin/DarkTheme[m[33m, [m[1;32mDarkTheme[m[33m)[m HEAD@{46}: checkout: moving from fixGridCatalog to DarkTheme
+[33mbcb644e[m[33m ([m[1;31morigin/fixGridCatalog[m[33m, [m[1;32mfixGridCatalog[m[33m)[m HEAD@{47}: checkout: moving from translateOtherPage to fixGridCatalog
+[33mcaf2f73[m[33m ([m[1;32mtranslateOtherPage[m[33m)[m HEAD@{48}: checkout: moving from Breadcrumb to translateOtherPage
+[33m318d155[m[33m ([m[1;32mBreadcrumb[m[33m)[m HEAD@{49}: checkout: moving from Breadcrumb to Breadcrumb
+[33m318d155[m[33m ([m[1;32mBreadcrumb[m[33m)[m HEAD@{50}: checkout: moving from develop to Breadcrumb
+[33ma05194a[m HEAD@{51}: reset: moving to a05194a7547768ec3b83cac1d7b408ca7ad34c3b
+[33md468dea[m HEAD@{52}: checkout: moving from develop to develop
+[33md468dea[m HEAD@{53}: commit (merge): Merge branch 'develop' of https://github.com/unbreakable-coders/project-bookstore_app into develop
+[33mff3ef90[m HEAD@{54}: checkout: moving from UC-98_dark to develop
+[33m48185fc[m[33m ([m[1;31morigin/UC-98_dark[m[33m, [m[1;32mUC-98_dark[m[33m)[m HEAD@{55}: checkout: moving from develop to UC-98_dark
+[33mff3ef90[m HEAD@{56}: commit (merge): Merge branch 'develop' of https://github.com/unbreakable-coders/project-bookstore_app into develop
+[33m6c4be6b[m HEAD@{57}: reset: moving to HEAD
+[33m6c4be6b[m HEAD@{58}: reset: moving to HEAD
+[33m6c4be6b[m HEAD@{59}: reset: moving to HEAD
+[33m6c4be6b[m HEAD@{60}: reset: moving to HEAD
+[33m6c4be6b[m HEAD@{61}: checkout: moving from UC-98_dark to develop
+[33m48185fc[m[33m ([m[1;31morigin/UC-98_dark[m[33m, [m[1;32mUC-98_dark[m[33m)[m HEAD@{62}: commit (merge): mai
+[33m1c32794[m HEAD@{63}: commit: add changes
+[33mc8942e1[m HEAD@{64}: checkout: moving from CheckoutPage to UC-98_dark
+[33m3fc99d1[m[33m ([m[1;31morigin/CheckoutPage[m[33m, [m[1;32mCheckoutPage[m[33m)[m HEAD@{65}: checkout: moving from UC-98_dark to CheckoutPage
+[33mc8942e1[m HEAD@{66}: checkout: moving from develop to UC-98_dark
+[33m6c4be6b[m HEAD@{67}: commit: add task solution
+[33m1f442cb[m HEAD@{68}: reset: moving to HEAD
+[33m1f442cb[m HEAD@{69}: reset: moving to HEAD
+[33m1f442cb[m HEAD@{70}: checkout: moving from develop to develop
+[33m1f442cb[m HEAD@{71}: checkout: moving from develop to develop
+[33m1f442cb[m HEAD@{72}: pull origin develop: Merge made by the 'ort' strategy.
+[33mbf810b7[m HEAD@{73}: checkout: moving from UC-98_dark to develop
+[33mc8942e1[m HEAD@{74}: checkout: moving from CheckoutPage to UC-98_dark
+[33m3fc99d1[m[33m ([m[1;31morigin/CheckoutPage[m[33m, [m[1;32mCheckoutPage[m[33m)[m HEAD@{75}: checkout: moving from develop to CheckoutPage
+[33mbf810b7[m HEAD@{76}: checkout: moving from UC-98_dark to develop
+[33mc8942e1[m HEAD@{77}: commit: add changes
+[33mbf810b7[m HEAD@{78}: checkout: moving from develop to UC-98_dark
+[33mbf810b7[m HEAD@{79}: commit (merge): Merge branch 'develop' of https://github.com/unbreakable-coders/project-bookstore_app into develop
+[33mbe708f9[m HEAD@{80}: reset: moving to HEAD
+[33mbe708f9[m HEAD@{81}: reset: moving to HEAD
+[33mbe708f9[m HEAD@{82}: reset: moving to HEAD
+[33mbe708f9[m HEAD@{83}: reset: moving to HEAD
+[33mbe708f9[m HEAD@{84}: checkout: moving from DarkTheme to develop
+[33m4f62316[m[33m ([m[1;31morigin/DarkTheme[m[33m, [m[1;32mDarkTheme[m[33m)[m HEAD@{85}: commit: add dark theme
+[33m06f7487[m HEAD@{86}: commit (merge): Resolve merge conflicts
+[33mcf3c356[m HEAD@{87}: checkout: moving from develop to DarkTheme
+[33mbe708f9[m HEAD@{88}: checkout: moving from fixGridCatalog to develop
+[33mbcb644e[m[33m ([m[1;31morigin/fixGridCatalog[m[33m, [m[1;32mfixGridCatalog[m[33m)[m HEAD@{89}: commit: fix gtid catalog
+[33mbe708f9[m HEAD@{90}: checkout: moving from develop to fixGridCatalog
+[33mbe708f9[m HEAD@{91}: pull origin develop: Merge made by the 'ort' strategy.
+[33mbdc3d95[m HEAD@{92}: checkout: moving from DarkTheme to develop
+[33mcf3c356[m HEAD@{93}: commit: add dark theme
+[33m2e7a382[m HEA

@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@/components/atoms/Icon';
+import { useTheme } from '@/context/ThemeContext';
 
 interface BreadcrumbItem {
   label: string;
@@ -17,16 +18,20 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
   currentTitle,
 }) => {
   const [first, second] = items;
+  const { actualTheme } = useTheme();
 
   return (
     <div className="flex items-center gap-1 uppercase font-bold tracking-[0.01em] truncate whitespace-nowrap">
       {/* Home icon */}
       <Link to="/">
-        <Icon name="home" />
+        <Icon name={actualTheme === 'dark' ? 'homeWhite' : 'home'} />
       </Link>
 
       {/* Стрілка після home */}
-      <Icon name="arrowRight" />
+      <Icon
+        className="h-3 w-3"
+        name={actualTheme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
+      />
 
       {/* Мобілка показує ... */}
       <span className="block md:hidden">...</span>
@@ -39,7 +44,10 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
           </Link>
 
           {/* Стрілка після першого елемента */}
-          <Icon name="arrowRight" className="hidden md:inline h-4 w-4" />
+          <Icon
+            className="hidden md:inline h-3 w-3"
+            name={actualTheme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
+          />
         </>
       )}
 
@@ -53,7 +61,10 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
       )}
 
       {/* Поточна книга */}
-      <Icon name="arrowRight" className="h-4 w-4" />
+      <Icon
+        className="h-3 w-3"
+        name={actualTheme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
+      />
 
       <span className="uppercase text-secondary truncate">{currentTitle}</span>
     </div>
