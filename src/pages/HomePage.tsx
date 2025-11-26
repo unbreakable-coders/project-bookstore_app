@@ -67,21 +67,22 @@ export const HomePage = () => {
     void loadBooks();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('introBlurDone', 'true');
-    const timer = setTimeout(() => setIsIntro(false), 3090);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-
   if (isIntro) {
-    return (
-      <div className="fixed top-0 z-[9999]">
-        <Video src={introVideo} />
-      </div>
-    );
+    if (!sessionStorage.getItem('wasIntro')) {
+      return (
+        <div className="fixed inset-0 top-0 z-[9999] overflow-hidden">
+          <Video
+            src={introVideo}
+            className="w-full h-full object-cover"
+            loop={false}
+            onEnded={() => setIsIntro(false)}
+          />
+        </div>
+      );
+    }
   }
+
+  sessionStorage.setItem('wasIntro', 'true');
 
   return (
     <BlurFadeWrapper>
