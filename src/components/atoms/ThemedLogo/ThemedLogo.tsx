@@ -7,7 +7,7 @@ interface ThemedLogoProps {
 }
 
 export const ThemedLogo: FC<ThemedLogoProps> = ({
-  className = '',
+  className = 'h-6 w-auto',
   defaultLogo = 'books/img/logo/default-logo.svg',
 }) => {
   const { theme, isLoading } = useHolidayTheme();

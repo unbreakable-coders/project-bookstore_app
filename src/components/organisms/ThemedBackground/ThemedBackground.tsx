@@ -1,7 +1,6 @@
 import { type FC, useEffect, useRef } from 'react';
 import { useHolidayTheme } from '@/context/HolidayThemeContext';
 
-// Тип однієї частинки
 interface Particle {
   x: number;
   y: number;
@@ -10,12 +9,26 @@ interface Particle {
   speedY: number;
   opacity: number;
   color: string;
+  emoji?: string;
 }
 
 const CONFETTI_COLORS = ['#ff6b9d', '#4ecdc4', '#ffd93d', '#6bcf7f'];
 
+const EMOJI_SETS = {
+  snow: ['❄️', '⛄', '☃️'],
+  hearts: ['♥', '💕', '💖'],
+  leaves: ['🍂', '🍁'],
+  pumpkin: ['🎃', '👻', '🍬'],
+  confetti: ['🎊', '🎉', '✨'],
+};
+
 const getRandomConfettiColor = () =>
   CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+
+const getRandomEmoji = (type: keyof typeof EMOJI_SETS) => {
+  const emojis = EMOJI_SETS[type];
+  return emojis[Math.floor(Math.random() * emojis.length)];
+};
 
 export const ThemedBackground: FC = () => {
   const { theme } = useHolidayTheme();
@@ -45,22 +58,30 @@ export const ThemedBackground: FC = () => {
         let speedY = Math.random() * 1 + 0.5;
         let speedX = Math.random() * 0.5 - 0.25;
         let color = '';
+        let emoji = '';
 
         switch (theme.particles?.type) {
+          case 'snow':
+            emoji = getRandomEmoji('snow');
+            break;
           case 'hearts':
             speedY = Math.random() * 0.8 + 0.5;
             speedX = Math.random() * 0.8 - 0.4;
+            emoji = getRandomEmoji('hearts');
             break;
           case 'leaves':
             speedY = Math.random() * 0.4 + 0.2;
             speedX = Math.random() * 0.5 - 0.25;
+            emoji = getRandomEmoji('leaves');
             break;
           case 'confetti':
             color = getRandomConfettiColor();
+            emoji = getRandomEmoji('confetti');
             break;
-          case 'stars':
-            speedY = Math.random() * 0.1 + 0.05;
-            speedX = Math.random() * 0.1 - 0.05;
+          case 'pumpkin':
+            speedY = Math.random() * 0.7 + 0.05;
+            speedX = Math.random() * 0.7 - 0.05;
+            emoji = getRandomEmoji('pumpkin');
             break;
         }
 
@@ -72,6 +93,7 @@ export const ThemedBackground: FC = () => {
           speedY: speedY,
           opacity: Math.random() * 0.5 + 0.3,
           color: color,
+          emoji: emoji,
         });
       }
     };
@@ -79,41 +101,34 @@ export const ThemedBackground: FC = () => {
     initParticles();
 
     const drawParticle = (p: Particle) => {
+      ctx.save();
       ctx.globalAlpha = p.opacity;
 
       switch (theme.particles?.type) {
         case 'snow':
-          ctx.fillStyle = '#408ae3ff';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          break;
-
         case 'hearts':
-          ctx.fillStyle = '#ff6b9d';
-          ctx.font = `${p.size * 10}px Arial`;
-          ctx.fillText('♥', p.x, p.y);
-          break;
-
         case 'leaves':
-          ctx.fillStyle = '#ffc000';
-          ctx.font = `${p.size * 10}px Arial`;
-          ctx.fillText('🍂', p.x, p.y);
-          break;
-
-        case 'stars':
-          ctx.fillStyle = '#ffd700';
-          ctx.font = `${p.size * 8}px Arial`;
-          ctx.fillText('★', p.x, p.y);
+        case 'pumpkin':
+          ctx.font = `${p.size * 15}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`;
+          ctx.textBaseline = 'middle';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.emoji || '❄️', p.x, p.y);
           break;
 
         case 'confetti':
-          ctx.fillStyle = p.color || CONFETTI_COLORS[0];
-          ctx.fillRect(p.x, p.y, p.size * 3, p.size * 6);
+          if (p.emoji) {
+            ctx.font = `${p.size * 15}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`;
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText(p.emoji, p.x, p.y);
+          } else {
+            ctx.fillStyle = p.color || CONFETTI_COLORS[0];
+            ctx.fillRect(p.x, p.y, p.size * 3, p.size * 6);
+          }
           break;
       }
 
-      ctx.globalAlpha = 1;
+      ctx.restore();
     };
 
     let animationFrameId: number;

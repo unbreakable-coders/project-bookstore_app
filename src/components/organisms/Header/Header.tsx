@@ -228,9 +228,6 @@ export const Header = () => {
                   <Logo className="h-full w-auto" />
                 </div>
               </Link> */}
-              {/* <Link to="/" className="flex items-center">
-            <ThemedLogo className="h-10 w-auto" />
-          </Link> */}
               <Link to="/" aria-label="Go to home page">
                 <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
                   <ThemedLogo className="h-full w-auto" />

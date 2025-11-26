@@ -155,7 +155,7 @@ export const themesConfig: ThemeConfig[] = [
     backgroundColor: '#1a2332',
     particles: {
       enabled: true,
-      type: 'stars',
+      type: 'pumpkin',
       density: 40,
     },
   },
@@ -213,8 +213,8 @@ export const themesConfig: ThemeConfig[] = [
     logo: '/books/img/logo/halloween-logo.svg',
     backgroundColor: '#1a0f1f',
     particles: {
-      enabled: false,
-      type: 'confetti',
+      enabled: true,
+      type: 'pumpkin',
     },
   },
 
@@ -271,8 +271,8 @@ export const themesConfig: ThemeConfig[] = [
     logo: '/books/img/logo/knowledge-logo.svg',
     backgroundColor: '#1a0f1f',
     particles: {
-      enabled: false,
-      type: 'confetti',
+      enabled: true,
+      type: 'leaves',
     },
   },
 ];
