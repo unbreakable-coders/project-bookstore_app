@@ -9,6 +9,13 @@ export const BlurFadeWrapper = ({
   const [hideBlur, setHideBlur] = useState(false);
   const [removeOverlay, setRemoveOverlay] = useState(false);
 
+  const removeOverplayAndSS = () => {
+    if (removeOverlay) {
+      sessionStorage.setItem('wasBlur', 'true');
+    }
+    return removeOverlay;
+  };
+
   useEffect(() => {
     const t1 = setTimeout(() => setHideBlur(true), 120);
     const t2 = setTimeout(() => setRemoveOverlay(true), 1800);
@@ -19,18 +26,22 @@ export const BlurFadeWrapper = ({
     };
   }, []);
 
-  return (
-    <div className="relative">
-      {children}
+  if (!sessionStorage.getItem('wasBlur')) {
+    return (
+      <div className="relative">
+        {children}
 
-      {!removeOverlay && (
-        <div
-          className={`
+        {!removeOverplayAndSS() && (
+          <div
+            className={`
             blur-overlay
             ${hideBlur ? 'blur-fade-out' : 'blur-start'}
           `}
-        />
-      )}
-    </div>
-  );
+          />
+        )}
+      </div>
+    );
+  } else {
+    return <>{children}</>;
+  }
 };
