@@ -98,10 +98,14 @@ export async function getNovaPoshtaWarehouses(
       ? 'f9316480-5f2d-425d-bc2c-ac7cd29decf0' // умовний ref для поштоматів (замінити на реальний при потребі)
       : undefined;
 
-  return callNovaPoshta<NovaPoshtaWarehouse>('AddressGeneral', 'getWarehouses', {
-    CityRef: cityRef,
-    TypeOfWarehouseRef: typeOfWarehouseRef,
-    Page: 1,
-    Limit: 50,
-  });
+  return callNovaPoshta<NovaPoshtaWarehouse>(
+    'AddressGeneral',
+    'getWarehouses',
+    {
+      CityRef: cityRef,
+      TypeOfWarehouseRef: typeOfWarehouseRef,
+      Page: 1,
+      Limit: 50,
+    },
+  );
 }

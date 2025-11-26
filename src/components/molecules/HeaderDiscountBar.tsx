@@ -24,9 +24,7 @@ export const HeaderDiscountBar = () => {
         <div className="inline-flex items-stretch rounded-full bg-[#0F9952] px-4 py-2 text-white shadow-md">
           <div className="flex flex-col justify-center border-r border-white/30 pr-4">
             <span className="text-xs font-bold leading-tight">-10%</span>
-            <span className="text-[10px] leading-tight">
-              {t('Discount')}
-            </span>
+            <span className="text-[10px] leading-tight">{t('Discount')}</span>
           </div>
 
           <div className="flex items-center pl-4">

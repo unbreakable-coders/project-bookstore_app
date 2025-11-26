@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 dotenv.config();
 
 const NP_API_URL = 'https://api.novaposhta.ua/v2.0/json/';
-const API_KEY = process.env.NP_API_KEY;       // додаси в .env
+const API_KEY = process.env.NP_API_KEY; // додаси в .env
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY; // важливо! не публічний!
 
@@ -36,11 +36,20 @@ async function importData() {
 
   // 1. Завантажуємо всі міста
   console.log('Loading cities...');
-  const cities = await callNP('Address', 'getCities', { Page: 1, Limit: 10000 });
+  const cities = await callNP('Address', 'getCities', {
+    Page: 1,
+    Limit: 10000,
+  });
 
   // Чистимо існуючі
-  await supabase.from('np_warehouses').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-  await supabase.from('np_cities').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await supabase
+    .from('np_warehouses')
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000');
+  await supabase
+    .from('np_cities')
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000');
 
   // Вставка міст
   console.log(`Inserting ${cities.length} cities...`);
@@ -51,7 +60,7 @@ async function importData() {
       description: c.Description,
       area: c.Area,
       region: c.Region,
-    }))
+    })),
   );
 
   // 2. Завантажуємо відділення
@@ -79,7 +88,7 @@ async function importData() {
       short_address: w.ShortAddress,
       number: w.Number,
       type: w.TypeOfWarehouse === 'Postomat' ? 'locker' : 'branch',
-    }))
+    })),
   );
 
   console.log('=== DONE ===');
