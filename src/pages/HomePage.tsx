@@ -16,6 +16,7 @@ import { Video } from '@/components/atoms/Video';
 
 export const HomePage = () => {
   const { t } = useTranslation();
+  const [scrollY, setScrollY] = useState(0);
 
   const [isIntro, setIsIntro] = useState<boolean>(true);
   const [newBooks, setNewBooks] = useState<Book[]>([]);
@@ -86,10 +87,26 @@ export const HomePage = () => {
 
   return (
     <BlurFadeWrapper>
-      <main className="w-full flex justify-center container">
-        <div className="w-full max-w-[1136px] px-4 flex flex-col">
-          <PromoSlider />
+      {/* Фіксований банер на весь екран */}
+      <div className="fixed top-0 left-0 w-full h-screen -z-10">
+        <PromoSlider />
+      </div>
 
+      {/* Градієнт для плавного переходу з вашими кольорами */}
+      <div
+        className="fixed top-0 left-0 w-full h-screen pointer-events-none -z-10"
+        style={{
+          background: `linear-gradient(to bottom, transparent 0%, rgba(255, 251, 245, 0.5) 50%, rgb(255, 251, 245) 100%)`,
+          opacity: overlayOpacity,
+        }}
+      />
+
+      {/* Spacer щоб банер був видно */}
+      <div className="h-screen" />
+
+      {/* Основний контент */}
+      <main className="relative w-full flex justify-center container">
+        <div className="w-full max-w-[1136px] px-4 flex flex-col">
           <ProductCardsBlock
             title={t('New books')}
             listOfBooks={newBooks}

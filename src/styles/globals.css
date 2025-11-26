@@ -52,6 +52,25 @@
 }
 
 /* ===========================
+  HEADER HEIGHT (для банерів під фіксованим хедером)
+   =========================== */
+:root {
+  --header-height: 80px; /* мобілка */
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-height: 90px;
+  } /* планшет */
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --header-height: 120px; /* десктоп — підстав свою реальну висоту! */
+  }
+}
+
+/* ===========================
   ROOT VARIABLES (Figma Palette) - LIGHT THEME (Default)
    =========================== */
 :root,

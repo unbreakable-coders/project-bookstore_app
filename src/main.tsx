@@ -7,14 +7,17 @@ import App from './App';
 
 import './i18next';
 import { ThemeProvider } from './context/ThemeContext';
+import { HolidayThemeProvider } from './context/HolidayThemeContext';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <ThemeProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeProvider>
+    <HolidayThemeProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
+    </HolidayThemeProvider>
   </StrictMode>,
 );
 
