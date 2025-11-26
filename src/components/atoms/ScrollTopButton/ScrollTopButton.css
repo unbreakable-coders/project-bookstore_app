@@ -1,0 +1,160 @@
+.stack-button {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 1000;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.3s ease;
+}
+
+.stack-button:hover {
+  transform: translateY(-8px);
+}
+
+.book-stack {
+  position: relative;
+  width: 70px;
+  height: 80px;
+}
+
+.book {
+  position: absolute;
+  width: 70px;
+  height: 20px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.book-1 {
+  bottom: 0;
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+  transform: rotate(-2deg);
+  z-index: 1;
+}
+
+.book-2 {
+  bottom: 18px;
+  background: linear-gradient(135deg, #6b4423 0%, #8b5a3c 100%);
+  transform: rotate(1deg);
+  z-index: 2;
+}
+
+.book-3 {
+  bottom: 36px;
+  background: linear-gradient(135deg, #d4a574 0%, #c19a6b 100%);
+  transform: rotate(-1deg);
+  z-index: 3;
+  height: 24px;
+}
+
+.stack-button:hover .book-1 {
+  transform: rotate(-3deg) translateY(-2px);
+}
+
+.stack-button:hover .book-2 {
+  transform: rotate(2deg) translateY(-4px);
+}
+
+.stack-button:hover .book-3 {
+  transform: rotate(-1deg) translateY(-6px);
+}
+
+.book-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px 0 0 2px;
+}
+
+.book-spine::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 60%;
+  background: rgba(218, 165, 32, 0.5);
+}
+
+.book-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4px;
+}
+
+.arrow-icon {
+  color: #5a3a2a;
+  animation: bounce 2s infinite;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3));
+}
+
+.book-stack::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 8px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.book::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(218, 165, 32, 0.4),
+    transparent
+  );
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 768px) {
+  .stack-button {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .book-stack {
+    width: 60px;
+    height: 70px;
+  }
+
+  .book {
+    width: 60px;
+    height: 18px;
+  }
+
+  .book-3 {
+    height: 20px;
+  }
+}
