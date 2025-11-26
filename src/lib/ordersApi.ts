@@ -1,6 +1,13 @@
 import { supabase } from '@/supabaseClient';
 
-export type OrderStatus = 'pending' | 'paid' | 'awaiting_shipment' | 'cancelled';
+export type OrderStatus =
+  | 'pending'
+  | 'pending_payment'
+  | 'paid'
+  | 'awaiting_shipment'
+  | 'cancelled';
+
+export type OrderProcessStatus = 'processing' | 'completed' | 'cancelled';
 
 export type PaymentMethod = 'card' | 'cod';
 
@@ -21,6 +28,7 @@ export interface OrderRecord {
   user_id: string | null;
 
   status: OrderStatus;
+  order_status: OrderProcessStatus;
   payment_method: PaymentMethod;
 
   created_at: string;
@@ -59,6 +67,7 @@ export interface CreateOrderPayload {
   user_id: string | null;
 
   status: OrderStatus;
+  order_status: OrderProcessStatus;
   payment_method: PaymentMethod;
 
   total_price: number;
@@ -103,10 +112,13 @@ export const ordersApi = {
     return data as OrderRecord;
   },
 
-  async updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
+  async updateOrderStatus(
+    id: number,
+    order_status: OrderProcessStatus,
+  ): Promise<void> {
     const { error } = await supabase
       .from('orders')
-      .update({ status })
+      .update({ order_status })
       .eq('id', id);
 
     if (error) {

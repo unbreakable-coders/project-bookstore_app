@@ -4,21 +4,34 @@ import { useTranslation } from 'react-i18next';
 
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/atoms/Button';
+import { Loader } from '@/components/atoms/Loader/Loader';
 import { supabase } from '@/supabaseClient';
+import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 const PENDING_ORDER_KEY = 'pending_order';
+
+type PendingOrderPayload = {
+  orderPayload: {
+    payment_method?: string;
+    status?: string;
+    order_status?: string;
+    [key: string]: unknown;
+  };
+};
 
 export const PaymentSuccess = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { clearCart } = useCart();
+  const { hasActiveWelcomeDiscount, markWelcomeDiscountUsed } =
+    useWelcomeDiscount();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showProcessingScreen, setShowProcessingScreen] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(true);
 
   const hasRunRef = useRef(false);
+  const redirectTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (hasRunRef.current) {
@@ -32,6 +45,7 @@ export const PaymentSuccess = () => {
 
       if (status !== 'success') {
         setErrorMessage(t('Payment was not successful'));
+        setIsProcessing(false);
         return;
       }
 
@@ -39,91 +53,76 @@ export const PaymentSuccess = () => {
 
       if (!stored) {
         setErrorMessage(t('No pending order found'));
+        setIsProcessing(false);
         return;
       }
 
-      setShowProcessingScreen(true);
-
       try {
-        const parsed = JSON.parse(stored) as {
-          orderPayload: Record<string, unknown>;
-        };
+        const parsed = JSON.parse(stored) as PendingOrderPayload;
 
         const { orderPayload } = parsed;
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        orderPayload.status =
+          orderPayload.payment_method === 'card' ? 'paid' : 'pending_payment';
+
+        orderPayload.order_status = 'processing';
 
         const { error } = await supabase.from('orders').insert(orderPayload);
 
         if (error) {
           console.error('[Order create after payment error]', error);
           setErrorMessage(t('Something went wrong. Please try again'));
-          setShowProcessingScreen(false);
+          setIsProcessing(false);
           return;
+        }
+
+        // ✅ успішно створили замовлення після оплати
+        if (hasActiveWelcomeDiscount) {
+          await markWelcomeDiscountUsed();
         }
 
         clearCart();
         localStorage.removeItem(PENDING_ORDER_KEY);
 
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        setShowSuccessModal(true);
+        redirectTimeoutRef.current = window.setTimeout(() => {
+          navigate('/order-success');
+        }, 1500);
       } catch (err) {
         console.error(err);
         setErrorMessage(t('Something went wrong. Please try again'));
-        setShowProcessingScreen(false);
+        setIsProcessing(false);
       }
     };
 
     void run();
-  }, [clearCart, params, t]);
 
-  if (errorMessage && !showSuccessModal) {
+    return () => {
+      if (redirectTimeoutRef.current !== null) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, [clearCart, navigate, params, t, hasActiveWelcomeDiscount, markWelcomeDiscountUsed]);
+
+  if (errorMessage) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="rounded-lg bg-card p-6 shadow-lg text-center space-y-4">
           <p className="text-secondary">{errorMessage}</p>
-          <Button onClick={() => navigate('/')}>{t('Back to home')}</Button>
+          <Button onClick={() => navigate('/')} className="cursor-pointer">
+            {t('Back to home')}
+          </Button>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      {showProcessingScreen && !showSuccessModal && (
-        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-lg text-center space-y-3">
-          <h2 className="text-lg font-semibold text-secondary">
-            {t('Payment successful')}
-          </h2>
-          <p className="text-accent">
-            {t('We are creating your order now...')}
-          </p>
-        </div>
-      )}
+  if (isProcessing) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
-      {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-full max-w-md rounded-lg bg-card p-6 shadow-lg">
-            <h3 className="mb-2 text-lg font-semibold text-secondary">
-              {t('Your order has been accepted for processing')}
-            </h3>
-            <p className="text-accent">{t("Wait for the manager's call")}</p>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <Button
-                className="cursor-pointer"
-                onClick={() => navigate('/profile')}
-              >
-                {t('Profile')}
-              </Button>
-              <Button className="cursor-pointer" onClick={() => navigate('/')}>
-                {t('Home')}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  return null;
 };

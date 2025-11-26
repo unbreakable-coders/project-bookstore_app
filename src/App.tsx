@@ -67,26 +67,22 @@ export default function App() {
                     <Route path="rights" element={<RightsPage />} />
                     <Route path="dev-preview" element={<DevPreviewPage />} />
 
-                    {/* 1) Фейкова оплата карткою */}
                     <Route
                       path="mock-stripe-checkout"
                       element={<MockStripeCheckout />}
                     />
-                    {/* Аліас, щоб /mock-checkout теж працював */}
                     <Route
                       path="mock-checkout"
                       element={<MockStripeCheckout />}
                     />
 
-                    {/* 2) Сторінка після підтвердження оплати */}
                     <Route
                       path="payment-success"
                       element={<PaymentSuccess />}
                     />
 
-                    {/* 3) Окрема сторінка успішного замовлення (коли треба з айдішником) */}
                     <Route
-                      path="order-success/:orderId"
+                      path="order-success"
                       element={<OrderSuccessPage />}
                     />
 

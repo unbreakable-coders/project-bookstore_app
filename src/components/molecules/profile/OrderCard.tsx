@@ -2,8 +2,14 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
-import type { Order, OrderStatus, PaymentMethod } from '@/lib/ordersApi';
+
 import i18n from '@/i18next';
+import type {
+  Order,
+  OrderStatus,
+  OrderProcessStatus,
+  PaymentMethod,
+} from '@/lib/ordersApi';
 
 interface OrderCardProps {
   order: Order;
@@ -22,15 +28,13 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
       minute: '2-digit',
     });
 
-  // -------- DELIVERY --------
-
   const deliveryServiceLabel =
     order.delivery_service === 'novaPoshta' ? t('novaPoshta') : t('ukrposhta');
 
   const deliveryCity =
     order.delivery_service === 'novaPoshta'
-      ? (order.nova_poshta_city ?? '')
-      : (order.ukrposhta_city ?? '');
+      ? order.nova_poshta_city ?? ''
+      : order.ukrposhta_city ?? '';
 
   const formatDeliveryAddress = () => {
     const parts: string[] = [];
@@ -60,9 +64,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     return parts.join(', ');
   };
 
-  // -------- STATUSES --------
-
-  const getOrderStatusLabel = (status: OrderStatus) => {
+  const getOrderProcessLabel = (status: OrderProcessStatus) => {
     switch (status) {
       case 'pending':
         return t('pending');
@@ -70,6 +72,10 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
         return t('awaiting_shipment');
       case 'paid':
         return t('paid');
+      case 'processing':
+        return t('processing');
+      case 'completed':
+        return t('completed');
       case 'cancelled':
         return t('cancelled');
       default:
@@ -77,14 +83,12 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     }
   };
 
-  const getOrderStatusColor = (status: OrderStatus) => {
+  const getOrderProcessColor = (status: OrderProcessStatus) => {
     switch (status) {
-      case 'pending':
+      case 'processing':
         return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'awaiting_shipment':
-        return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-      case 'paid':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-200';
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
@@ -109,20 +113,14 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     status: OrderStatus,
     method: PaymentMethod,
   ) => {
-    if (status === 'pending' && method === 'card')
-      return 'bg-amber-100 text-amber-800 border-amber-200';
-    if (status === 'pending' && method === 'cod')
-      return 'bg-blue-100 text-blue-800 border-blue-200';
-    if (status === 'awaiting_shipment' || status === 'paid')
-      return 'bg-green-100 text-green-800 border-green-200';
     if (status === 'cancelled')
       return 'bg-gray-100 text-gray-700 border-gray-300';
 
-    return 'bg-gray-100 text-gray-800 border-gray-300';
-  };
+    if (method === 'card')
+      return 'bg-green-100 text-green-800 border-green-200';
 
-  const orderStatusLabel = getOrderStatusLabel(order.status);
-  const orderStatusColor = getOrderStatusColor(order.status);
+    return 'bg-amber-100 text-amber-800 border-amber-200';
+  };
 
   const paymentStatusLabel = getPaymentStatusLabel(
     order.status,
@@ -132,6 +130,9 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     order.status,
     order.payment_method,
   );
+
+  const orderProcessLabel = getOrderProcessLabel(order.order_status);
+  const orderProcessColor = getOrderProcessColor(order.order_status);
 
   const deliveryAddress = formatDeliveryAddress();
 
@@ -165,9 +166,9 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
             </span>
 
             <span
-              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${orderStatusColor}`}
+              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${orderProcessColor}`}
             >
-              {orderStatusLabel}
+              {orderProcessLabel}
             </span>
           </div>
         </div>
