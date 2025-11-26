@@ -127,7 +127,7 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1">
-                      <p className="text-sm font-semibold text-secondary">
+                      <p className="text-sm font-semibold text-primary">
                         {t('Order')} #{order.id}
                       </p>
 
@@ -143,7 +143,7 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
                     </div>
 
                     <span
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${getStatusColor(
+                      className={`px-3 py-1.5 bg-muted rounded-lg text-xs font-semibold border ${getStatusColor(
                         order.status,
                       )}`}
                     >
@@ -172,8 +172,8 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
                             </p>
 
                             <p className="text-xs text-muted-foreground mt-1">
-                              {item.quantity} шт. × {item.price.toFixed(2)}{' '}
-                              {t('UAH')}
+                              {item.quantity} {t('pcs.')} ×{' '}
+                              {item.price.toFixed(2)} {t('UAH')}
                             </p>
                           </div>
 
@@ -193,18 +193,21 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
                       {t('Total')}:
                     </p>
 
-                    <p className="text-lg font-bold text-foreground">
+                    <p className="text-lg font-bold text-primary">
                       {order.total_price.toFixed(2)} {t('UAH')}
                     </p>
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" variant="outline">
-                      {t('Order details')}
-                    </Button>
+                    <Button>{t('Order details')}</Button>
 
                     {order.status === 'paid' && (
-                      <Button size="sm" variant="outline">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        // className="bg-primary shadow hover:bg-primary/90
+                        // border-none"
+                      >
                         {t('Repeat order')}
                       </Button>
                     )}

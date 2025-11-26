@@ -96,17 +96,11 @@ export const CheckoutPage: FC = () => {
     if (formData.deliveryService === 'novaPoshta') {
       if (!formData.novaPoshtaCity) return false;
 
-      if (
-        formData.novaPoshtaType === 'branch' &&
-        !formData.novaPoshtaBranch
-      ) {
+      if (formData.novaPoshtaType === 'branch' && !formData.novaPoshtaBranch) {
         return false;
       }
 
-      if (
-        formData.novaPoshtaType === 'locker' &&
-        !formData.novaPoshtaLocker
-      ) {
+      if (formData.novaPoshtaType === 'locker' && !formData.novaPoshtaLocker) {
         return false;
       }
 
@@ -190,7 +184,7 @@ export const CheckoutPage: FC = () => {
 
       if (error) {
         console.error('[Order create error]', error);
-        setErrorMessage(t('Something went wrong. Please try again.'));
+        setErrorMessage(t('Something went wrong. Please try again'));
         return;
       }
 
@@ -198,14 +192,12 @@ export const CheckoutPage: FC = () => {
       setShowSuccessModal(true);
     } catch (err) {
       console.error(err);
-      setErrorMessage(t('Something went wrong. Please try again.'));
+      setErrorMessage(t('Something went wrong. Please try again'));
     }
   };
 
   const handleChange = (
-    e: ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -289,15 +281,15 @@ export const CheckoutPage: FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="w-full max-w-md rounded-lg bg-card p-6 shadow-lg">
             <h3 className="mb-2 text-lg font-semibold text-secondary">
-              {t('Ваше замовлення прийняте в роботу.')}
+              {t('Your order has been accepted for processing')}
             </h3>
-            <p className="text-accent">{t('Очікуйте на дзвінок менеджера')}</p>
+            <p className="text-accent">{t("Wait for the manager's call")}</p>
 
             <div className="mt-6 flex justify-end gap-3">
               <Button onClick={() => navigate('/profile')}>
-                {t('Профіль')}
+                {t('Profile')}
               </Button>
-              <Button onClick={() => navigate('/')}>{t('Домашня')}</Button>
+              <Button onClick={() => navigate('/')}>{t('Home')}</Button>
             </div>
           </div>
         </div>

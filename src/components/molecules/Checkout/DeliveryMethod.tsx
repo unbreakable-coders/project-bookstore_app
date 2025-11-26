@@ -11,10 +11,10 @@ export interface DeliveryFormData {
   novaPoshtaType: 'branch' | 'locker' | 'courier' | '';
 
   // Нова пошта
-  novaPoshtaCity: string;      // тут зберігаємо CityRef з таблиці np_cities
-  novaPoshtaBranch: string;    // number або id відділення
-  novaPoshtaLocker: string;    // number або id поштомата
-  novaPoshtaAddress: string;   // адреса для курʼєра
+  novaPoshtaCity: string; // тут зберігаємо CityRef з таблиці np_cities
+  novaPoshtaBranch: string; // number або id відділення
+  novaPoshtaLocker: string; // number або id поштомата
+  novaPoshtaAddress: string; // адреса для курʼєра
 
   // Укрпошта
   ukrposhtaCity: string;
@@ -78,7 +78,10 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
   // Завантажуємо відділення/поштомати для вибраного міста
   useEffect(() => {
     const loadWarehouses = async () => {
-      if (formData.deliveryService !== 'novaPoshta' || !formData.novaPoshtaCity) {
+      if (
+        formData.deliveryService !== 'novaPoshta' ||
+        !formData.novaPoshtaCity
+      ) {
         setBranches([]);
         setLockers([]);
         return;
@@ -138,7 +141,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                 <div className="mt-4 space-y-4 ml-6">
                   {/* Місто – спільне для всіх типів доставки НП */}
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-accent">
+                    <label className="mb-1 block text-sm font-medium text-muted">
                       {t('City *')}
                     </label>
 
@@ -146,7 +149,7 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                       name="novaPoshtaCity"
                       value={formData.novaPoshtaCity}
                       onChange={onChange}
-                      className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      className="w-full text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                       required
                     >
                       <option value="">{t('Select city')}</option>
@@ -188,8 +191,10 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                           name="novaPoshtaBranch"
                           value={formData.novaPoshtaBranch}
                           onChange={onChange}
-                          className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                          disabled={!formData.novaPoshtaCity || loadingWarehouses}
+                          className="w-full text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                          disabled={
+                            !formData.novaPoshtaCity || loadingWarehouses
+                          }
                           required
                         >
                           <option value="">{t('Select branch')}</option>
@@ -232,8 +237,10 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
                           name="novaPoshtaLocker"
                           value={formData.novaPoshtaLocker}
                           onChange={onChange}
-                          className="mt-1 block w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-                          disabled={!formData.novaPoshtaCity || loadingWarehouses}
+                          className="w-full text-primary rounded-lg border border-border bg-card px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                          disabled={
+                            !formData.novaPoshtaCity || loadingWarehouses
+                          }
                           required
                         >
                           <option value="">{t('Select parcel locker')}</option>
