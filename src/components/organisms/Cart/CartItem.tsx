@@ -59,7 +59,7 @@ export const CartItem: FC<CartItemProps> = ({
 
       <div className="flex-1 min-w-0">
         <h4
-          className="text-primary mb-1 truncate cursor-pointer "
+          className="text-primary mb-1 truncate cursor-pointer"
           onClick={openDetails}
         >
           {book.name}
