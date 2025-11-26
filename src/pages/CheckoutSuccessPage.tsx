@@ -2,13 +2,13 @@ import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ordersApi, type OrderRecord } from '@/api/ordersApi';
+import { ordersApi, type Order } from '@/lib/ordersApi';
 import { Button } from '@/components/atoms/Button';
 
 export const CheckoutSuccessPage: FC = () => {
   const { t } = useTranslation();
   const [params] = useSearchParams();
-  const [order, setOrder] = useState<OrderRecord | null>(null);
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,7 +74,8 @@ export const CheckoutSuccessPage: FC = () => {
           </h1>
 
           <p className="mb-6 text-secondary">
-            {t('Your order number is')} #{order.id}. {t('We have sent the details to')} {contact.email || t('your email')}.
+            {t('Your order number is')} #{order.id}. {t('We have sent the details to')}{' '}
+            {contact.email || t('your email')}.
           </p>
 
           <div className="mb-6 space-y-2 text-sm">
@@ -109,7 +110,7 @@ export const CheckoutSuccessPage: FC = () => {
             </h2>
 
             <div className="space-y-3">
-              {items.map((item: any) => (
+              {items.map(item => (
                 <div
                   key={item.bookId}
                   className="flex items-center justify-between text-sm"

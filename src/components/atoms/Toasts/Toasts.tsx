@@ -1,17 +1,8 @@
-import { toast, ToastContainer, type ToastOptions } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Icon } from '@/components/atoms/Icon';
 import i18n from 'i18next';
-
-const defaultOptions: ToastOptions = {
-  position: 'bottom-right',
-  autoClose: 3000,
-  hideProgressBar: true,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  theme: 'light',
-};
+import { defaultOptions } from './toastOptions';
 
 export const toastWishlistAdded = () =>
   toast.success(
