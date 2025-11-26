@@ -78,7 +78,10 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
       parts.push(`${t('City')}: ${delivery.city}`);
     }
 
-    if ((delivery.type === 'branch' || delivery.type === 'locker') && delivery.branch) {
+    if (
+      (delivery.type === 'branch' || delivery.type === 'locker') &&
+      delivery.branch
+    ) {
       parts.push(delivery.branch);
     }
 
@@ -124,7 +127,7 @@ export const OrdersHistory: FC<OrdersHistoryProps> = ({
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1">
-                      <p className="text-sm font-semibold text-foreground">
+                      <p className="text-sm font-semibold text-secondary">
                         {t('Order')} #{order.id}
                       </p>
 
