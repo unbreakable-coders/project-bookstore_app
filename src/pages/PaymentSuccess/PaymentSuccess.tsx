@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/atoms/Button';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { supabase } from '@/supabaseClient';
+import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 const PENDING_ORDER_KEY = 'pending_order';
 
@@ -23,6 +24,8 @@ export const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { clearCart } = useCart();
+  const { hasActiveWelcomeDiscount, markWelcomeDiscountUsed } =
+    useWelcomeDiscount();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(true);
@@ -73,6 +76,11 @@ export const PaymentSuccess = () => {
           return;
         }
 
+        // ✅ успішно створили замовлення після оплати
+        if (hasActiveWelcomeDiscount) {
+          await markWelcomeDiscountUsed();
+        }
+
         clearCart();
         localStorage.removeItem(PENDING_ORDER_KEY);
 
@@ -93,7 +101,7 @@ export const PaymentSuccess = () => {
         clearTimeout(redirectTimeoutRef.current);
       }
     };
-  }, [clearCart, navigate, params, t]);
+  }, [clearCart, navigate, params, t, hasActiveWelcomeDiscount, markWelcomeDiscountUsed]);
 
   if (errorMessage) {
     return (

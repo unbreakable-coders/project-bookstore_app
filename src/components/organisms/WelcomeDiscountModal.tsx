@@ -7,53 +7,50 @@ import { useTranslation } from 'react-i18next';
 export const WelcomeDiscountModal = () => {
   const { t } = useTranslation();
   const { user, initializing } = useAuth();
-  const { hasActiveWelcomeDiscount, remainingMs } = useWelcomeDiscount();
+  const {
+    hasActiveWelcomeDiscount,
+    remainingMs,
+    showModal,
+    closeModal,
+    discountPercent,
+  } = useWelcomeDiscount();
 
   const [isDelayPassed, setIsDelayPassed] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
-  const [showTimerModal, setShowTimerModal] = useState(false);
-  const [timerDismissed, setTimerDismissed] = useState(false);
 
   const navigate = useNavigate();
 
+  // затримка перед показом будь-якої модалки
   useEffect(() => {
-    const t = setTimeout(() => setIsDelayPassed(true), 9000);
-    return () => clearTimeout(t);
+    const id = window.setTimeout(() => setIsDelayPassed(true), 9000);
+
+    return () => {
+      window.clearTimeout(id);
+    };
   }, []);
 
+  // вибір, яку модалку показувати після затримки
   useEffect(() => {
-    if (!isDelayPassed || initializing) return;
-
-    if (!user) {
-      const dismissed = localStorage.getItem('welcomeModalDismissed');
-      if (!dismissed) setShowGuestModal(true);
-      setShowTimerModal(false);
-      setTimerDismissed(false);
+    if (!isDelayPassed || initializing) {
       return;
     }
 
+    // гість
+    if (!user) {
+      const dismissed = localStorage.getItem('welcomeModalDismissed');
+
+      if (!dismissed) {
+        setShowGuestModal(true);
+      } else {
+        setShowGuestModal(false);
+      }
+
+      return;
+    }
+
+    // авторизований юзер
     setShowGuestModal(false);
-
-    if (hasActiveWelcomeDiscount && remainingMs > 0 && !timerDismissed) {
-      setShowTimerModal(true);
-    } else {
-      setShowTimerModal(false);
-    }
-  }, [
-    user,
-    initializing,
-    hasActiveWelcomeDiscount,
-    remainingMs,
-    timerDismissed,
-    isDelayPassed,
-  ]);
-
-  useEffect(() => {
-    if (!hasActiveWelcomeDiscount || remainingMs <= 0) {
-      setShowTimerModal(false);
-      setTimerDismissed(false);
-    }
-  }, [hasActiveWelcomeDiscount, remainingMs]);
+  }, [user, initializing, isDelayPassed]);
 
   const handleCloseGuest = () => {
     localStorage.setItem('welcomeModalDismissed', 'true');
@@ -67,20 +64,30 @@ export const WelcomeDiscountModal = () => {
   };
 
   const handleCloseTimer = () => {
-    setTimerDismissed(true);
-    setShowTimerModal(false);
+    closeModal();
   };
 
   const handleGoToCatalog = () => {
-    setTimerDismissed(true);
-    setShowTimerModal(false);
+    closeModal();
     navigate('/catalog');
   };
 
-  if (!isDelayPassed) return null;
-  if (!showGuestModal && !showTimerModal) return null;
+  if (!isDelayPassed) {
+    return null;
+  }
 
-  const totalSeconds = Math.floor(remainingMs / 1000);
+  const isTimerMode =
+    Boolean(user) &&
+    showModal &&
+    hasActiveWelcomeDiscount &&
+    remainingMs > 0;
+
+  if (!showGuestModal && !isTimerMode) {
+    return null;
+  }
+
+  const safeRemaining = remainingMs > 0 ? remainingMs : 0;
+  const totalSeconds = Math.floor(safeRemaining / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -88,8 +95,6 @@ export const WelcomeDiscountModal = () => {
   const timeString = `${hours.toString().padStart(2, '0')}:${minutes
     .toString()
     .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-  const isTimerMode = showTimerModal;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -114,7 +119,8 @@ export const WelcomeDiscountModal = () => {
           <>
             <p className="mb-6 text-sm text-gray-700">
               {t(
-                'You received 10% discount on purchases. Hurry up to use it while time is running.',
+                'You received {{percent}}% discount on purchases. Hurry up to use it while time is running.',
+                { percent: discountPercent },
               )}
             </p>
 
@@ -136,7 +142,8 @@ export const WelcomeDiscountModal = () => {
           <>
             <p className="mb-6 text-sm text-gray-700">
               {t(
-                'Register now and get 10% discount on purchases for 24 hours.',
+                'Register now and get {{percent}}% discount on purchases for 24 hours.',
+                { percent: discountPercent },
               )}
             </p>
 
@@ -146,7 +153,7 @@ export const WelcomeDiscountModal = () => {
                 onClick={handleGoToRegister}
                 className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
               >
-                {t('Get 10% discount')}
+                {t('Get {{percent}}% discount', { percent: discountPercent })}
               </button>
 
               <button
