@@ -11,6 +11,7 @@ export interface ThemeConfig {
   endDate: { month: number; day: number };
   banners: BannerSet;
   logo?: string;
+  logoDark?: string;
   backgroundColor?: string;
   particles?: {
     enabled: boolean;
