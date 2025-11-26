@@ -13,9 +13,11 @@ import { useTranslation } from 'react-i18next';
 import { BlurFadeWrapper } from '@/components/organisms/Home/BlurFadeWrapper.tsx';
 import introVideo from '@/assets/homeIntro.mp4';
 import { Video } from '@/components/atoms/Video';
+import { useHolidayTheme } from '@/context/HolidayThemeContext';
 
 export const HomePage = () => {
   const { t } = useTranslation();
+  const { theme } = useHolidayTheme();
   const [scrollY, setScrollY] = useState(0);
 
   const [isIntro, setIsIntro] = useState<boolean>(true);
@@ -98,16 +100,31 @@ export const HomePage = () => {
 
   return (
     <BlurFadeWrapper>
-      {/* Фіксований банер на весь екран */}
-      <div className="fixed top-0 left-0 w-full h-screen -z-10">
+      {theme.backgroundImage && (
+        <div
+          className="fixed inset-0 -z-50 pointer-events-none"
+          style={{
+            backgroundImage: `url('${theme.backgroundImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+          }}
+        />
+      )}
+      <div
+        className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700"
+        style={{
+          opacity: scrollY < 800 ? Math.max(0, (800 - scrollY) / 800) : 0,
+        }}
+      >
         <PromoSlider />
       </div>
 
-      {/* Градієнт для плавного переходу з вашими кольорами */}
       <div
-        className="fixed top-0 left-0 w-full h-screen pointer-events-none -z-10"
+        className="fixed inset-0 pointer-events-none -z-10 transition-opacity duration-700"
         style={{
-          background: `linear-gradient(to bottom, transparent 0%, rgba(255, 251, 245, 0.5) 50%, rgb(255, 251, 245) 100%)`,
+          background: `linear-gradient(to bottom, transparent 0%, rgba(255,251,245,0.5) 50%, rgb(255,251,245) 100%)`,
           opacity: overlayOpacity,
         }}
       />

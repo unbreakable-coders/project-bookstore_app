@@ -59,6 +59,7 @@ export const themesConfig: ThemeConfig[] = [
       type: 'snow',
       density: 50,
     },
+    backgroundImage: '/books/img/backgrounds/christmas.svg',
   },
 
   // День святого Валентина
@@ -119,6 +120,7 @@ export const themesConfig: ThemeConfig[] = [
       type: 'hearts',
       density: 30,
     },
+    backgroundImage: '/books/img/backgrounds/valentine.svg',
   },
 
   // День незалежності України (Дефолтна)
@@ -161,6 +163,7 @@ export const themesConfig: ThemeConfig[] = [
       type: 'pumpkin',
       density: 40,
     },
+    backgroundImage: '/books/img/backgrounds/default.svg',
   },
 
   // Хелловін
@@ -220,6 +223,7 @@ export const themesConfig: ThemeConfig[] = [
       enabled: true,
       type: 'pumpkin',
     },
+    backgroundImage: '/books/img/backgrounds/halloween.svg',
   },
 
   // День знань
@@ -279,5 +283,6 @@ export const themesConfig: ThemeConfig[] = [
       enabled: true,
       type: 'leaves',
     },
+    backgroundImage: '/books/img/backgrounds/knowledge.svg',
   },
 ];

@@ -40,11 +40,12 @@ export const HolidayThemeProvider = ({ children }: { children: ReactNode }) => {
   }, [theme.id]);
 
   useEffect(() => {
-    if (theme.backgroundColor) {
-      document.body.style.backgroundColor = theme.backgroundColor;
-    }
+    document.body.style.backgroundColor = theme.backgroundColor;
+    document.body.style.backgroundImage = '';
+
     return () => {
       document.body.style.backgroundColor = '';
+      document.body.style.backgroundImage = '';
     };
   }, [theme.backgroundColor]);
 

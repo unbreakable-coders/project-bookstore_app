@@ -12,10 +12,11 @@ export interface ThemeConfig {
   banners: BannerSet;
   logo?: string;
   logoDark?: string;
-  backgroundColor?: string;
+  backgroundColor: string;
   particles?: {
     enabled: boolean;
     type: 'snow' | 'hearts' | 'leaves' | 'confetti' | 'pumpkin';
     density?: number;
   };
+  backgroundImage?: string;
 }
