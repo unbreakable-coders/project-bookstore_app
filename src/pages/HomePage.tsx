@@ -11,7 +11,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
 import { BlurFadeWrapper } from '@/components/organisms/Home/BlurFadeWrapper.tsx';
-import introVideo from '@/assets/introForHomepage.mp4';
+import introVideo from '@/assets/homeIntro.mp4';
 import { Video } from '@/components/atoms/Video';
 
 export const HomePage = () => {
