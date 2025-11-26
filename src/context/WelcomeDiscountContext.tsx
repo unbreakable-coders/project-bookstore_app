@@ -3,6 +3,8 @@ import {
   useContext,
   useEffect,
   useState,
+  useMemo,
+  useCallback,
   type ReactNode,
 } from 'react';
 import { supabase } from '@/lib/supabaseClient';
@@ -13,6 +15,15 @@ interface WelcomeDiscountContextValue {
   remainingMs: number;
   hasActiveWelcomeDiscount: boolean;
   loading: boolean;
+
+  isUsed: boolean;
+  showModal: boolean;
+
+  discountPercent: number;
+
+  openModal: () => void;
+  closeModal: () => void;
+  markWelcomeDiscountUsed: () => Promise<void>;
 }
 
 const WelcomeDiscountContext = createContext<WelcomeDiscountContextValue | null>(
@@ -30,10 +41,18 @@ export const WelcomeDiscountProvider = ({
   const [remainingMs, setRemainingMs] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const [isUsed, setIsUsed] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const DISCOUNT_PERCENT = 10;
+
+  // ---- завантаження профілю ----
   useEffect(() => {
     if (!user?.id || authInitializing) {
       setExpiresAt(null);
       setRemainingMs(0);
+      setIsUsed(false);
+      setShowModal(false);
 
       return;
     }
@@ -45,7 +64,7 @@ export const WelcomeDiscountProvider = ({
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('welcome_discount_expires_at')
+        .select('welcome_discount_expires_at, welcome_discount_used')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -56,8 +75,23 @@ export const WelcomeDiscountProvider = ({
       if (error) {
         console.error('[WelcomeDiscount] select error', error.message);
         setExpiresAt(null);
+        setIsUsed(false);
+        setShowModal(false);
       } else {
-        setExpiresAt(data?.welcome_discount_expires_at ?? null);
+        const expires = data?.welcome_discount_expires_at ?? null;
+        const used = Boolean(data?.welcome_discount_used);
+
+        setExpiresAt(expires);
+        setIsUsed(used);
+
+        if (expires && !used) {
+          const target = new Date(expires).getTime();
+          const diff = target - Date.now();
+
+          setShowModal(diff > 0);
+        } else {
+          setShowModal(false);
+        }
       }
 
       setLoading(false);
@@ -70,6 +104,7 @@ export const WelcomeDiscountProvider = ({
     };
   }, [user?.id, authInitializing]);
 
+  // ---- таймер до закінчення знижки ----
   useEffect(() => {
     if (!expiresAt) {
       setRemainingMs(0);
@@ -93,11 +128,63 @@ export const WelcomeDiscountProvider = ({
     };
   }, [expiresAt]);
 
-  const hasActiveWelcomeDiscount = Boolean(expiresAt && remainingMs > 0);
+  // активна знижка = є дата, ще не протермінована і не використана
+  const hasActiveWelcomeDiscount = useMemo(
+    () => Boolean(expiresAt && remainingMs > 0 && !isUsed),
+    [expiresAt, remainingMs, isUsed],
+  );
+
+  // якщо знижка стала неактивною — модалка автоматом ховається
+  useEffect(() => {
+    if (!hasActiveWelcomeDiscount) {
+      setShowModal(false);
+    }
+  }, [hasActiveWelcomeDiscount]);
+
+  const openModal = () => {
+    if (hasActiveWelcomeDiscount) {
+      setShowModal(true);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const markWelcomeDiscountUsed = useCallback(async () => {
+    if (!user?.id || isUsed) {
+      setShowModal(false);
+      return;
+    }
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ welcome_discount_used: true })
+      .eq('id', user.id);
+
+    if (error) {
+      console.error('[WelcomeDiscount] update error', error.message);
+      return;
+    }
+
+    setIsUsed(true);
+    setShowModal(false);
+  }, [user?.id, isUsed]);
 
   return (
     <WelcomeDiscountContext.Provider
-      value={{ expiresAt, remainingMs, hasActiveWelcomeDiscount, loading }}
+      value={{
+        expiresAt,
+        remainingMs,
+        hasActiveWelcomeDiscount,
+        loading,
+        isUsed,
+        showModal,
+        discountPercent: DISCOUNT_PERCENT,
+        openModal,
+        closeModal,
+        markWelcomeDiscountUsed,
+      }}
     >
       {children}
     </WelcomeDiscountContext.Provider>

@@ -58,7 +58,11 @@ export const CheckoutPage: FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { cartItems, totalItems, totalPriceUAH, clearCart } = useCart();
-  const { hasActiveWelcomeDiscount } = useWelcomeDiscount();
+  const {
+    hasActiveWelcomeDiscount,
+    discountPercent,
+    markWelcomeDiscountUsed,
+  } = useWelcomeDiscount();
 
   const [formData, setFormData] = useState<CheckoutFormState>(initialFormState);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -73,7 +77,10 @@ export const CheckoutPage: FC = () => {
   const itemsTotalUAH = totalPriceUAH;
 
   const discountUAH = hasActiveWelcomeDiscount
-    ? Math.min(Math.round(itemsTotalUAH * 0.1), itemsTotalUAH)
+    ? Math.min(
+        Math.round(itemsTotalUAH * (discountPercent / 100)),
+        itemsTotalUAH,
+      )
     : 0;
 
   const totalWithDelivery = itemsTotalUAH - discountUAH + deliveryPrice;
@@ -96,11 +103,17 @@ export const CheckoutPage: FC = () => {
     if (formData.deliveryService === 'novaPoshta') {
       if (!formData.novaPoshtaCity) return false;
 
-      if (formData.novaPoshtaType === 'branch' && !formData.novaPoshtaBranch) {
+      if (
+        formData.novaPoshtaType === 'branch' &&
+        !formData.novaPoshtaBranch
+      ) {
         return false;
       }
 
-      if (formData.novaPoshtaType === 'locker' && !formData.novaPoshtaLocker) {
+      if (
+        formData.novaPoshtaType === 'locker' &&
+        !formData.novaPoshtaLocker
+      ) {
         return false;
       }
 
@@ -193,6 +206,11 @@ export const CheckoutPage: FC = () => {
         console.error('[Order create error]', error);
         setErrorMessage(t('Something went wrong. Please try again'));
         return;
+      }
+
+      // ✅ якщо знижка ще активна — позначаємо як використану
+      if (hasActiveWelcomeDiscount) {
+        await markWelcomeDiscountUsed();
       }
 
       clearCart();
