@@ -19,21 +19,17 @@ export const HeaderDiscountBar = () => {
     .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
   return (
-    <div className="fixed left-0 right-0 top-16 z-40 bg-transparent">
-      <div className="mx-auto max-w-6xl px-4 pt-2">
-        <div className="inline-flex items-stretch rounded-full bg-[#0F9952] px-4 py-2 text-white shadow-md">
-          <div className="flex flex-col justify-center border-r border-white/30 pr-4">
-            <span className="text-xs font-bold leading-tight">-10%</span>
-            <span className="text-[10px] leading-tight">
-              {t('Discount')}
-            </span>
-          </div>
+    <div className="sticky bottom-6 left-6 z-40 flex justify-start px-6">
+      <div className="inline-flex items-stretch rounded-full bg-[#0F9952] px-4 py-2 text-white shadow-md">
+        <div className="flex flex-col justify-center border-r border-white/30 pr-4">
+          <span className="text-xs font-bold leading-tight">-10%</span>
+          <span className="text-[10px] leading-tight">{t('Discount')}</span>
+        </div>
 
-          <div className="flex items-center pl-4">
-            <span className="font-mono text-2xl font-semibold leading-none">
-              {countdownTime}
-            </span>
-          </div>
+        <div className="flex items-center pl-4">
+          <span className="font-mono text-2xl font-semibold leading-none">
+            {countdownTime}
+          </span>
         </div>
       </div>
     </div>

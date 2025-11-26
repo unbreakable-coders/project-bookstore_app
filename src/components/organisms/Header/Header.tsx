@@ -17,7 +17,6 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
-import { HeaderDiscountBar } from '@/components/molecules/HeaderDiscountBar';
 import { HeaderIconButtons } from '@/components/molecules/HeaderIconButtons';
 import { HeaderDesktopSearch } from '@/components/molecules/HeaderDesktopSearch';
 import { HeaderMobileMenu } from '@/components/molecules/HeaderMobileMenu';
@@ -305,8 +304,6 @@ export const Header = () => {
         headerCartRef={headerCartRef}
         onClose={closeMobile}
       />
-
-      <HeaderDiscountBar />
 
       {!isCatalogPage && (
         <SearchPanel open={isSearchOpen} onOpenChange={setIsSearchOpen} />
