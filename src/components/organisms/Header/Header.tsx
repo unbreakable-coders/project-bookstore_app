@@ -7,7 +7,8 @@ import {
 } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Logo } from '../../atoms/Logo';
+import { ThemedLogo } from '../../atoms/ThemedLogo';
+//import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
@@ -222,9 +223,17 @@ export const Header = () => {
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">
-              <Link to="/" aria-label="Go to home page">
+              {/* <Link to="/" aria-label="Go to home page">
                 <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
                   <Logo className="h-full w-auto" />
+                </div>
+              </Link> */}
+              {/* <Link to="/" className="flex items-center">
+            <ThemedLogo className="h-10 w-auto" />
+          </Link> */}
+              <Link to="/" aria-label="Go to home page">
+                <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
+                  <ThemedLogo className="h-full w-auto" />
                 </div>
               </Link>
 

@@ -25,6 +25,7 @@ import { MoveHeartProvider } from './components/MoveHeart';
 import { MoveBookToCartProvider } from './components/MoveBookToCart';
 import { WelcomeDiscountProvider } from './context/WelcomeDiscountContext';
 import { WelcomeDiscountModal } from './components/organisms/WelcomeDiscountModal';
+import { ThemedBackground } from './components/organisms/ThemedBackground';
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
               <WelcomeDiscountProvider>
                 <ScrollToTop />
                 <WelcomeDiscountModal />
+                <ThemedBackground />
 
                 <Routes>
                   <Route path="/" element={<AppLayout />}>

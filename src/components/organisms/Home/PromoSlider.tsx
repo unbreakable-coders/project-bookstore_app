@@ -1,36 +1,11 @@
 import { type FC, useEffect, useRef, useState } from 'react';
 import { Image } from '@/components/atoms/Image';
 import { Icon } from '@/components/atoms/Icon';
-
-const mobileBanners = [
-  { src: '/books/img/banner/mobileBanner1.webp', alt: 'Banner Constitution' },
-  { src: '/books/img/banner/mobileBanner2.webp', alt: 'UA Authors' },
-  { src: '/books/img/banner/mobileBanner3.webp', alt: 'Best Sellers' },
-];
-
-const tabletBanners = [
-  { src: '/books/img/banner/bannerTablet1.webp', alt: 'Banner Constitution' },
-  { src: '/books/img/banner/bannerTablet2.webp', alt: 'UA Authors' },
-  { src: '/books/img/banner/bannerTablet3.webp', alt: 'Best Sellers' },
-];
-
-const desktopBanners = [
-  { src: '/books/img/banner/bannerTablet1.webp', alt: 'Banner Constitution' },
-  { src: '/books/img/banner/bannerTablet2.webp', alt: 'UA Authors' },
-  { src: '/books/img/banner/bannerTablet3.webp', alt: 'Best Sellers' },
-];
-
-// const desktopHolidayBanners = [
-//   { src: '/books/img/banner-holiday/christmas/christmas.svg', alt: 'Banner Christmas' },
-//   { src: '/books/img/banner-holiday/christmas/christmas (1).svg', alt: 'Banner BestSellers' },
-//   { src: '/books/img/banner-holiday/christmas/christmas (2).svg', alt: 'Banner Cooking' },
-// ];
-
-// const desktopHolidayBanners = [
-//   { src: '/books/img/banner-holiday/valentine/valentine.png', alt: 'Banner Christmas' },
-//   { src: '/books/img/banner-holiday/valentine/valentine (1).png', alt: 'Banner BestSellers' },
-//   { src: '/books/img/banner-holiday/valentine/valentine (2).png', alt: 'Banner Cooking' },
-// ];
+import {
+  getActiveTheme,
+  getBannersForWidth,
+} from '@/components/utils/themeUtils';
+import type { ThemeConfig } from '@/types/theme';
 
 function useWindowWidth(): number {
   const [width, setWidth] = useState(0);
@@ -50,16 +25,37 @@ function useWindowWidth(): number {
 export const PromoSlider: FC = () => {
   const width = useWindowWidth();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeTheme, setActiveTheme] = useState<ThemeConfig | null>(null);
   const intervalRef = useRef<number | null>(null);
 
-  const currentBanners =
-    width < 640 ? mobileBanners : width < 1200 ? tabletBanners : desktopBanners;
+  useEffect(() => {
+    const theme = getActiveTheme();
+    setActiveTheme(theme);
+
+    const checkThemeInterval = setInterval(
+      () => {
+        const newTheme = getActiveTheme();
+        if (newTheme.id !== theme.id) {
+          setActiveTheme(newTheme);
+        }
+      },
+      60 * 60 * 1000,
+    );
+
+    return () => clearInterval(checkThemeInterval);
+  }, []);
+
+  const currentBanners = activeTheme
+    ? getBannersForWidth(activeTheme, width)
+    : [];
 
   useEffect(() => {
     setCurrentIndex(0);
   }, [width]);
 
   useEffect(() => {
+    if (currentBanners.length === 0) return;
+
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
     }
@@ -86,7 +82,7 @@ export const PromoSlider: FC = () => {
     }, 5000);
   };
 
-  if (width === 0) {
+  if (width === 0 || !activeTheme) {
     return (
       <div className="relative w-full h-full overflow-hidden bg-black">
         <div className="w-full h-full bg-gray-900 animate-pulse" />
@@ -99,6 +95,7 @@ export const PromoSlider: FC = () => {
       className="relative w-full h-full overflow-hidden bg-black"
       style={{
         paddingTop: 'var(--header-height)',
+        backgroundColor: activeTheme.backgroundColor || '#000000',
       }}
     >
       {currentBanners.map((banner, i) => (

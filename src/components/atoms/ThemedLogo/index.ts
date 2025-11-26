@@ -1,0 +1,1 @@
+export { ThemedLogo } from './ThemedLogo';
