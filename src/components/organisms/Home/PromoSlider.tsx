@@ -2,105 +2,138 @@ import { type FC, useEffect, useRef, useState } from 'react';
 import { Image } from '@/components/atoms/Image';
 import { Icon } from '@/components/atoms/Icon';
 
-interface Banner {
-  src: string;
-  alt: string;
-}
+const mobileBanners = [
+  { src: '/books/img/banner/mobileBanner1.webp', alt: 'Banner Constitution' },
+  { src: '/books/img/banner/mobileBanner2.webp', alt: 'UA Authors' },
+  { src: '/books/img/banner/mobileBanner3.webp', alt: 'Best Sellers' },
+];
 
-const banners: Banner[] = [
+const tabletBanners = [
   { src: '/books/img/banner/bannerTablet1.webp', alt: 'Banner Constitution' },
   { src: '/books/img/banner/bannerTablet2.webp', alt: 'UA Authors' },
   { src: '/books/img/banner/bannerTablet3.webp', alt: 'Best Sellers' },
 ];
 
-type Click = 'left' | 'right';
+const desktopBanners = [
+  { src: '/books/img/banner/bannerTablet1.webp', alt: 'Banner Constitution' },
+  { src: '/books/img/banner/bannerTablet2.webp', alt: 'UA Authors' },
+  { src: '/books/img/banner/bannerTablet3.webp', alt: 'Best Sellers' },
+];
+
+// const desktopHolidayBanners = [
+//   { src: '/books/img/banner-holiday/christmas/christmas.svg', alt: 'Banner Christmas' },
+//   { src: '/books/img/banner-holiday/christmas/christmas (1).svg', alt: 'Banner BestSellers' },
+//   { src: '/books/img/banner-holiday/christmas/christmas (2).svg', alt: 'Banner Cooking' },
+// ];
+
+// const desktopHolidayBanners = [
+//   { src: '/books/img/banner-holiday/valentine/valentine.png', alt: 'Banner Christmas' },
+//   { src: '/books/img/banner-holiday/valentine/valentine (1).png', alt: 'Banner BestSellers' },
+//   { src: '/books/img/banner-holiday/valentine/valentine (2).png', alt: 'Banner Cooking' },
+// ];
+
+function useWindowWidth(): number {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    setWidth(window.innerWidth);
+
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return width;
+}
 
 export const PromoSlider: FC = () => {
-  const [bannerSelected, setBannerSelected] = useState<number>(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const width = useWindowWidth();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef<number | null>(null);
 
-  const handleClick = (clickType: Click) => {
-    setBannerSelected(prev => {
-      if (clickType === 'left')
-        return prev === 0 ? banners.length - 1 : prev - 1;
-      return prev === banners.length - 1 ? 0 : prev + 1;
-    });
-    startAutoSlide();
-  };
+  const currentBanners =
+    width < 640 ? mobileBanners : width < 1200 ? tabletBanners : desktopBanners;
 
-  const startAutoSlide = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setBannerSelected(prev => (prev + 1) % banners.length);
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [width]);
+
+  useEffect(() => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = window.setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % currentBanners.length);
+    }, 5000);
+
+    return () => {
+      if (intervalRef.current !== null) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [currentBanners.length]);
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+    }
+    intervalRef.current = window.setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % currentBanners.length);
     }, 5000);
   };
 
-  useEffect(() => {
-    startAutoSlide();
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
+  if (width === 0) {
+    return (
+      <div className="relative w-full h-full overflow-hidden bg-black">
+        <div className="w-full h-full bg-gray-900 animate-pulse" />
+      </div>
+    );
+  }
 
   return (
-    <main className="mt-16 flex flex-col items-center justify-center">
-      <div className="flex items-center justify-center gap-4 w-full">
-        <button
-          className="flex justify-center items-center rounded-2xl  cursor-pointer
-          hover:shadow-xl hover:bg-gray-200 transition-all duration-300 h-96 w-10
-          md:w-12
-          lg:w-14
-          max-md:hidden"
-          onClick={() => handleClick('left')}
+    <div
+      className="relative w-full h-full overflow-hidden bg-black"
+      style={{
+        paddingTop: 'var(--header-height)',
+      }}
+    >
+      {currentBanners.map((banner, i) => (
+        <div
+          key={banner.src}
+          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            i === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          }`}
         >
-          <Icon name="arrowLeft" />
-        </button>
-
-        <div className="relative w-full max-w-[1040px] h-96 rounded-3xl overflow-hidden bg-black transition duration-300">
-          {banners.map(banner => (
-            <div
-              key={banner.src}
-              className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-                banners.indexOf(banner) === bannerSelected
-                  ? 'opacity-100 z-10'
-                  : 'opacity-0 z-0'
-              }`}
-            >
-              <Image
-                src={banner.src}
-                alt={banner.alt}
-                className="absolute max-w-[1040px] object-cover
-                w-full h-full
-                "
-              />
-            </div>
-          ))}
-        </div>
-
-        <button
-          className="flex justify-center items-center rounded-2xl cursor-pointer h-96 w-10
-          hover:shadow-xl hover:bg-gray-200 transition-all duration-300
-          md:w-12
-          lg:w-14
-          max-md:hidden
-          "
-          onClick={() => handleClick('right')}
-        >
-          <Icon name="arrowRight" />
-        </button>
-      </div>
-
-      <div className="flex items-center justify-center gap-2 mt-4">
-        {banners.map((banner, i) => (
-          <Icon
-            key={banner.src}
-            name={
-              i === bannerSelected ? 'underlineActive' : 'underlineDisabled'
-            }
-            className="w-4 h-1 md:w-5 md:h-1.5"
+          <Image
+            src={banner.src}
+            alt={banner.alt}
+            className="w-full h-full object-cover object-top"
+            loading={i === 0 ? 'eager' : 'lazy'}
           />
+        </div>
+      ))}
+
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-20">
+        {currentBanners.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goToSlide(i)}
+            aria-label={`Slide ${i + 1}`}
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-full"
+          >
+            <Icon
+              name={
+                i === currentIndex ? 'underlineActive' : 'underlineDisabled'
+              }
+              className="w-6 h-2 md:w-8 md:h-2.5 transition-all duration-300 hover:opacity-80"
+            />
+          </button>
         ))}
       </div>
-    </main>
+    </div>
   );
 };
