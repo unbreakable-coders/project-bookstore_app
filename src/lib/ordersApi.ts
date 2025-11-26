@@ -1,58 +1,92 @@
 import { supabase } from '@/supabaseClient';
 
-export type OrderStatus =
-  | 'processing_payment' // картка, ще оплачується
-  | 'paid'               // картка, успішно оплачено
-  | 'awaiting_shipment'  // післяплата, чекає відправки
-  | 'cancelled';
+export type OrderStatus = 'pending' | 'paid' | 'awaiting_shipment' | 'cancelled';
 
 export type PaymentMethod = 'card' | 'cod';
 
-export interface OrderCartItem {
-  bookId: string;
+export type DeliveryService = 'novaPoshta' | 'ukrposhta';
+
+export type NovaPoshtaType = 'branch' | 'locker' | 'courier' | null;
+
+export interface OrderItem {
   title: string;
+  bookId: string;
   quantity: number;
-  price: number;
+  totalPriceUAH: number;
   image?: string;
 }
 
-export interface OrderDeliveryInfo {
-  service: 'novaPoshta' | 'ukrposhta';
-  type: 'branch' | 'locker' | 'courier';
-  city: string;
-  branch?: string;
-  address?: string; // для курʼєра
-}
-
-export interface OrderContactInfo {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-}
-
-export interface OrderItemsJson {
-  cart: OrderCartItem[];
-  delivery: OrderDeliveryInfo;
-  contact: OrderContactInfo;
-  paymentMethod: PaymentMethod;
-  comment?: string;
-}
-
-export interface CreateOrderPayload {
-  user_id: string;
-  total_price: number;
-  status: OrderStatus;
-  items: OrderItemsJson;
-}
-
-export interface OrderRecord extends CreateOrderPayload {
+export interface OrderRecord {
   id: number;
+  user_id: string | null;
+
+  status: OrderStatus;
+  payment_method: PaymentMethod;
+
   created_at: string;
   updated_at: string;
+
+  total_price: number;
+  subtotal_uah: number;
+  total_items: number;
+  discount_uah: number;
+  delivery_price_uah: number;
+
+  items: OrderItem[];
+
+  delivery_service: DeliveryService;
+
+  nova_poshta_type: NovaPoshtaType;
+  nova_poshta_city: string | null;
+  nova_poshta_branch: string | null;
+  nova_poshta_locker: string | null;
+  nova_poshta_address: string | null;
+
+  ukrposhta_city: string | null;
+  ukrposhta_branch: string | null;
+
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email: string;
+
+  comment: string | null;
 }
 
 export type Order = OrderRecord;
+
+export interface CreateOrderPayload {
+  user_id: string | null;
+
+  status: OrderStatus;
+  payment_method: PaymentMethod;
+
+  total_price: number;
+  subtotal_uah: number;
+  total_items: number;
+  discount_uah: number;
+  delivery_price_uah: number;
+
+  items: OrderItem[];
+
+  delivery_service: DeliveryService;
+
+  nova_poshta_type: NovaPoshtaType;
+  nova_poshta_city: string | null;
+  nova_poshta_branch: string | null;
+  nova_poshta_locker: string | null;
+  nova_poshta_address: string | null;
+
+  ukrposhta_city: string | null;
+  ukrposhta_branch: string | null;
+
+  first_name: string;
+  last_name: string;
+  phone: string;
+  email: string;
+
+  comment: string | null;
+}
 
 export const ordersApi = {
   async createOrder(payload: CreateOrderPayload): Promise<OrderRecord> {
@@ -63,7 +97,6 @@ export const ordersApi = {
       .single();
 
     if (error) {
-      console.error('[ordersApi.createOrder]', error);
       throw error;
     }
 
@@ -77,7 +110,6 @@ export const ordersApi = {
       .eq('id', id);
 
     if (error) {
-      console.error('[ordersApi.updateOrderStatus]', error);
       throw error;
     }
   },
@@ -90,7 +122,6 @@ export const ordersApi = {
       .maybeSingle();
 
     if (error) {
-      console.error('[ordersApi.getOrderById]', error);
       throw error;
     }
 
@@ -105,7 +136,6 @@ export const ordersApi = {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('[ordersApi.getByUser]', error);
       throw error;
     }
 
