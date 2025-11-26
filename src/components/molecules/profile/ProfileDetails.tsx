@@ -53,12 +53,7 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
         <div className="flex items-center justify-between">
           <CardTitle>{t('My profile')}</CardTitle>
 
-          <Button
-            className="bg-muted-foreground text-input"
-            variant="outline"
-            size="sm"
-            onClick={onLogout}
-          >
+          <Button className="bg-primary" onClick={onLogout}>
             {t('Log out')}
           </Button>
         </div>
@@ -77,9 +72,7 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
 
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">Email</p>
-                <p className="text-base font-semibold">
-                  {userEmail || '—'}
-                </p>
+                <p className="text-base font-semibold">{userEmail || '—'}</p>
               </div>
 
               <div className="space-y-2">

@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
 
 interface FormState {
   cardNumber: string;
@@ -103,11 +104,7 @@ export const MockStripeCheckout = () => {
     }
 
     const yearNum = Number(form.expiryYear);
-    if (
-      !form.expiryYear ||
-      Number.isNaN(yearNum) ||
-      yearNum < 25
-    ) {
+    if (!form.expiryYear || Number.isNaN(yearNum) || yearNum < 25) {
       nextErrors.expiryYear = t('Year must be 25 or greater');
     }
 
@@ -159,9 +156,7 @@ export const MockStripeCheckout = () => {
             <p className="text-[11px] uppercase tracking-widest text-accent">
               {t('Amount to pay')}
             </p>
-            <p className="text-lg font-bold text-primary">
-              {amount} ₴
-            </p>
+            <p className="text-lg font-bold text-primary">{amount} ₴</p>
           </div>
         </div>
 
@@ -170,8 +165,8 @@ export const MockStripeCheckout = () => {
             <label className="block text-sm font-medium text-secondary">
               {t('Card number')}
             </label>
-            <input
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            <Input
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
               value={form.cardNumber}
               onChange={e => handleCardNumberChange(e.target.value)}
               placeholder="4242-4242-4242-4242"
@@ -186,11 +181,11 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 {t('Expiry month')}
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.expiryMonth}
                 onChange={e => handleMonthChange(e.target.value)}
-                placeholder="MM"
+                placeholder={t('MM')}
               />
               {errors.expiryMonth && (
                 <p className="text-xs text-red-500">{errors.expiryMonth}</p>
@@ -201,11 +196,11 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 {t('Expiry year')}
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.expiryYear}
                 onChange={e => handleYearChange(e.target.value)}
-                placeholder="YY"
+                placeholder={t('YY')}
               />
               {errors.expiryYear && (
                 <p className="text-xs text-red-500">{errors.expiryYear}</p>
@@ -216,8 +211,8 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 CVV
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.cvv}
                 onChange={e => handleCvvChange(e.target.value)}
                 placeholder="***"
@@ -232,11 +227,11 @@ export const MockStripeCheckout = () => {
             <label className="block text-sm font-medium text-secondary">
               {t('Cardholder name')}
             </label>
-            <input
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            <Input
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
               value={form.cardholderName}
               onChange={e => setField('cardholderName', e.target.value)}
-              placeholder="John Doe"
+              placeholder={t('John Doe')}
             />
             {errors.cardholderName && (
               <p className="text-xs text-red-500">{errors.cardholderName}</p>
@@ -248,8 +243,8 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 {t('Email')}
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.email}
                 onChange={e => setField('email', e.target.value)}
               />
@@ -262,8 +257,8 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 {t('Phone')}
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.phone}
                 onChange={e => setField('phone', e.target.value)}
               />
@@ -275,8 +270,8 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 {t('Country')}
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.country}
                 onChange={e => setField('country', e.target.value)}
               />
@@ -286,8 +281,8 @@ export const MockStripeCheckout = () => {
               <label className="block text-sm font-medium text-secondary">
                 {t('Address')}
               </label>
-              <input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              <Input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
                 value={form.address}
                 onChange={e => setField('address', e.target.value)}
               />
@@ -302,9 +297,7 @@ export const MockStripeCheckout = () => {
             <p className="text-xs text-accent">
               {t('This is a demo payment form. No real charge will be made.')}
             </p>
-            <Button type="submit">
-              {t('Pay')}
-            </Button>
+            <Button type="submit">{t('Pay')}</Button>
           </div>
         </form>
       </div>
