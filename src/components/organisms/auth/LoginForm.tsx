@@ -2,6 +2,7 @@ import type { FC, MouseEvent, KeyboardEvent } from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
@@ -63,7 +64,11 @@ export const LoginForm: FC<LoginFormProps> = ({
             isAuthenticated ? undefined : e => handleEmailChange(e.target.value)
           }
           disabled={loading || isAuthenticated}
-          className={isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''}
+          className={
+            isAuthenticated
+              ? 'opacity-60 cursor-not-allowed'
+              : 'w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1'
+          }
         />
       </div>
 
@@ -85,7 +90,11 @@ export const LoginForm: FC<LoginFormProps> = ({
               : e => handlePasswordChange(e.target.value)
           }
           disabled={loading || isAuthenticated}
-          className={isAuthenticated ? 'opacity-60 cursor-not-allowed' : ''}
+          className={
+            isAuthenticated
+              ? 'opacity-60 cursor-not-allowed'
+              : 'w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1'
+          }
           onKeyDown={e => {
             if (e.key === 'Enter' && canSubmit) {
               onSubmit(e);
@@ -106,7 +115,7 @@ export const LoginForm: FC<LoginFormProps> = ({
       )}
 
       <Button onClick={onSubmit} disabled={loading} className="w-full">
-        {isAuthenticated ? t('Logout') : loading ? t('Loading...') : t('Login')}
+        {isAuthenticated ? t('Logout') : loading ? <Loader /> : t('Login')}
       </Button>
     </div>
   );

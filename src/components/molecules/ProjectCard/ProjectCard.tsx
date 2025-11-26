@@ -22,7 +22,7 @@ export const ProjectCard = ({
         </div>
 
         <div className="flex-1 space-y-4">
-          <h4 className="font-semibold text-[20px] leading-[26px] md:text-[22px] md:leading-[31px] text-foreground">
+          <h4 className="font-semibold text-[20px] leading-[26px] md:text-[22px] md:leading-[31px] text-accent">
             {title}
           </h4>
 

@@ -1,15 +1,11 @@
-import type { FC } from 'react';
+import type { FC, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/atoms/Form/Input';
+import type { CheckoutFormData } from '@/components/organisms/CheckoutForm/CheckoutForm';
 
 interface ContactDetailsProps {
-  formData: {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-  };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: CheckoutFormData;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const ContactDetails: FC<ContactDetailsProps> = ({
@@ -19,11 +15,13 @@ export const ContactDetails: FC<ContactDetailsProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
-      <h2 className="mb-4 text-xl font-semibold">{t('Contact details')}</h2>
+    <div className="rounded-lg text-secondary border border-border bg-card p-6">
+      <h2 className="mb-4 text-xl text-secondary font-semibold">
+        {t('Contact details')}
+      </h2>
 
       <div className="space-y-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 text-secondary gap-4 md:grid-cols-2">
           <Input
             label={t('Name *')}
             name="firstName"

@@ -23,7 +23,7 @@ export const DropdownPages: FC<DropdownPagesProps> = ({
       className={[
         'h-10',
         fullWidth ? 'w-full' : 'w-32',
-        'flex items-center justify-between',
+        'flex items-center justify-between cursor-pointer',
         'rounded-md border bg-card',
         'border-border hover:border-[#C5C5C5]',
         'focus:border-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-black/5',

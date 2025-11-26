@@ -17,12 +17,12 @@ export const Input: FC<InputProps> = ({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-secondary mb-2">
+        <label className="block text-sm font-medium text-muted mb-2">
           {t(label)}
         </label>
       )}
       <input
-        className={`w-full rounded-lg border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary ${className} ${
+        className={`w-full text-primary rounded-lg border border-border bg-background px-4 py-3 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary ${className} ${
           error ? 'border-red-500' : ''
         }`}
         {...props}

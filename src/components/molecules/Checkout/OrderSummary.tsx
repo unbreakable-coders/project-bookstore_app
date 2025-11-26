@@ -16,8 +16,11 @@ interface OrderSummaryProps {
   itemsTotalUAH: number;
   deliveryPrice: number;
   totalWithDelivery: number;
-  onSubmit: () => void;
   getItemTotalUAH: (item: CartItem) => number;
+
+  onSubmit: () => void;
+  isCardPaymentSelected: boolean;
+  onCardPayment: () => void;
 }
 
 export const OrderSummary: FC<OrderSummaryProps> = ({
@@ -28,25 +31,39 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
   totalWithDelivery,
   onSubmit,
   getItemTotalUAH,
+  isCardPaymentSelected,
+  onCardPayment,
 }) => {
   const { t } = useTranslation();
+
+  const handleClick = () => {
+    if (isCardPaymentSelected) {
+      onCardPayment();
+    } else {
+      onSubmit();
+    }
+  };
 
   return (
     <div className="sticky top-8 space-y-4">
       <div className="rounded-lg border border-border bg-card p-6">
-        <h3 className="mb-4 text-lg font-semibold">{t('Total')}</h3>
+        <h3 className="mb-4 text-secondary text-lg font-semibold">
+          {t('Total')}
+        </h3>
 
         <div className="mb-6 space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-secondary">
+            <span className="text-accent">
               {t('{{count}} articles for the amount', { count: totalItems })}
             </span>
-            <span className="font-medium">{itemsTotalUAH} ₴</span>
+            <span className="font-medium text-secondary">
+              {itemsTotalUAH} ₴
+            </span>
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="text-secondary">{t('Shipping cost')}</span>
-            <span className="font-medium">
+            <span className="text-accent">{t('Shipping cost')}</span>
+            <span className="font-medium text-secondary">
               {deliveryPrice === 0
                 ? t("at the carrier's rates")
                 : `${deliveryPrice} ₴`}
@@ -55,23 +72,27 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 
           <div className="pt-3 border-t border-border">
             <div className="flex justify-between items-center pt-3">
-              <span className="font-semibold">{t('Due')}</span>
-              <span className="text-2xl font-bold">{totalWithDelivery} ₴</span>
+              <span className="font-semibold text-accent">{t('Due')}</span>
+              <span className="text-2xl font-bold text-primary">
+                {totalWithDelivery} ₴
+              </span>
             </div>
           </div>
         </div>
 
         <Button
-          onClick={onSubmit}
+          onClick={handleClick}
           size="lg"
-          className="w-full rounded-lg bg-primary py-4 font-bold text-white transition-colors hover:bg-primary/90"
+          className="w-full cursor-pointer rounded-lg bg-primary py-4 font-bold text-white transition-colors hover:bg-primary/90"
         >
-          {t('I confirm the order')}
+          {isCardPaymentSelected ? t('Pay by card') : t('I confirm the order')}
         </Button>
       </div>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <h4 className="mb-3 font-semibold">{t('In your order')}</h4>
+        <h4 className="mb-3 font-semibold text-secondary">
+          {t('In your order')}
+        </h4>
 
         <div className="max-h-64 space-y-3 overflow-y-auto">
           {cartItems.map(item => (

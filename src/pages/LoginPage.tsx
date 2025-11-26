@@ -17,6 +17,7 @@ import {
   RegisterForm,
   type RegisterFormValues,
 } from '@/components/organisms/auth/RegisterForm';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 export const LoginPage = () => {
   const { t } = useTranslation();
@@ -186,6 +187,14 @@ export const LoginPage = () => {
     (currentUser?.user_metadata as { full_name?: string } | undefined)
       ?.full_name || '';
   const displayName = fullName || currentUser?.email || '';
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">

@@ -10,6 +10,12 @@ import { useWishlist } from '@/context/WishlistContext';
 
 type LanguageCode = 'uk' | 'en' | string;
 
+const BOOK_TYPE_LABELS: Record<string, string> = {
+  paperback: 'PAPER BOOKS',
+  kindle: 'KINDLE EDITION',
+  audiobook: 'AUDIOBOOKS',
+};
+
 export const BookDetailsPage = () => {
   const { namespaceId } = useParams<{ namespaceId: string }>();
   const { t, i18n } = useTranslation();
@@ -39,7 +45,7 @@ export const BookDetailsPage = () => {
         setLoading(true);
 
         const data = await fetchBookProduct(namespaceId, lang);
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 5500));
 
         if (!data) {
           setProduct(null);
@@ -148,9 +154,35 @@ export const BookDetailsPage = () => {
     },
   ];
 
+  const createCategorySlug = (category: string): string => {
+    return category
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^\w]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
+
+  const getCatalogType = (bookType: string): string => {
+    const typeMap: Record<string, string> = {
+      paperback: 'paper',
+      kindle: 'kindle',
+      audiobook: 'audiobook',
+    };
+    return typeMap[bookType] || 'paper';
+  };
+
+  const catalogType = getCatalogType(product.type);
+  const categorySlug = createCategorySlug(product.category[0] || 'books');
+
   const breadcrumbs = [
-    { label: t('Paper books'), href: '/books' },
-    { label: t('Tech/business'), href: '/books/tech-business' },
+    {
+      label: t(BOOK_TYPE_LABELS[product.type] || 'BOOKS'),
+      href: `/catalog/${catalogType}`,
+    },
+    {
+      label: t(product.category[0] || 'BOOKS').toUpperCase(),
+      href: `/catalog/${catalogType}?category=${categorySlug}&page=1`,
+    },
   ];
 
   const templateData = {
@@ -180,7 +212,7 @@ export const BookDetailsPage = () => {
   };
 
   return (
-    <div>
+    <div className="mt-10">
       <BookDetailsTemplate {...templateData} />
     </div>
   );

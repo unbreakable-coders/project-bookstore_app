@@ -37,11 +37,8 @@ export const seedBooksFromLocal = async () => {
     .select('id');
 
   if (error) {
-    // Більш детальний лог у консоль
-    // eslint-disable-next-line no-console
     console.error('[Supabase] seedBooksFromLocal error:', error);
 
-    // Кидаємо помилку як JSON, щоб побачити всі поля на DevPreviewPage
     throw new Error(
       JSON.stringify(
         {

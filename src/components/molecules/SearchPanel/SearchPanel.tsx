@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
 import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 interface SearchPanelProps {
   open: boolean;
@@ -106,7 +107,9 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
 
           <div className="mt-3 max-h-80 overflow-auto">
             {loading && (
-              <p className="px-1 text-sm text-[#8F8F8F]">{t('Loading...')}</p>
+              <div className="flex h-screen items-center justify-center text-xl">
+                <Loader />
+              </div>
             )}
 
             {!loading &&

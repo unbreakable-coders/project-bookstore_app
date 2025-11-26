@@ -2,6 +2,7 @@ import type { FC, MouseEvent, KeyboardEvent } from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
@@ -54,6 +55,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
         </label>
         <Input
           id="register-name"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
           type="text"
           placeholder={t('John Doe')}
           value={values.name}
@@ -71,6 +73,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
         </label>
         <Input
           id="register-email"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
           type="email"
           placeholder="name@example.com"
           value={values.email}
@@ -88,6 +91,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
         </label>
         <Input
           id="register-password"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
           type="password"
           placeholder={t('Minimum 6 characters')}
           value={values.password}
@@ -123,7 +127,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
         disabled={loading || isAuthenticated}
         className="w-full"
       >
-        {loading ? t('Loading...') : t('Register')}
+        {loading ? <Loader /> : t('Register')}
       </Button>
     </div>
   );

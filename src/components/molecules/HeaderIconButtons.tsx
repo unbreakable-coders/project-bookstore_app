@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, Ref } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Icon } from '@/components/atoms/Icon';
@@ -17,8 +17,8 @@ interface HeaderIconButtonsProps {
   isLoggedIn: boolean;
   onOpenSearch: () => void;
   iconButtonClass: string;
-  headerHeartRef: any;
-  headerCartRef: any;
+  headerHeartRef: Ref<HTMLAnchorElement>;
+  headerCartRef: Ref<HTMLAnchorElement>;
 }
 
 export const HeaderIconButtons: FC<HeaderIconButtonsProps> = ({
@@ -46,7 +46,7 @@ export const HeaderIconButtons: FC<HeaderIconButtonsProps> = ({
           to="/wishlist"
           aria-label="Open wishlist"
           className={`${iconButtonClass} relative`}
-          ref={headerHeartRef as any}
+          ref={headerHeartRef}
         >
           <Icon
             name={wishlistCount > 0 ? 'heartRed' : 'heart'}
@@ -76,7 +76,7 @@ export const HeaderIconButtons: FC<HeaderIconButtonsProps> = ({
           to="/cart"
           aria-label="Open cart"
           className={`${iconButtonClass} relative`}
-          ref={headerCartRef as any}
+          ref={headerCartRef}
         >
           <Icon name="cart" className="h-4 w-4" />
           {badgeCount > 0 && (
@@ -119,12 +119,12 @@ export const HeaderIconButtons: FC<HeaderIconButtonsProps> = ({
 
   return (
     <>
-      <div className="hidden items-center gap-2 md:flex lg:hidden">
+      <div className="hidden items-center gap-2 md:flex lg:hidden text-foreground">
         {HEADER_ICONS_MD.map(renderHeaderIcon)}
         <HeaderActionsDropdown isLoggedIn={isLoggedIn} />
       </div>
 
-      <div className="hidden items-center gap-2 lg:flex">
+      <div className="hidden items-center gap-2 lg:flex text-muted-foreground">
         {HEADER_ICONS_LG.map(renderHeaderIcon)}
         <HeaderActionsDropdown isLoggedIn={isLoggedIn} />
       </div>

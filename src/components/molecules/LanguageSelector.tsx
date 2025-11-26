@@ -21,7 +21,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   return (
     <div className="border-b border-border py-8">
-      <h5 className="font-bold text-secondary mb-2">{t('Select language')}</h5>
+      <h5 className="font-bold text-accent mb-2">{t('Select language')}</h5>
 
       <div className="flex gap-2">
         {languages.includes('uk') && (

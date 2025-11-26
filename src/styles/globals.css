@@ -89,8 +89,8 @@
 
   --card: #ffffff; /* White */
   --primary: #421a0a; /* Primary */
-  --secondary: #74787b; /* Secondary */
-  --accent: #b4bdc3; /* Icons */
+  --secondary: #5b5e60; /* Secondary */
+  --accent: #5a5b5d; /* Icons */
 
   --muted: #b5b9bc; /* Elements */
   --muted-foreground: #89939a;
@@ -128,8 +128,8 @@
   --foreground: #f4e4c0;
 
   --card: #e8dfd0;
-  --primary: #65320e;
-  --secondary: #b7613f;
+  --primary: #542a0d;
+  --secondary: #9f6b37;
   --accent: #c19a6b;
 
   --muted: #beaba4;

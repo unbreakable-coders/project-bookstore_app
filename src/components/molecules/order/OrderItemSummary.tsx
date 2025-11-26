@@ -17,17 +17,13 @@ export const OrderItemSummary: FC<OrderItemSummaryProps> = ({
 }) => {
   return (
     <div className="flex gap-3">
-      <img
-        src={image}
-        alt={title}
-        className="h-16 w-12 rounded object-cover"
-      />
+      <img src={image} alt={title} className="h-16 w-12 rounded object-cover" />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{title}</p>
-        <p className="text-xs text-secondary">{author}</p>
+        <p className="truncate text-sm font-medium text-secondary">{title}</p>
+        <p className="text-xs text-accent">{author}</p>
         <div className="mt-1 flex items-center justify-between">
-          <span className="text-xs text-secondary">{quantity}</span>
-          <span className="text-sm font-semibold">
+          <span className="text-xs text-accent">{quantity}</span>
+          <span className="text-sm font-semibold text-primary pr-2">
             {totalPriceUAH} ₴
           </span>
         </div>

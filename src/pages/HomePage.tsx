@@ -10,11 +10,15 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
+import { BlurFadeWrapper } from '@/components/organisms/Home/BlurFadeWrapper.tsx';
+import introVideo from '@/assets/intro.mp4';
+import { Video } from '@/components/atoms/Video';
 
 export const HomePage = () => {
   const { t } = useTranslation();
   const [scrollY, setScrollY] = useState(0);
 
+  const [isIntro, setIsIntro] = useState<boolean>(true);
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
   const [countTypeOfBooks, setCountTypeOfBooks] = useState<TypeBooks>({
@@ -65,6 +69,13 @@ export const HomePage = () => {
   }, []);
 
   useEffect(() => {
+        localStorage.setItem('introBlurDone', 'true');
+    const timer = setTimeout(() => setIsIntro(false), 3090);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+  
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
@@ -74,8 +85,17 @@ export const HomePage = () => {
 
   const overlayOpacity = Math.min(scrollY / 400, 1);
 
+
+  if (isIntro) {
+    return (
+      <div className="fixed top-0 z-[9999]">
+        <Video src={introVideo} />
+      </div>
+    );
+        
+        
   return (
-    <>
+    <BlurFadeWrapper>
       {/* Фіксований банер на весь екран */}
       <div className="fixed top-0 left-0 w-full h-screen -z-10">
         <PromoSlider />
@@ -117,6 +137,6 @@ export const HomePage = () => {
           />
         </div>
       </main>
-    </>
+    </BlurFadeWrapper>
   );
 };

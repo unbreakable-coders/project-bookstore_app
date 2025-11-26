@@ -276,9 +276,16 @@ export const CatalogPage = () => {
           {filteredBooks.length === 0 ? (
             <NoResult />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-y-10 justify-items-center gap-6">
-              {currentBooks.map(book => (
-                <div key={book.id} className="w-full max-w-[272px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10">
+              {currentBooks.map((book, index) => (
+                <div
+                  key={book.id}
+                  className={`w-full max-w-[272px] ${
+                    index % 2 === 0
+                      ? 'md:justify-self-end md:mr-5'
+                      : 'md:justify-self-start md:ml-5'
+                  } ${'justify-self-center lg:mr-0 lg:ml-0 lg:justify-self-center'}`}
+                >
                   <BookCard
                     book={book}
                     onAddToCart={() => toggleCart(book.id)}

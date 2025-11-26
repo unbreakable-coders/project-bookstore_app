@@ -34,18 +34,19 @@ interface BookDetailsTemplateProps {
 }
 
 const BOOK_TYPE_LABELS: Record<string, string> = {
-  paperback: 'PAPER BOOKS',
-  kindle: 'KINDLE EDITION',
+  paperback: 'PAPER_BOOKS',
+  kindle: 'KINDLE_EDITION',
   audiobook: 'AUDIOBOOKS',
 };
 
 const getCatalogType = (bookType: string): string => {
-  const typeMap: Record<string, string> = {
-    paperback: 'paperback',
+  const map: Record<string, string> = {
+    paperback: 'paper',
     kindle: 'kindle',
     audiobook: 'audiobook',
   };
-  return typeMap[bookType] || 'paperback';
+
+  return map[bookType] || 'paper';
 };
 
 export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
@@ -62,11 +63,9 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const bookType = book?.type || 'paperback';
-  const bookCategory = book?.category || 'books';
-  const catalogType = getCatalogType(bookType);
+  const catalogType = getCatalogType(book.type);
 
-  const createCategorySlug = (category: string): string => {
+  const categorySlug = (category: string): string => {
     return category
       .toLowerCase()
       .replace(/&/g, 'and')
@@ -74,21 +73,23 @@ export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
       .replace(/(^-|-$)/g, '');
   };
 
-  const categorySlug = createCategorySlug(bookCategory);
-
   const defaultBreadcrumbs = [
     {
       label: t(BOOK_TYPE_LABELS[book.type] || 'BOOKS'),
-      href: `/catalog/${catalogType}`,
+      href: `/catalog/${catalogType}?page=1`,
     },
     {
       label: t(book.category).toUpperCase(),
-      href: `/catalog/${catalogType}?category=${categorySlug}&page=1`,
+      href: `/catalog/${catalogType}?category=${categorySlug(book.category)}&page=1`,
     },
   ];
 
   const breadcrumbItems = breadcrumbs.length ? breadcrumbs : defaultBreadcrumbs;
-
+  console.log('Book type:', book.type);
+  console.log('Book category:', book.category);
+  console.log('Catalog type:', catalogType);
+  console.log('Category slug:', categorySlug);
+  console.log('Breadcrumbs:', defaultBreadcrumbs);
   return (
     <div className="container pt-6">
       <BreadcrumbNav items={breadcrumbItems} currentTitle={book.title} />

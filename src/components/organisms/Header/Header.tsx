@@ -18,7 +18,6 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useMoveBookToCart } from '@/components/MoveBookToCart';
-import { HeaderDiscountBar } from '@/components/molecules/HeaderDiscountBar';
 import { HeaderIconButtons } from '@/components/molecules/HeaderIconButtons';
 import { HeaderDesktopSearch } from '@/components/molecules/HeaderDesktopSearch';
 import { HeaderMobileMenu } from '@/components/molecules/HeaderMobileMenu';
@@ -27,7 +26,7 @@ import type { DropdownOption } from '@/components/atoms/DropdownCategories';
 type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
 
 export const ICON_BUTTON_CLASS =
-  'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
+  'flex h-9 w-9 items-center t justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
 
 export const Header = () => {
   const { t } = useTranslation();
@@ -234,7 +233,7 @@ export const Header = () => {
                 </div>
               </Link>
 
-              <nav className="hidden w-[360px] items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
+              <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
                 {navItems.map(item => {
                   const active = isNavItemActive(item.to);
 
@@ -311,8 +310,6 @@ export const Header = () => {
         headerCartRef={headerCartRef}
         onClose={closeMobile}
       />
-
-      <HeaderDiscountBar />
 
       {!isCatalogPage && (
         <SearchPanel open={isSearchOpen} onOpenChange={setIsSearchOpen} />

@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
+import { useTranslation } from 'react-i18next';
 
 export const WelcomeDiscountModal = () => {
+  const { t } = useTranslation();
+
   const { user, initializing } = useAuth();
   const { hasActiveWelcomeDiscount, remainingMs } = useWelcomeDiscount();
 
@@ -38,7 +41,13 @@ export const WelcomeDiscountModal = () => {
     } else {
       setShowTimerModal(false);
     }
-  }, [user, initializing, hasActiveWelcomeDiscount, remainingMs, timerDismissed]);
+  }, [
+    user,
+    initializing,
+    hasActiveWelcomeDiscount,
+    remainingMs,
+    timerDismissed,
+  ]);
 
   useEffect(() => {
     if (!hasActiveWelcomeDiscount || remainingMs <= 0) {
@@ -86,16 +95,18 @@ export const WelcomeDiscountModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="mx-4 w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
+      <div className="mx-4 w-full max-w-lg rounded-2xl bg-card p-8 shadow-2xl">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">
-            {isTimerMode ? 'Ваша знижка активна' : 'Вітаємо в нашому магазині'}
+          <h2 className="text-xl text-accent font-semibold">
+            {isTimerMode
+              ? t('Your discount is active')
+              : t('Welcome to our store')}
           </h2>
 
           <button
             type="button"
             onClick={isTimerMode ? handleCloseTimer : handleCloseGuest}
-            className="text-xl text-gray-400 transition hover:text-gray-600"
+            className="text-xl w-5 h-5 cursor-pointer text-gray-400 transition hover:text-gray-600"
           >
             ×
           </button>
@@ -104,11 +115,13 @@ export const WelcomeDiscountModal = () => {
         {isTimerMode ? (
           <>
             <p className="mb-6 text-sm text-gray-700">
-              Ви отримали 10% знижки на покупки. Встигніть скористатися нею, поки триває час.
+              {t(
+                'You received 10% discount on purchases. Hurry up to use it while time is running.',
+              )}
             </p>
 
             <div className="mb-8 flex items-center justify-center">
-              <div className="rounded-xl bg-black px-8 py-4 text-3xl font-mono font-semibold text-white">
+              <div className="rounded-xl bg-primary px-8 py-4 text-3xl font-mono font-semibold text-white">
                 {timeString}
               </div>
             </div>
@@ -116,15 +129,17 @@ export const WelcomeDiscountModal = () => {
             <button
               type="button"
               onClick={handleGoToCatalog}
-              className="flex w-full items-center justify-center rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+              className="flex w-full cursor-pointer items-center justify-center rounded-lg bg-primary px-4 py-3 text-sm font-medium text-white transition hover:bg-[#230c02]"
             >
-              До каталогу
+              {t('To catalog')}
             </button>
           </>
         ) : (
           <>
             <p className="mb-6 text-sm text-gray-700">
-              Зареєструйся зараз та отримай 10% знижки на покупки протягом 24 годин.
+              {t(
+                'Register now and get 10% discount on purchases for 24 hours.',
+              )}
             </p>
 
             <div className="flex gap-3">
@@ -133,7 +148,7 @@ export const WelcomeDiscountModal = () => {
                 onClick={handleGoToRegister}
                 className="flex-1 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
               >
-                Отримати 10% знижки
+                {t('Get 10% discount')}
               </button>
 
               <button
@@ -141,7 +156,7 @@ export const WelcomeDiscountModal = () => {
                 onClick={handleCloseGuest}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
-                Можливо пізніше
+                {t('Maybe later')}
               </button>
             </div>
           </>
