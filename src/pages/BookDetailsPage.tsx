@@ -212,7 +212,7 @@ export const BookDetailsPage = () => {
   };
 
   return (
-    <div>
+    <div className="mt-10">
       <BookDetailsTemplate {...templateData} />
     </div>
   );

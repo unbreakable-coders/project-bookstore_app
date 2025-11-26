@@ -21,12 +21,16 @@ export const useOrders = () => {
       }
 
       const data = await ordersApi.getByUser(user.id);
+
       setOrders(data);
+
       return { data, error: null };
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Помилка завантаження замовлень';
+
       setError(errorMessage);
+
       return { data: null, error: errorMessage };
     } finally {
       setLoading(false);
@@ -34,8 +38,13 @@ export const useOrders = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
+    void fetchOrders();
   }, []);
 
-  return { orders, loading, error, fetchOrders };
+  return {
+    orders,
+    loading,
+    error,
+    fetchOrders,
+  };
 };

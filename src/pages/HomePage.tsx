@@ -10,10 +10,14 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
+import { BlurFadeWrapper } from '@/components/organisms/Home/BlurFadeWrapper.tsx';
+import introVideo from '@/assets/intro.mp4';
+import { Video } from '@/components/atoms/Video';
 
 export const HomePage = () => {
   const { t } = useTranslation();
 
+  const [isIntro, setIsIntro] = useState<boolean>(true);
   const [newBooks, setNewBooks] = useState<Book[]>([]);
   const [booksMightLike, setBooksMightLike] = useState<Book[]>([]);
   const [countTypeOfBooks, setCountTypeOfBooks] = useState<TypeBooks>({
@@ -63,31 +67,49 @@ export const HomePage = () => {
     void loadBooks();
   }, []);
 
-  return (
-    <main className="w-full flex justify-center container">
-      <div className="w-full max-w-[1136px] px-4 flex flex-col">
-        <PromoSlider />
+  useEffect(() => {
+    localStorage.setItem('introBlurDone', 'true');
+    const timer = setTimeout(() => setIsIntro(false), 3090);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
-        <ProductCardsBlock
-          title={t('New books')}
-          listOfBooks={newBooks}
-          onAddToCart={toggleCart}
-          onToggleWishlist={toggleWishlist}
-          isInCart={isInCart}
-          isInWishlist={isInWishlist}
-        />
-
-        <Categories typeBooks={countTypeOfBooks} />
-
-        <ProductCardsBlock
-          title={t('Also you might like it!')}
-          listOfBooks={booksMightLike}
-          onAddToCart={toggleCart}
-          onToggleWishlist={toggleWishlist}
-          isInCart={isInCart}
-          isInWishlist={isInWishlist}
-        />
+  if (isIntro) {
+    return (
+      <div className="fixed top-0 z-[9999]">
+        <Video src={introVideo} />
       </div>
-    </main>
+    );
+  }
+
+  return (
+    <BlurFadeWrapper>
+      <main className="w-full flex justify-center container">
+        <div className="w-full max-w-[1136px] px-4 flex flex-col">
+          <PromoSlider />
+
+          <ProductCardsBlock
+            title={t('New books')}
+            listOfBooks={newBooks}
+            onAddToCart={toggleCart}
+            onToggleWishlist={toggleWishlist}
+            isInCart={isInCart}
+            isInWishlist={isInWishlist}
+          />
+
+          <Categories typeBooks={countTypeOfBooks} />
+
+          <ProductCardsBlock
+            title={t('Also you might like it!')}
+            listOfBooks={booksMightLike}
+            onAddToCart={toggleCart}
+            onToggleWishlist={toggleWishlist}
+            isInCart={isInCart}
+            isInWishlist={isInWishlist}
+          />
+        </div>
+      </main>
+    </BlurFadeWrapper>
   );
 };

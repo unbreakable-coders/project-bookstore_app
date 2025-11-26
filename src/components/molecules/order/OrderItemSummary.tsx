@@ -23,7 +23,7 @@ export const OrderItemSummary: FC<OrderItemSummaryProps> = ({
         <p className="text-xs text-accent">{author}</p>
         <div className="mt-1 flex items-center justify-between">
           <span className="text-xs text-accent">{quantity}</span>
-          <span className="text-sm font-semibold text-secondary pr-2">
+          <span className="text-sm font-semibold text-primary pr-2">
             {totalPriceUAH} ₴
           </span>
         </div>

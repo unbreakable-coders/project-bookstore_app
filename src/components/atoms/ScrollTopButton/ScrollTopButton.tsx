@@ -1,46 +1,63 @@
-import { useEffect, useState } from 'react';
-import { Icon } from '../Icon';
+import React, { useState, useEffect } from 'react';
+import './ScrollTopButton.css';
 
 export const ScrollTopButton = () => {
-  const [show, setShow] = useState(false);
-
-  const scrollToTop = () => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (typeof window === 'undefined') return;
-      setShow(window.scrollY > 80);
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
-  if (!show) return null;
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-40 pointer-events-none">
-      <div className="mx-auto max-w-6xl px-4 flex justify-end">
-        <button
-          type="button"
-          onClick={scrollToTop}
-          aria-label="Back to top"
-          className="pointer-events-auto flex h-14 w-14 flex-col items-center justify-center 
-          rounded-full bg-[#8B4513]/70 text-white shadow-lg hover:bg-[#8B4513]/90 
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8B4513] transition-colors"
-        >
-          <Icon name="arrowUp" className="h-4 w-4" />
-          <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.14em]">
-            Back to top
-          </span>
-        </button>
+    <button
+      onClick={scrollToTop}
+      className="stack-button"
+      aria-label="Back to top"
+    >
+      <div className="book-stack">
+        <div className="book book-1">
+          <div className="book-spine"></div>
+        </div>
+
+        <div className="book book-2">
+          <div className="book-spine"></div>
+        </div>
+
+        <div className="book book-3">
+          <div className="book-spine"></div>
+          <div className="book-content">
+            <svg
+              className="arrow-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
+              <path d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </div>
+        </div>
       </div>
-    </div>
+    </button>
   );
 };

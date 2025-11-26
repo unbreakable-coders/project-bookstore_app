@@ -2,6 +2,7 @@ import type { FC, MouseEvent, KeyboardEvent } from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 type SubmitEvent =
   | MouseEvent<HTMLButtonElement>
@@ -123,7 +124,7 @@ export const RegisterForm: FC<RegisterFormProps> = ({
         disabled={loading || isAuthenticated}
         className="w-full"
       >
-        {loading ? t('Loading...') : t('Register')}
+        {loading ? <Loader /> : t('Register')}
       </Button>
     </div>
   );

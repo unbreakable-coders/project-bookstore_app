@@ -37,14 +37,13 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <MoveHeartProvider>
-              <MoveBookToCartProvider>
-                <WelcomeDiscountProvider>
-                  <ScrollToTop />
-
-                  <WelcomeDiscountModal />
+      <CartProvider>
+        <WishlistProvider>
+          <MoveHeartProvider>
+            <MoveBookToCartProvider>
+              <WelcomeDiscountProvider>
+                <ScrollToTop />
+                <WelcomeDiscountModal />
 
                   <Routes>
                     <Route path="/" element={<AppLayout />}>

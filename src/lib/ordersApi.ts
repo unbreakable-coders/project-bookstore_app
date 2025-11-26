@@ -1,118 +1,114 @@
-import { supabase } from './supabaseClient';
+import { supabase } from '@/supabaseClient';
 
-export interface OrderItem {
-  id: string;
-  book_id: string;
-  book_title: string;
-  book_cover_url: string | null;
-  book_author: string | null;
+export type OrderStatus =
+  | 'processing_payment' // картка, ще оплачується
+  | 'paid'               // картка, успішно оплачено
+  | 'awaiting_shipment'  // післяплата, чекає відправки
+  | 'cancelled';
+
+export type PaymentMethod = 'card' | 'cod';
+
+export interface OrderCartItem {
+  bookId: string;
+  title: string;
   quantity: number;
   price: number;
+  image?: string;
 }
 
-export interface Order {
-  id: string;
+export interface OrderDeliveryInfo {
+  service: 'novaPoshta' | 'ukrposhta';
+  type: 'branch' | 'locker' | 'courier';
+  city: string;
+  branch?: string;
+  address?: string; // для курʼєра
+}
+
+export interface OrderContactInfo {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+}
+
+export interface OrderItemsJson {
+  cart: OrderCartItem[];
+  delivery: OrderDeliveryInfo;
+  contact: OrderContactInfo;
+  paymentMethod: PaymentMethod;
+  comment?: string;
+}
+
+export interface CreateOrderPayload {
   user_id: string;
-  status: string;
-  total_amount: number;
-  delivery_address: string | null;
-  payment_method: string | null;
+  total_price: number;
+  status: OrderStatus;
+  items: OrderItemsJson;
+}
+
+export interface OrderRecord extends CreateOrderPayload {
+  id: number;
   created_at: string;
   updated_at: string;
-  items?: OrderItem[];
 }
 
+export type Order = OrderRecord;
+
 export const ordersApi = {
+  async createOrder(payload: CreateOrderPayload): Promise<OrderRecord> {
+    const { data, error } = await supabase
+      .from('orders')
+      .insert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('[ordersApi.createOrder]', error);
+      throw error;
+    }
+
+    return data as OrderRecord;
+  },
+
+  async updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) {
+      console.error('[ordersApi.updateOrderStatus]', error);
+      throw error;
+    }
+  },
+
+  async getOrderById(id: number): Promise<OrderRecord | null> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) {
+      console.error('[ordersApi.getOrderById]', error);
+      throw error;
+    }
+
+    return (data as OrderRecord) || null;
+  },
+
   async getByUser(userId: string): Promise<Order[]> {
     const { data, error } = await supabase
       .from('orders')
-      .select(
-        `
-        *,
-        items:order_items(*)
-      `,
-      )
+      .select('*')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('[Supabase] getByUser error:', error);
+      console.error('[ordersApi.getByUser]', error);
       throw error;
     }
 
-    return data || [];
-  },
-
-  async getById(orderId: string): Promise<Order | null> {
-    const { data, error } = await supabase
-      .from('orders')
-      .select(
-        `
-        *,
-        items:order_items(*)
-      `,
-      )
-      .eq('id', orderId)
-      .single();
-
-    if (error) {
-      console.error('[Supabase] getById error:', error);
-      throw error;
-    }
-
-    return data;
-  },
-
-  async create(orderData: {
-    user_id: string;
-    total_amount: number;
-    delivery_address: string;
-    payment_method: string;
-    items: {
-      book_id: string;
-      book_title: string;
-      book_cover_url: string | null;
-      book_author: string | null;
-      quantity: number;
-      price: number;
-    }[];
-  }): Promise<Order> {
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .insert({
-        user_id: orderData.user_id,
-        total_amount: orderData.total_amount,
-        delivery_address: orderData.delivery_address,
-        payment_method: orderData.payment_method,
-        status: 'pending',
-      })
-      .select()
-      .single();
-
-    if (orderError) {
-      console.error('[Supabase] create order error:', orderError);
-      throw orderError;
-    }
-
-    const itemsToInsert = orderData.items.map(item => ({
-      order_id: order.id,
-      book_id: item.book_id,
-      book_title: item.book_title,
-      book_cover_url: item.book_cover_url,
-      book_author: item.book_author,
-      quantity: item.quantity,
-      price: item.price,
-    }));
-
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(itemsToInsert);
-
-    if (itemsError) {
-      console.error('[Supabase] create order items error:', itemsError);
-      throw itemsError;
-    }
-
-    return order;
+    return (data as OrderRecord[]) || [];
   },
 };

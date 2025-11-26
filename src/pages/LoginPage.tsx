@@ -187,6 +187,14 @@ export const LoginPage = () => {
       ?.full_name || '';
   const displayName = fullName || currentUser?.email || '';
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
