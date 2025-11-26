@@ -30,6 +30,17 @@ export const HomePage = () => {
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
+  const overlayOpacity = Math.min(1, scrollY / 500);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     const loadBooks = async () => {
       try {
