@@ -95,7 +95,7 @@ export const WelcomeDiscountModal = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="mx-4 w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
+      <div className="mx-4 w-full max-w-lg rounded-2xl bg-card p-8 shadow-2xl">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl text-accent font-semibold">
             {isTimerMode
