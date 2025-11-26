@@ -29,6 +29,7 @@ interface CartContextValue {
   removeItem: (bookId: string) => void;
   toggleCart: (bookId: string) => void;
   isInCart: (bookId: string) => boolean;
+  clearCart: () => void;
 }
 
 const CART_STORAGE_KEY = 'cart';
@@ -56,7 +57,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const books = await fetchBooks();
         setAllBooks(books);
       } catch {
-        // ignore
       } finally {
         setBooksLoading(false);
       }
@@ -229,6 +229,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     [userId, persistCartLocal, syncCartItem, deleteCartItem],
   );
 
+  const clearCart = useCallback(() => {
+    setCartMap(prev => {
+      const next: CartMap = {};
+
+      if (!userId) {
+        persistCartLocal(next);
+      } else {
+        const ids = Object.keys(prev);
+        ids.forEach(bookId => {
+          deleteCartItem(bookId);
+        });
+      }
+
+      return next;
+    });
+  }, [userId, persistCartLocal, deleteCartItem]);
+
   const isInCart = useCallback(
     (bookId: string) => Boolean(cartMap[bookId]),
     [cartMap],
@@ -281,6 +298,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeItem,
         toggleCart,
         isInCart,
+        clearCart,
       }}
     >
       {children}

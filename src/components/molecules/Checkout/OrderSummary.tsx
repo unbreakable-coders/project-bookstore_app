@@ -16,8 +16,11 @@ interface OrderSummaryProps {
   itemsTotalUAH: number;
   deliveryPrice: number;
   totalWithDelivery: number;
-  onSubmit: () => void;
   getItemTotalUAH: (item: CartItem) => number;
+
+  onSubmit: () => void;          
+  isCardPaymentSelected: boolean; 
+  onCardPayment: () => void;     
 }
 
 export const OrderSummary: FC<OrderSummaryProps> = ({
@@ -28,8 +31,18 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
   totalWithDelivery,
   onSubmit,
   getItemTotalUAH,
+  isCardPaymentSelected,
+  onCardPayment,
 }) => {
   const { t } = useTranslation();
+
+  const handleClick = () => {
+    if (isCardPaymentSelected) {
+      onCardPayment();
+    } else {
+      onSubmit();
+    }
+  };
 
   return (
     <div className="sticky top-8 space-y-4">
@@ -68,11 +81,13 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
         </div>
 
         <Button
-          onClick={onSubmit}
+          onClick={handleClick}
           size="lg"
           className="w-full rounded-lg bg-primary py-4 font-bold text-white transition-colors hover:bg-primary/90"
         >
-          {t('I confirm the order')}
+          {isCardPaymentSelected
+            ? t('Pay by card')      // додай ключ у i18n
+            : t('I confirm the order')}
         </Button>
       </div>
 
