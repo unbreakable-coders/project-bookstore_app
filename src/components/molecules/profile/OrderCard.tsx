@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
+
+import i18n from '@/i18next';
 import type {
   Order,
   OrderStatus,
@@ -18,7 +20,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDate = (dateString: string) =>
-    new Date(dateString).toLocaleDateString('uk-UA', {
+    new Date(dateString).toLocaleDateString(i18n.language, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -27,7 +29,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     });
 
   const deliveryServiceLabel =
-    order.delivery_service === 'novaPoshta' ? 'Нова Пошта' : 'Укрпошта';
+    order.delivery_service === 'novaPoshta' ? t('novaPoshta') : t('ukrposhta');
 
   const deliveryCity =
     order.delivery_service === 'novaPoshta'
@@ -38,40 +40,44 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     const parts: string[] = [];
 
     if (deliveryCity) {
-      parts.push(`Місто: ${deliveryCity}`);
+      parts.push(`${t('city')}: ${deliveryCity}`);
     }
 
     if (order.delivery_service === 'novaPoshta') {
       if (order.nova_poshta_type === 'branch' && order.nova_poshta_branch) {
-        parts.push(`Відділення: ${order.nova_poshta_branch}`);
+        parts.push(`${t('branch')}: ${order.nova_poshta_branch}`);
       }
 
       if (order.nova_poshta_type === 'locker' && order.nova_poshta_locker) {
-        parts.push(`Поштомат №${order.nova_poshta_locker}`);
+        parts.push(`${t('locker')} №${order.nova_poshta_locker}`);
       }
 
       if (order.nova_poshta_type === 'courier' && order.nova_poshta_address) {
-        parts.push(`Адреса: ${order.nova_poshta_address}`);
+        parts.push(`${t('address')}: ${order.nova_poshta_address}`);
       }
     }
 
     if (order.delivery_service === 'ukrposhta' && order.ukrposhta_branch) {
-      parts.push(`Відділення: ${order.ukrposhta_branch}`);
+      parts.push(`${t('branch')}: ${order.ukrposhta_branch}`);
     }
 
     return parts.join(', ');
   };
 
-  // ---------- ORDER PROCESS STATUS (NEW FIELD) ----------
-
   const getOrderProcessLabel = (status: OrderProcessStatus) => {
     switch (status) {
+      case 'pending':
+        return t('pending');
+      case 'awaiting_shipment':
+        return t('awaiting_shipment');
+      case 'paid':
+        return t('paid');
       case 'processing':
-        return 'В обробці';
+        return t('processing');
       case 'completed':
-        return 'Виконано';
+        return t('completed');
       case 'cancelled':
-        return 'Скасовано';
+        return t('cancelled');
       default:
         return status;
     }
@@ -90,15 +96,17 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     }
   };
 
-  // ---------- PAYMENT STATUS (FROM status + payment_method) ----------
-
   const getPaymentStatusLabel = (
     status: OrderStatus,
     method: PaymentMethod,
   ) => {
-    if (status === 'cancelled') return 'Не оплачено';
-    if (method === 'card') return 'Оплачено';
-    return 'Очікує оплату';
+    if (status === 'pending' && method === 'card') return t('awaiting_payment');
+    if (status === 'pending' && method === 'cod') return t('cod');
+    if (status === 'awaiting_shipment' && method === 'card') return t('paid');
+    if (status === 'awaiting_shipment' && method === 'cod') return t('cod');
+    if (status === 'paid') return t('paid');
+    if (status === 'cancelled') return t('not_paid');
+    return t('unknown');
   };
 
   const getPaymentStatusColor = (
@@ -133,7 +141,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
       <div className="flex justify-between items-start gap-4">
         <div className="space-y-1">
           <p className="text-sm font-semibold text-primary">
-            Замовлення #{order.id}
+            {t('order')} #{order.id}
           </p>
 
           <p className="text-xs text-muted-foreground">
@@ -142,7 +150,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
 
           {deliveryCity && (
             <p className="text-xs text-muted-foreground mt-1">
-              📍 Місто: {deliveryCity}
+              📍 {t('city')}: {deliveryCity}
             </p>
           )}
 
@@ -151,14 +159,12 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
               {deliveryServiceLabel}
             </span>
 
-            {/* PAYMENT STATUS */}
             <span
               className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${paymentStatusColor}`}
             >
               {paymentStatusLabel}
             </span>
 
-            {/* ORDER PROCESS STATUS */}
             <span
               className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${orderProcessColor}`}
             >
@@ -168,13 +174,13 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
         </div>
 
         <div className="text-right space-y-1">
-          <p className="text-xs text-muted-foreground">Разом</p>
+          <p className="text-xs text-muted-foreground">{t('total')}</p>
           <p className="text-lg font-bold text-primary">
-            {order.total_price.toFixed(2)} грн
+            {order.total_price.toFixed(2)} {t('uah')}
           </p>
 
           <p className="text-xs text-muted-foreground">
-            Знижка: {order.discount_uah.toFixed(2)} грн
+            {t('discount')}: {order.discount_uah.toFixed(2)} {t('uah')}
           </p>
         </div>
       </div>
@@ -183,14 +189,16 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
         <div className="pt-4 border-t border-border space-y-4">
           {deliveryAddress && (
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">Адреса доставки</p>
+              <p className="text-xs text-muted-foreground">
+                {t('delivery_address')}
+              </p>
               <p className="text-sm">{deliveryAddress}</p>
             </div>
           )}
 
           {order.comment && (
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">Коментар</p>
+              <p className="text-xs text-muted-foreground">{t('comment')}</p>
               <p className="text-sm">{order.comment}</p>
             </div>
           )}
@@ -198,7 +206,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
           {order.items.length > 0 && (
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground">
-                Книги в замовленні
+                {t('books_in_order')}
               </p>
 
               {order.items.map(item => (
@@ -208,7 +216,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
                 >
                   <p className="text-sm font-semibold">{item.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {item.quantity} шт.
+                    {item.quantity} {t('pcs.')}
                   </p>
                 </div>
               ))}
@@ -223,7 +231,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
           variant="outline"
           onClick={() => setIsExpanded(s => !s)}
         >
-          {isExpanded ? 'Стисло' : 'Детально'}
+          {isExpanded ? t('collapse') : t('details')}
         </Button>
       </div>
     </div>
