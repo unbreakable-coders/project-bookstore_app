@@ -27,8 +27,8 @@ export const ProductCardsBlock = ({
     const updateLayout = () => {
       const w = window.innerWidth;
 
-      if (w < 620) setItemsPerPage(1);
-      else if (w < 920) setItemsPerPage(2);
+      if (w < 665) setItemsPerPage(1);
+      else if (w < 950) setItemsPerPage(2);
       else if (w < 1200) setItemsPerPage(3);
       else setItemsPerPage(4);
     };
