@@ -11,7 +11,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
 import { BlurFadeWrapper } from '@/components/organisms/Home/BlurFadeWrapper.tsx';
-import introVideo from '@/assets/intro.mp4';
+import introVideo from '@/assets/introForHomepage.mp4';
 import { Video } from '@/components/atoms/Video';
 
 export const HomePage = () => {
@@ -82,7 +82,7 @@ export const HomePage = () => {
   if (isIntro) {
     if (!sessionStorage.getItem('wasIntro')) {
       return (
-        <div className="fixed inset-0 top-0 z-[9999] overflow-hidden">
+        <div className="fixed inset-0 top-0 z-[9999] overflow-hidden bg-yellow-950">
           <Video
             src={introVideo}
             className="w-full h-full object-cover"
