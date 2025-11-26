@@ -18,19 +18,19 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
   currentTitle,
 }) => {
   const [first, second] = items;
-  const { actualTheme } = useTheme();
+  const { theme } = useTheme();
 
   return (
     <div className="flex items-center gap-1 uppercase font-bold tracking-[0.01em] truncate whitespace-nowrap">
       {/* Home icon */}
       <Link to="/">
-        <Icon name={actualTheme === 'dark' ? 'homeWhite' : 'home'} />
+        <Icon name={theme === 'dark' ? 'homeWhite' : 'home'} />
       </Link>
 
       {/* Стрілка після home */}
       <Icon
         className="h-3 w-3"
-        name={actualTheme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
+        name={theme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
       />
 
       {/* Мобілка показує ... */}
@@ -46,7 +46,7 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
           {/* Стрілка після першого елемента */}
           <Icon
             className="hidden md:inline h-3 w-3"
-            name={actualTheme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
+            name={theme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
           />
         </>
       )}
@@ -63,7 +63,7 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
       {/* Поточна книга */}
       <Icon
         className="h-3 w-3"
-        name={actualTheme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
+        name={theme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
       />
 
       <span className="uppercase text-secondary truncate">{currentTitle}</span>

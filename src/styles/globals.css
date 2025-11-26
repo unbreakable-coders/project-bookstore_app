@@ -77,9 +77,11 @@
 .light {
   --background-gradient: linear-gradient(
     135deg,
-    #fffbf5 0%,
-    #fff5e6 50%,
-    #fffbf5 100%
+    #fdf8f2 0%,
+    #fbf3e9 25%,
+    #f9eddf 50%,
+    #f7e7d5 75%,
+    #f5e1cb 100%
   ); /* Hover + BG */
 
   --header-background: #faebd5;
