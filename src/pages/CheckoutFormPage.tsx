@@ -127,6 +127,7 @@ export const CheckoutPage: FC = () => {
     last_name: formData.lastName,
     phone: formData.phone,
     email: formData.email,
+
     delivery_service: formData.deliveryService,
     nova_poshta_type: formData.novaPoshtaType,
     nova_poshta_city: formData.novaPoshtaCity,
@@ -135,14 +136,20 @@ export const CheckoutPage: FC = () => {
     nova_poshta_address: formData.novaPoshtaAddress,
     ukrposhta_city: formData.ukrposhtaCity,
     ukrposhta_branch: formData.ukrposhtaBranch,
+
     payment_method: formData.paymentMethod,
+
     total_items: totalItems,
     subtotal_uah: itemsTotalUAH,
     discount_uah: discountUAH,
     delivery_price_uah: deliveryPrice,
     total_price: totalWithDelivery,
+
     comment: formData.comment ?? null,
+
     status: 'pending' as const,
+    order_status: 'processing' as const,
+
     items: cartItems.map(item => ({
       bookId: item.book.id,
       title: item.book.name,

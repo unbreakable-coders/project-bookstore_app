@@ -6,10 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 export const WelcomeDiscountModal = () => {
   const { t } = useTranslation();
-
   const { user, initializing } = useAuth();
   const { hasActiveWelcomeDiscount, remainingMs } = useWelcomeDiscount();
 
+  const [isDelayPassed, setIsDelayPassed] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [showTimerModal, setShowTimerModal] = useState(false);
   const [timerDismissed, setTimerDismissed] = useState(false);
@@ -17,20 +17,18 @@ export const WelcomeDiscountModal = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (initializing) {
-      return;
-    }
+    const t = setTimeout(() => setIsDelayPassed(true), 9000);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!isDelayPassed || initializing) return;
 
     if (!user) {
       const dismissed = localStorage.getItem('welcomeModalDismissed');
-
-      if (!dismissed) {
-        setShowGuestModal(true);
-      }
-
+      if (!dismissed) setShowGuestModal(true);
       setShowTimerModal(false);
       setTimerDismissed(false);
-
       return;
     }
 
@@ -47,6 +45,7 @@ export const WelcomeDiscountModal = () => {
     hasActiveWelcomeDiscount,
     remainingMs,
     timerDismissed,
+    isDelayPassed,
   ]);
 
   useEffect(() => {
@@ -78,9 +77,8 @@ export const WelcomeDiscountModal = () => {
     navigate('/catalog');
   };
 
-  if (!showGuestModal && !showTimerModal) {
-    return null;
-  }
+  if (!isDelayPassed) return null;
+  if (!showGuestModal && !showTimerModal) return null;
 
   const totalSeconds = Math.floor(remainingMs / 1000);
   const hours = Math.floor(totalSeconds / 3600);

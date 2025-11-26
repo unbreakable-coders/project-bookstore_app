@@ -2,7 +2,12 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
-import type { Order, OrderStatus, PaymentMethod } from '@/lib/ordersApi';
+import type {
+  Order,
+  OrderStatus,
+  OrderProcessStatus,
+  PaymentMethod,
+} from '@/lib/ordersApi';
 
 interface OrderCardProps {
   order: Order;
@@ -20,8 +25,6 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
       hour: '2-digit',
       minute: '2-digit',
     });
-
-  // -------- DELIVERY --------
 
   const deliveryServiceLabel =
     order.delivery_service === 'novaPoshta' ? 'Нова Пошта' : 'Укрпошта';
@@ -59,15 +62,13 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     return parts.join(', ');
   };
 
-  // -------- STATUSES --------
+  // ---------- ORDER PROCESS STATUS (NEW FIELD) ----------
 
-  const getOrderStatusLabel = (status: OrderStatus) => {
+  const getOrderProcessLabel = (status: OrderProcessStatus) => {
     switch (status) {
-      case 'pending':
+      case 'processing':
         return 'В обробці';
-      case 'awaiting_shipment':
-        return 'Доставляється';
-      case 'paid':
+      case 'completed':
         return 'Виконано';
       case 'cancelled':
         return 'Скасовано';
@@ -76,14 +77,12 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     }
   };
 
-  const getOrderStatusColor = (status: OrderStatus) => {
+  const getOrderProcessColor = (status: OrderProcessStatus) => {
     switch (status) {
-      case 'pending':
+      case 'processing':
         return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'awaiting_shipment':
-        return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-      case 'paid':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-200';
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
@@ -91,38 +90,29 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     }
   };
 
+  // ---------- PAYMENT STATUS (FROM status + payment_method) ----------
+
   const getPaymentStatusLabel = (
     status: OrderStatus,
     method: PaymentMethod,
   ) => {
-    if (status === 'pending' && method === 'card') return 'Очікує оплату';
-    if (status === 'pending' && method === 'cod') return 'Оплата при отриманні';
-    if (status === 'awaiting_shipment' && method === 'card') return 'Оплачено';
-    if (status === 'awaiting_shipment' && method === 'cod')
-      return 'Оплата при отриманні';
-    if (status === 'paid') return 'Оплачено';
     if (status === 'cancelled') return 'Не оплачено';
-    return 'Невідомо';
+    if (method === 'card') return 'Оплачено';
+    return 'Очікує оплату';
   };
 
   const getPaymentStatusColor = (
     status: OrderStatus,
     method: PaymentMethod,
   ) => {
-    if (status === 'pending' && method === 'card')
-      return 'bg-amber-100 text-amber-800 border-amber-200';
-    if (status === 'pending' && method === 'cod')
-      return 'bg-blue-100 text-blue-800 border-blue-200';
-    if (status === 'awaiting_shipment' || status === 'paid')
-      return 'bg-green-100 text-green-800 border-green-200';
     if (status === 'cancelled')
       return 'bg-gray-100 text-gray-700 border-gray-300';
 
-    return 'bg-gray-100 text-gray-800 border-gray-300';
-  };
+    if (method === 'card')
+      return 'bg-green-100 text-green-800 border-green-200';
 
-  const orderStatusLabel = getOrderStatusLabel(order.status);
-  const orderStatusColor = getOrderStatusColor(order.status);
+    return 'bg-amber-100 text-amber-800 border-amber-200';
+  };
 
   const paymentStatusLabel = getPaymentStatusLabel(
     order.status,
@@ -132,6 +122,9 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     order.status,
     order.payment_method,
   );
+
+  const orderProcessLabel = getOrderProcessLabel(order.order_status);
+  const orderProcessColor = getOrderProcessColor(order.order_status);
 
   const deliveryAddress = formatDeliveryAddress();
 
@@ -158,16 +151,18 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
               {deliveryServiceLabel}
             </span>
 
+            {/* PAYMENT STATUS */}
             <span
               className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${paymentStatusColor}`}
             >
               {paymentStatusLabel}
             </span>
 
+            {/* ORDER PROCESS STATUS */}
             <span
-              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${orderStatusColor}`}
+              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border ${orderProcessColor}`}
             >
-              {orderStatusLabel}
+              {orderProcessLabel}
             </span>
           </div>
         </div>
@@ -223,7 +218,11 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
       )}
 
       <div className="flex gap-2 pt-2">
-        <Button size="sm" variant="outline" onClick={() => setIsExpanded(s => !s)}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setIsExpanded(s => !s)}
+        >
           {isExpanded ? 'Стисло' : 'Детально'}
         </Button>
       </div>
