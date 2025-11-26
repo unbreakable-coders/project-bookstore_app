@@ -44,6 +44,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<AppLayout />}>
                     <Route index element={<HomePage />} />
+
                     <Route path="catalog" element={<CatalogPage />} />
                     <Route path="catalog/:bookType" element={<CatalogPage />} />
 
@@ -55,6 +56,7 @@ export default function App() {
                     <Route path="wishlist" element={<WishlistPage />} />
                     <Route path="cart" element={<CartPage />} />
                     <Route path="checkout" element={<CheckoutPage />} />
+
                     <Route path="about" element={<AboutPage />} />
                     <Route path="contacts" element={<ContactsPage />} />
                     <Route path="login" element={<LoginPage />} />
@@ -63,14 +65,24 @@ export default function App() {
                     <Route path="rights" element={<RightsPage />} />
                     <Route path="dev-preview" element={<DevPreviewPage />} />
 
+                    {/* 1) Фейкова оплата карткою */}
                     <Route
                       path="mock-stripe-checkout"
                       element={<MockStripeCheckout />}
                     />
+                    {/* Аліас, щоб /mock-checkout теж працював */}
+                    <Route
+                      path="mock-checkout"
+                      element={<MockStripeCheckout />}
+                    />
+
+                    {/* 2) Сторінка після підтвердження оплати */}
                     <Route
                       path="payment-success"
                       element={<PaymentSuccess />}
                     />
+
+                    {/* 3) Окрема сторінка успішного замовлення (коли треба з айдішником) */}
                     <Route
                       path="order-success/:orderId"
                       element={<OrderSuccessPage />}

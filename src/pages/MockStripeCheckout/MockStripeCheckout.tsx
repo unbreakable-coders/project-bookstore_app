@@ -1,5 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
+import { Button } from '@/components/atoms/Button';
 
 interface FormState {
   cardNumber: string;
@@ -13,11 +16,29 @@ interface FormState {
   address: string;
 }
 
+type FormErrorKey = keyof FormState | 'general';
+type FormErrors = Partial<Record<FormErrorKey, string>>;
+
+const onlyDigits = (value: string) => value.replace(/\D/g, '');
+
+const formatCardNumber = (value: string) => {
+  const digits = onlyDigits(value).slice(0, 16);
+  const parts: string[] = [];
+
+  for (let i = 0; i < digits.length; i += 4) {
+    parts.push(digits.slice(i, i + 4));
+  }
+
+  return parts.join('-');
+};
+
+const getCardDigits = (formatted: string) => onlyDigits(formatted);
+
 export const MockStripeCheckout = () => {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
-  const sessionId = params.get('session_id') || 'mock_session';
   const amount = params.get('amount') || '';
 
   const [form, setForm] = useState<FormState>({
@@ -32,378 +53,258 @@ export const MockStripeCheckout = () => {
     address: '',
   });
 
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-
-    // Спеціальна логіка для номеру картки
-    if (name === 'cardNumber') {
-      const digits = value.replace(/\D/g, '').slice(0, 16); // тільки цифри, максимум 16
-      const groups = digits.match(/.{1,4}/g) || [];
-      const formatted = groups.join('-'); // ****-****-****-****
-      setForm(prev => ({ ...prev, cardNumber: formatted }));
-      return;
-    }
-
-    // Місяць закінчення: тільки цифри, максимум 2 символи
-    if (name === 'expiryMonth') {
-      const digits = value.replace(/\D/g, '').slice(0, 2);
-      setForm(prev => ({ ...prev, expiryMonth: digits }));
-      return;
-    }
-
-    // Рік закінчення: тільки цифри, максимум 2 символи
-    if (name === 'expiryYear') {
-      const digits = value.replace(/\D/g, '').slice(0, 2);
-      setForm(prev => ({ ...prev, expiryYear: digits }));
-      return;
-    }
-
-    // CVV: тільки цифри, максимум 4 символи
-    if (name === 'cvv') {
-      const digits = value.replace(/\D/g, '').slice(0, 4);
-      setForm(prev => ({ ...prev, cvv: digits }));
-      return;
-    }
-
-    setForm(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+  const setField = (key: keyof FormState, value: string) => {
+    setForm(prev => ({ ...prev, [key]: value }));
+    setErrors(prev => {
+      const next = { ...prev };
+      delete next[key];
+      delete next.general;
+      return next;
+    });
   };
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleCardNumberChange = (value: string) => {
+    setField('cardNumber', formatCardNumber(value));
+  };
 
-    const digitsInCard = form.cardNumber.replace(/\D/g, '');
+  const handleMonthChange = (value: string) => {
+    const digits = onlyDigits(value).slice(0, 2);
+    setField('expiryMonth', digits);
+  };
+
+  const handleYearChange = (value: string) => {
+    const digits = onlyDigits(value).slice(0, 2);
+    setField('expiryYear', digits);
+  };
+
+  const handleCvvChange = (value: string) => {
+    const digits = onlyDigits(value).slice(0, 3);
+    setField('cvv', digits);
+  };
+
+  const validate = (): boolean => {
+    const nextErrors: FormErrors = {};
+
+    const cardDigits = getCardDigits(form.cardNumber);
+    if (cardDigits.length !== 16) {
+      nextErrors.cardNumber = t('Enter a valid 16-digit card number');
+    }
+
     const monthNum = Number(form.expiryMonth);
-    const yearNum = Number(form.expiryYear);
-
     if (
-      !digitsInCard ||
       !form.expiryMonth ||
-      !form.expiryYear ||
-      !form.cvv ||
-      !form.cardholderName.trim() ||
-      !form.email.trim() ||
-      !form.phone.trim() ||
-      !form.country.trim() ||
-      !form.address.trim()
-    ) {
-      setError('Please fill in all required fields.');
-      return;
-    }
-
-    if (digitsInCard.length !== 16) {
-      setError('Card number must contain 16 digits.');
-      return;
-    }
-
-    if (
       Number.isNaN(monthNum) ||
       monthNum < 1 ||
       monthNum > 12
     ) {
-      setError('Expiry month must be between 1 and 12.');
-      return;
+      nextErrors.expiryMonth = t('Enter a valid month (01–12)');
     }
 
+    const yearNum = Number(form.expiryYear);
     if (
+      !form.expiryYear ||
       Number.isNaN(yearNum) ||
       yearNum < 25
     ) {
-      setError('Expiry year must be 25 or later.');
-      return;
+      nextErrors.expiryYear = t('Year must be 25 or greater');
     }
 
-    if (form.cvv.length < 3) {
-      setError('CVV must be 3–4 digits.');
-      return;
+    if (form.cvv.length !== 3) {
+      nextErrors.cvv = t('CVV must be 3 digits');
     }
 
-    setError(null);
-    setIsSubmitting(true);
+    if (!form.cardholderName.trim()) {
+      nextErrors.cardholderName = t('Enter cardholder name');
+    }
 
-    setTimeout(() => {
-      navigate(
-        `/payment-success?session_id=${encodeURIComponent(
-          sessionId,
-        )}&amount=${encodeURIComponent(amount)}`,
-      );
-    }, 800);
+    if (!form.email.trim()) {
+      nextErrors.email = t('Enter your email');
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return false;
+    }
+
+    setErrors({});
+    return true;
   };
 
-  const handleCancel = () => {
-    navigate('/checkout?payment=cancelled');
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) {
+      return;
+    }
+
+    navigate(`/payment-success?amount=${amount}&status=success`);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
-      <div className="w-full max-w-3xl rounded-2xl bg-white shadow-2xl overflow-hidden">
-        <div className="border-b px-6 py-4 flex items-center justify-between bg-slate-900 text-white">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-2xl rounded-2xl border border-border bg-card shadow-lg">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>
-            <p className="text-xs uppercase tracking-widest text-slate-300">
-              Secure mock payment
+            <p className="text-xs uppercase tracking-widest text-accent">
+              {t('Secure payment')}
             </p>
-            <h1 className="text-lg font-semibold">Bookstore Checkout</h1>
+            <h1 className="text-lg font-semibold text-secondary">
+              {t('Mock card payment')}
+            </h1>
           </div>
 
-          <div className="text-right">
-            <p className="text-xs text-slate-300">Amount to pay</p>
-            <p className="text-xl font-semibold">
-              {amount ? `${amount}₴` : '—'}
+          <div className="rounded-full bg-primary/10 px-4 py-2 text-right">
+            <p className="text-[11px] uppercase tracking-widest text-accent">
+              {t('Amount to pay')}
+            </p>
+            <p className="text-lg font-bold text-primary">
+              {amount} ₴
             </p>
           </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-6 md:grid-cols-[1.6fr,1.2fr] p-6 md:p-8"
-        >
-          <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-slate-700 tracking-wide">
-              Card details
-            </h2>
-
-            <div className="rounded-xl border border-slate-200 p-4 space-y-4 bg-slate-50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-slate-500">
-                    Virtual card
-                  </p>
-                  <p className="text-sm font-medium text-slate-800">
-                    Mock Visa / MasterCard
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <span className="h-6 w-10 rounded-md bg-slate-800" />
-                  <span className="h-6 w-10 rounded-md bg-yellow-500" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="cardNumber"
-                  className="text-xs font-medium text-slate-600"
-                >
-                  Card number
-                </label>
-                <input
-                  id="cardNumber"
-                  name="cardNumber"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  placeholder="1234-5678-9012-3456"
-                  value={form.cardNumber}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-1">
-                  <label
-                    htmlFor="expiryMonth"
-                    className="text-xs font-medium text-slate-600"
-                  >
-                    Expiry month
-                  </label>
-                  <input
-                    id="expiryMonth"
-                    name="expiryMonth"
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="MM"
-                    maxLength={2}
-                    value={form.expiryMonth}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                  />
-                </div>
-
-  <div className="space-y-1">
-    <label
-      htmlFor="expiryYear"
-      className="text-xs font-medium text-slate-600"
-    >
-      Expiry year
-    </label>
-    <input
-      id="expiryYear"
-      name="expiryYear"
-      type="text"
-      inputMode="numeric"
-      placeholder="YY"
-      maxLength={2}
-      value={form.expiryYear}
-      onChange={handleChange}
-      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-    />
-  </div>
-
-  <div className="space-y-1">
-    <label
-      htmlFor="cvv"
-      className="text-xs font-medium text-slate-600"
-    >
-      CVV
-    </label>
-    <input
-      id="cvv"
-      name="cvv"
-      type="password"
-      inputMode="numeric"
-      maxLength={4}
-      placeholder="•••"
-      value={form.cvv}
-      onChange={handleChange}
-      className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-    />
-  </div>
-</div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="cardholderName"
-                  className="text-xs font-medium text-slate-600"
-                >
-                  Cardholder name
-                </label>
-                <input
-                  id="cardholderName"
-                  name="cardholderName"
-                  type="text"
-                  placeholder="JOHN DOE"
-                  value={form.cardholderName}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm uppercase outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                />
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-500">
-              Demo mode only. Do not enter real card details.
-            </p>
+        <form onSubmit={handleSubmit} className="space-y-6 px-6 py-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-secondary">
+              {t('Card number')}
+            </label>
+            <input
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              value={form.cardNumber}
+              onChange={e => handleCardNumberChange(e.target.value)}
+              placeholder="4242-4242-4242-4242"
+            />
+            {errors.cardNumber && (
+              <p className="text-xs text-red-500">{errors.cardNumber}</p>
+            )}
           </div>
 
-          <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-slate-700 tracking-wide">
-              Contact details
-            </h2>
-
-            <div className="space-y-3 rounded-xl border border-slate-200 p-4 bg-white">
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-xs font-medium text-slate-600"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="phone"
-                  className="text-xs font-medium text-slate-600"
-                >
-                  Phone
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  placeholder="+380 00 000 00 00"
-                  value={form.phone}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="country"
-                  className="text-xs font-medium text-slate-600"
-                >
-                  Country
-                </label>
-                <select
-                  id="country"
-                  name="country"
-                  value={form.country}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                >
-                  <option value="">Select country</option>
-                  <option value="Ukraine">Ukraine</option>
-                  <option value="Poland">Poland</option>
-                  <option value="Germany">Germany</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="address"
-                  className="text-xs font-medium text-slate-600"
-                >
-                  Address
-                </label>
-                <input
-                  id="address"
-                  name="address"
-                  type="text"
-                  placeholder="Street, house, apartment"
-                  value={form.address}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/20"
-                />
-              </div>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                {t('Expiry month')}
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.expiryMonth}
+                onChange={e => handleMonthChange(e.target.value)}
+                placeholder="MM"
+              />
+              {errors.expiryMonth && (
+                <p className="text-xs text-red-500">{errors.expiryMonth}</p>
+              )}
             </div>
 
-            {error && (
-              <p className="text-xs text-red-500 text-center">{error}</p>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                {t('Expiry year')}
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.expiryYear}
+                onChange={e => handleYearChange(e.target.value)}
+                placeholder="YY"
+              />
+              {errors.expiryYear && (
+                <p className="text-xs text-red-500">{errors.expiryYear}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                CVV
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.cvv}
+                onChange={e => handleCvvChange(e.target.value)}
+                placeholder="***"
+              />
+              {errors.cvv && (
+                <p className="text-xs text-red-500">{errors.cvv}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-secondary">
+              {t('Cardholder name')}
+            </label>
+            <input
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              value={form.cardholderName}
+              onChange={e => setField('cardholderName', e.target.value)}
+              placeholder="John Doe"
+            />
+            {errors.cardholderName && (
+              <p className="text-xs text-red-500">{errors.cardholderName}</p>
             )}
+          </div>
 
-            <div className="flex flex-col gap-3 pt-2">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/30 transition hover:scale-[1.02] hover:bg-black disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {isSubmitting
-                  ? 'Processing payment...'
-                  : amount
-                    ? `Pay ${amount}₴`
-                    : 'Confirm payment'}
-              </button>
-
-              <button
-                type="button"
-                onClick={handleCancel}
-                disabled={isSubmitting}
-                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                Cancel and return to checkout
-              </button>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                {t('Email')}
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.email}
+                onChange={e => setField('email', e.target.value)}
+              />
+              {errors.email && (
+                <p className="text-xs text-red-500">{errors.email}</p>
+              )}
             </div>
 
-            <p className="text-[11px] text-slate-400 text-center">
-              This is a mock payment screen used for demo purposes only.
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                {t('Phone')}
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.phone}
+                onChange={e => setField('phone', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                {t('Country')}
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.country}
+                onChange={e => setField('country', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-secondary">
+                {t('Address')}
+              </label>
+              <input
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                value={form.address}
+                onChange={e => setField('address', e.target.value)}
+              />
+            </div>
+          </div>
+
+          {errors.general && (
+            <p className="text-sm text-red-500">{errors.general}</p>
+          )}
+
+          <div className="mt-4 flex items-center justify-between gap-4">
+            <p className="text-xs text-accent">
+              {t('This is a demo payment form. No real charge will be made.')}
             </p>
+            <Button type="submit">
+              {t('Pay')}
+            </Button>
           </div>
         </form>
       </div>

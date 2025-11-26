@@ -1,91 +1,126 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-type Status = 'processing' | 'success';
+import { useCart } from '@/context/CartContext';
+import { Button } from '@/components/atoms/Button';
+import { supabase } from '@/supabaseClient';
+
+const PENDING_ORDER_KEY = 'pending_order';
 
 export const PaymentSuccess = () => {
-  const [status, setStatus] = useState<Status>('processing');
-  const [params] = useSearchParams();
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const { clearCart } = useCart();
 
-  const sessionId = params.get('session_id');
-  const amount = params.get('amount');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showProcessingScreen, setShowProcessingScreen] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const hasRunRef = useRef(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setStatus('success');
-    }, 1500);
+    if (hasRunRef.current) {
+      return;
+    }
 
-    return () => clearTimeout(timer);
-  }, []);
+    hasRunRef.current = true;
 
-  const handleGoHome = () => {
-    navigate('/');
-  };
+    const run = async () => {
+      const status = params.get('status');
 
-  const handleGoToCatalog = () => {
-    navigate('/catalog');
-  };
+      if (status !== 'success') {
+        setErrorMessage(t('Payment was not successful'));
+        return;
+      }
 
-  if (status === 'processing') {
+      const stored = localStorage.getItem(PENDING_ORDER_KEY);
+
+      if (!stored) {
+        setErrorMessage(t('No pending order found'));
+        return;
+      }
+
+      setShowProcessingScreen(true);
+
+      try {
+        const parsed = JSON.parse(stored) as {
+          orderPayload: Record<string, unknown>;
+        };
+
+        const { orderPayload } = parsed;
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const { error } = await supabase.from('orders').insert(orderPayload);
+
+        if (error) {
+          console.error('[Order create after payment error]', error);
+          setErrorMessage(t('Something went wrong. Please try again.'));
+          setShowProcessingScreen(false);
+          return;
+        }
+
+        clearCart();
+        localStorage.removeItem(PENDING_ORDER_KEY);
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        setShowSuccessModal(true);
+      } catch (err) {
+        console.error(err);
+        setErrorMessage(t('Something went wrong. Please try again.'));
+        setShowProcessingScreen(false);
+      }
+    };
+
+    void run();
+  }, [clearCart, params, t]);
+
+  if (errorMessage && !showSuccessModal) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4">
-        <h2 className="text-2xl font-semibold">Processing payment...</h2>
-        <p className="text-gray-600">
-          Please wait a moment while we confirm your payment.
-        </p>
-        {amount && (
-          <p className="text-gray-500 text-sm">
-            Amount: <b>{amount}₴</b>
-          </p>
-        )}
-        {sessionId && (
-          <p className="text-gray-400 text-xs">
-            Session ID: {sessionId}
-          </p>
-        )}
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="rounded-lg bg-card p-6 shadow-lg text-center space-y-4">
+          <p className="text-secondary">{errorMessage}</p>
+          <Button onClick={() => navigate('/')}>{t('Back to home')}</Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-6 px-4">
-      <div className="text-3xl">✅</div>
-
-      <h2 className="text-2xl font-semibold">Payment successful</h2>
-
-      <div className="text-center text-gray-700 space-y-1">
-        {amount && (
-          <p>
-            Thank you for your purchase of <b>{amount}₴</b>.
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      {showProcessingScreen && !showSuccessModal && (
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-lg text-center space-y-3">
+          <h2 className="text-lg font-semibold text-secondary">
+            {t('Payment successful')}
+          </h2>
+          <p className="text-accent">
+            {t('We are creating your order now...')}
           </p>
-        )}
-        <p>Your payment has been confirmed.</p>
-      </div>
-
-      {sessionId && (
-        <p className="text-gray-400 text-xs">
-          Session ID: {sessionId}
-        </p>
+        </div>
       )}
 
-      <div className="flex flex-wrap justify-center gap-4">
-        <button
-          type="button"
-          onClick={handleGoHome}
-          className="px-8 py-3 bg-black text-white rounded-lg hover:scale-105 hover:shadow-xl shadow-stone-700 transition duration-300"
-        >
-          Go to Home
-        </button>
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-md rounded-lg bg-card p-6 shadow-lg">
+            <h3 className="mb-2 text-lg font-semibold text-secondary">
+              {t('Ваше замовлення прийняте в роботу.')}
+            </h3>
+            <p className="text-accent">
+              {t('Очікуйте на дзвінок менеджера')}
+            </p>
 
-        <button
-          type="button"
-          onClick={handleGoToCatalog}
-          className="px-8 py-3 border border-black rounded-lg hover:bg-black hover:text-white transition duration-300"
-        >
-          Go to Catalog
-        </button>
-      </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button onClick={() => navigate('/profile')}>
+                {t('Профіль')}
+              </Button>
+              <Button onClick={() => navigate('/')}>{t('Домашня')}</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
