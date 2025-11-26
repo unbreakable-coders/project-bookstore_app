@@ -52,6 +52,7 @@ export const themesConfig: ThemeConfig[] = [
       ],
     },
     logo: '/books/img/logo/christmas-logo.svg',
+    logoDark: '/books/img/logo/christmas-logo-dark.svg',
     backgroundColor: '#0f1f1f',
     particles: {
       enabled: true,
@@ -111,6 +112,7 @@ export const themesConfig: ThemeConfig[] = [
       ],
     },
     logo: '/books/img/logo/valentine-logo.svg',
+    logoDark: '/books/img/logo/valentine-logo-dark.svg',
     backgroundColor: '#2d1820',
     particles: {
       enabled: true,
@@ -151,7 +153,8 @@ export const themesConfig: ThemeConfig[] = [
         { src: '/books/img/banner/bannerTablet3.webp', alt: 'Best Sellers' },
       ],
     },
-    logo: '/books/img/logo/halloween-logo.svg',
+    logo: '/books/img/logo/default-logo.svg',
+    logoDark: '/books/img/logo/default-logo-dark.svg',
     backgroundColor: '#1a2332',
     particles: {
       enabled: true,
@@ -211,6 +214,7 @@ export const themesConfig: ThemeConfig[] = [
       ],
     },
     logo: '/books/img/logo/halloween-logo.svg',
+    logoDark: '/books/img/logo/halloween-logo-dark.svg',
     backgroundColor: '#1a0f1f',
     particles: {
       enabled: true,
@@ -269,6 +273,7 @@ export const themesConfig: ThemeConfig[] = [
       ],
     },
     logo: '/books/img/logo/knowledge-logo.svg',
+    logoDark: '/books/img/logo/knowledge-logo-dark.svg',
     backgroundColor: '#1a0f1f',
     particles: {
       enabled: true,
