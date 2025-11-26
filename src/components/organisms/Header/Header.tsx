@@ -243,13 +243,13 @@ export const Header = () => {
                       to={buildCatalogLink(item.to)}
                       className={`relative pb-1 transition-colors ${
                         active
-                          ? 'text-primary'
-                          : 'text-[#9F9F9F] hover:text-primary'
+                          ? 'text-accent'
+                          : 'text-[#9F9F9F] hover:text-accent'
                       }`}
                     >
                       {item.label}
                       {active && (
-                        <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 h-0.5 bg-[#050505]" />
+                        <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 h-0.5 bg-primary" />
                       )}
                     </Link>
                   );

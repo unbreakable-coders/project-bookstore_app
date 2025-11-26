@@ -1,5 +1,4 @@
 import { Icon } from '@/components/atoms/Icon';
-import { ICON_BUTTON_CLASS } from '@/components/organisms/Header/Header';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +15,7 @@ export const GlobalLanguageSwitcher: React.FC = () => {
     <button
       onClick={handleLanguageToggle}
       type="button"
-      className={`${ICON_BUTTON_CLASS} cursor-pointer`}
+      className="flex h-9 w-9 items-center  cursor-pointer justify-center rounded-md hover:bg-[#f7f4ef]"
       title={isUK ? 'Switch to English' : 'Перейти на українську'}
     >
       <Icon name={isUK ? 'ukrLang' : 'engLang'} className="h-5 w-5" />

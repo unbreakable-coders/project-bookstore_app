@@ -26,6 +26,8 @@
   "Error: Failed to load product data": "Помилка: Не вдалося завантажити дані продукту",
   "paperback": "м'яка",
   "hardcover": "тверда",
+  "switchToLight": "перемкнути на світлу тему",
+  "switchToDark": "перемкнути на темну тему",
   "PAPER BOOKS": "ПАПЕРОВІ КНИГИ",
   "KINDLE EDITION": "ЕЛЕКТРОНІ КНИГИ",
   "AUDIOBOOKS": "АУДІОКНИГИ",
