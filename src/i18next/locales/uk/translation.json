@@ -275,5 +275,15 @@
   "Country": "Країна",
   "Address": "Адреса",
   "This is a demo payment form. No real charge will be made.": "Це демонстраційна форма оплати. Справжніх списань коштів не буде.",
-  "Pay": "Оплатити"
+  "Pay": "Оплатити",
+  "Please fill in all required fields": "Будь ласка, заповніть всі обов'язкові поля",
+  "City *": "Місто *",
+  "Select city": "Виберіть місто",
+  "Loading branches...": "Завантаження відділень...",
+  "Select branch": "Виберіть відділення",
+  "City": "Місто",
+  "Loading parcel lockers...": "Завантаження поштоматів...",
+  "Select parcel locker": "Виберіть поштомат",
+  "Select branch in {{city}}": "Виберіть відділення в {{city}}",
+  "Select parcel locker in {{city}}": "Виберіть поштомат в {{city}}"
 }
