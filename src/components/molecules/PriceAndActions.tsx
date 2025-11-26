@@ -43,7 +43,7 @@ export const PriceAndActions: React.FC<PriceAndActionsProps> = ({
         <h2 className="md:tracking-[-0.01em]">₴{convertedCurrentPrice}</h2>
 
         {shouldShowOldPrice && (
-          <span className="text-[20px] md:text-[22px] font-semibold leading-5 md:leading-[30.8px] line-through text-secondary">
+          <span className="text-[20px] md:text-[22px] font-semibold leading-5 md:leading-[30.8px] line-through text-muted-foreground">
             ₴{convertedRegularPrice}
           </span>
         )}

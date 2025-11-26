@@ -17,6 +17,7 @@ import {
   RegisterForm,
   type RegisterFormValues,
 } from '@/components/organisms/auth/RegisterForm';
+import { Loader } from '@/components/atoms/Loader/Loader';
 
 export const LoginPage = () => {
   const { t } = useTranslation();

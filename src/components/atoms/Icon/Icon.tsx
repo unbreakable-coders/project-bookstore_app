@@ -3,6 +3,7 @@ import type { FC, ImgHTMLAttributes } from 'react';
 import ArrowDown from '../../../assets/icons/icon-arrow-down.svg';
 import ArrowUp from '../../../assets/icons/icon-arrow-up.svg';
 import ArrowRight from '../../../assets/icons/icon-arrow-right.svg';
+import ArrowRightWhite from '../../../assets/icons/icon-arrow-right-white.svg';
 import ArrowLeft from '../../../assets/icons/icon-arrow-left.svg';
 import BurgerMenu from '../../../assets/icons/icon-burger-menu.svg';
 import CloseIcon from '../../../assets/icons/icon-close.svg';
@@ -33,6 +34,7 @@ const iconMap = {
   arrowDown: ArrowDown,
   arrowLeft: ArrowLeft,
   arrowRight: ArrowRight,
+  arrowRightWhite: ArrowRightWhite,
   arrowUp: ArrowUp,
 
   cart: CartIcon,

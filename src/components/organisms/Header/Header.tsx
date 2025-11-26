@@ -227,7 +227,7 @@ export const Header = () => {
                 </div>
               </Link>
 
-              <nav className="hidden w-[360px] items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
+              <nav className="hidden items-center gap-5 text-[11px] font-semibold uppercase tracking-[0.18em] md:flex">
                 {navItems.map(item => {
                   const active = isNavItemActive(item.to);
 

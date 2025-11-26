@@ -21,6 +21,7 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({
       <div className="space-y-3">
         <div className="rounded-lg border border-border p-4">
           <Radio
+            className="cursor-pointer"
             name="paymentMethod"
             value="card"
             checked={formData.paymentMethod === 'card'}
@@ -32,6 +33,7 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({
 
         <div className="rounded-lg border border-border p-4">
           <Radio
+            className="cursor-pointer"
             name="paymentMethod"
             value="cod"
             checked={formData.paymentMethod === 'cod'}

@@ -12,7 +12,7 @@ export const BackButton: FC<BackButtonProps> = ({ onClick, label }) => {
   return (
     <button
       onClick={onClick}
-      className="mb-6 flex items-center gap-2 text-secondary transition-colors hover:text-foreground"
+      className="mb-6 cursor-pointer flex items-center gap-2 text-secondary transition-colors hover:text-foreground"
       type="button"
     >
       <svg

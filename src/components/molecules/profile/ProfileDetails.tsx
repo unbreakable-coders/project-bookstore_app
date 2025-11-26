@@ -53,7 +53,7 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
         <div className="flex items-center justify-between">
           <CardTitle>{t('My profile')}</CardTitle>
 
-          <Button className="bg-primary" onClick={onLogout}>
+          <Button className="bg-primary cursor-pointer" onClick={onLogout}>
             {t('Log out')}
           </Button>
         </div>
@@ -94,7 +94,9 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
               </div>
             </div>
 
-            <Button onClick={onEdit}>{t('Edit profile')}</Button>
+            <Button className="cursor-pointer" onClick={onEdit}>
+              {t('Edit profile')}
+            </Button>
           </>
         ) : (
           <>
@@ -137,12 +139,17 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={onSave} disabled={profileLoading}>
+              <Button
+                className="cursor-pointer"
+                onClick={onSave}
+                disabled={profileLoading}
+              >
                 {profileLoading ? t('Saving...') : t('Save')}
               </Button>
 
               <Button
                 variant="outline"
+                className="cursor-pointer"
                 onClick={onCancel}
                 disabled={profileLoading}
               >
