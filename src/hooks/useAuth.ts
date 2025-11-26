@@ -33,17 +33,17 @@ export const useAuth = () => {
         return;
       }
 
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      const expiresAt = new Date(
+        Date.now() + 24 * 60 * 60 * 1000,
+      ).toISOString();
 
-      const { error: upsertError } = await supabase
-        .from('profiles')
-        .upsert(
-          {
-            id: userId,
-            welcome_discount_expires_at: expiresAt,
-          },
-          { onConflict: 'id' },
-        );
+      const { error: upsertError } = await supabase.from('profiles').upsert(
+        {
+          id: userId,
+          welcome_discount_expires_at: expiresAt,
+        },
+        { onConflict: 'id' },
+      );
 
       if (upsertError) {
         console.error('[welcome discount upsert error]', upsertError.message);

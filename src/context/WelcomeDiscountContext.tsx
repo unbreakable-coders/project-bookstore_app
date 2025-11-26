@@ -15,9 +15,8 @@ interface WelcomeDiscountContextValue {
   loading: boolean;
 }
 
-const WelcomeDiscountContext = createContext<WelcomeDiscountContextValue | null>(
-  null,
-);
+const WelcomeDiscountContext =
+  createContext<WelcomeDiscountContextValue | null>(null);
 
 export const WelcomeDiscountProvider = ({
   children,

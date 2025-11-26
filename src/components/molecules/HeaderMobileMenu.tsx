@@ -1,4 +1,5 @@
 import type { FC, MouseEventHandler } from 'react';
+import type { Ref } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Icon } from '@/components/atoms/Icon';
@@ -17,7 +18,9 @@ interface HeaderMobileMenuProps {
   isOpen: boolean;
   currentPath: string;
   navItems: HeaderNavItem[];
-  buildCatalogLink: (to: string) => string | { pathname: string; search?: string };
+  buildCatalogLink: (
+    to: string,
+  ) => string | { pathname: string; search?: string };
 
   isLoggedIn: boolean;
   activeIcon: MobileIcon;
@@ -27,8 +30,8 @@ interface HeaderMobileMenuProps {
   cartCount: number;
 
   iconButtonClass: string; // залишаємо для сумісності, але всередині не використовуємо
-  headerHeartRef: any;
-  headerCartRef: any;
+  headerHeartRef: Ref<HTMLAnchorElement>;
+  headerCartRef: Ref<HTMLAnchorElement>;
 
   onClose: () => void;
 }
@@ -71,7 +74,7 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
           key={icon}
           to="/wishlist"
           aria-label="Open wishlist"
-          ref={headerHeartRef as any}
+          ref={headerHeartRef}
           onClick={() => onIconChange(icon)}
           className="relative flex flex-1 items-center justify-center"
         >
@@ -109,7 +112,7 @@ export const HeaderMobileMenu: FC<HeaderMobileMenuProps> = ({
           key={icon}
           to="/cart"
           aria-label="Open cart"
-          ref={headerCartRef as any}
+          ref={headerCartRef}
           onClick={() => onIconChange(icon)}
           className="relative flex flex-1 items-center justify-center"
         >

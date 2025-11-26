@@ -6,7 +6,7 @@ import './styles/globals.css';
 import App from './App';
 
 import './i18next';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from './context/ThemContext';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
