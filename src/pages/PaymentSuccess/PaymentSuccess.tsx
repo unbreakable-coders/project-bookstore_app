@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/atoms/Button';
@@ -10,14 +11,14 @@ import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 const PENDING_ORDER_KEY = 'pending_order';
 
-type PendingOrderPayload = {
+interface PendingOrderPayload {
   orderPayload: {
     payment_method?: string;
     status?: string;
     order_status?: string;
     [key: string]: unknown;
   };
-};
+}
 
 export const PaymentSuccess = () => {
   const { t } = useTranslation();
@@ -32,6 +33,17 @@ export const PaymentSuccess = () => {
 
   const hasRunRef = useRef(false);
   const redirectTimeoutRef = useRef<number | null>(null);
+
+  const queryClient = useQueryClient();
+
+  const createOrderMutation = useMutation({
+    mutationFn: async (orderPayload: PendingOrderPayload['orderPayload']) => {
+      const { error } = await supabase.from('orders').insert(orderPayload);
+      if (error) {
+        throw error;
+      }
+    },
+  });
 
   useEffect(() => {
     if (hasRunRef.current) {
@@ -67,22 +79,15 @@ export const PaymentSuccess = () => {
 
         orderPayload.order_status = 'processing';
 
-        const { error } = await supabase.from('orders').insert(orderPayload);
+        await createOrderMutation.mutateAsync(orderPayload);
 
-        if (error) {
-          console.error('[Order create after payment error]', error);
-          setErrorMessage(t('Something went wrong. Please try again'));
-          setIsProcessing(false);
-          return;
-        }
-
-        // ✅ успішно створили замовлення після оплати
         if (hasActiveWelcomeDiscount) {
           await markWelcomeDiscountUsed();
         }
 
         clearCart();
         localStorage.removeItem(PENDING_ORDER_KEY);
+        await queryClient.invalidateQueries({ queryKey: ['orders'] });
 
         redirectTimeoutRef.current = window.setTimeout(() => {
           navigate('/order-success');
@@ -101,7 +106,16 @@ export const PaymentSuccess = () => {
         clearTimeout(redirectTimeoutRef.current);
       }
     };
-  }, [clearCart, navigate, params, t, hasActiveWelcomeDiscount, markWelcomeDiscountUsed]);
+  }, [
+    clearCart,
+    navigate,
+    params,
+    t,
+    hasActiveWelcomeDiscount,
+    markWelcomeDiscountUsed,
+    createOrderMutation,
+    queryClient,
+  ]);
 
   if (errorMessage) {
     return (

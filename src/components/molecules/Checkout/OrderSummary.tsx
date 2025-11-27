@@ -16,7 +16,7 @@ interface OrderSummaryProps {
   totalItems: number;
   itemsTotalUAH: number;
   deliveryPrice: number;
-  totalWithDelivery: number;
+  totalWithDelivery: number; // залишаємо в типах, але не використовуємо
   getItemTotalUAH: (item: CartItem) => number;
 
   onSubmit: () => void;
@@ -29,7 +29,6 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
   totalItems,
   itemsTotalUAH,
   deliveryPrice,
-  totalWithDelivery, // тимчасово не використовуємо, але залишаємо в пропсах
   onSubmit,
   getItemTotalUAH,
   isCardPaymentSelected,

@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Book } from '@/types/book';
-import { fetchBooks } from '@/lib/booksApi';
+import { useBooks } from '@/hooks/useBooks';
 import { useAuth } from '@/hooks/useAuth';
 import { cartApi } from '@/api/cartApi';
 
@@ -44,27 +44,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const userId = user?.id ?? null;
 
-  const [allBooks, setAllBooks] = useState<Book[]>([]);
+  const { books: allBooks, isLoading: booksLoading } = useBooks();
+
   const [cartMap, setCartMap] = useState<CartMap>({});
-  const [booksLoading, setBooksLoading] = useState(true);
   const [cartInitialized, setCartInitialized] = useState(false);
 
   const loading = booksLoading || !cartInitialized;
-
-  useEffect(() => {
-    const loadBooks = async () => {
-      try {
-        const books = await fetchBooks();
-        setAllBooks(books);
-      } catch (error) {
-        console.error('[CartProvider] Failed to load books', error);
-      } finally {
-        setBooksLoading(false);
-      }
-    };
-
-    void loadBooks();
-  }, []);
 
   useEffect(() => {
     const initCart = async () => {
@@ -316,3 +301,4 @@ export const useCart = () => {
 
   return ctx;
 };
+
