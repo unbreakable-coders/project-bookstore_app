@@ -30,7 +30,6 @@ export const BookCard: React.FC<BookCardProps> = ({
   isInCart = false,
 }) => {
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const [optimisticInCart, setOptimisticInCart] = useState(isInCart);
 
@@ -60,7 +59,14 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   return (
     <div
-      className="bg-card rounded-2xl border border-border p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer w-[288px] lg:w-[272px]"
+      className="
+        bg-card rounded-2xl border border-border p-6
+        cursor-pointer w-[288px] lg:w-[272px]
+        transform hover:scale-[1.1] hover:shadow-xl
+      "
+      style={{
+        transition: 'transform 30000ms ease-in-out, box-shadow 30000ms ease-in-out',
+      }}
       onClick={openDetails}
     >
       <div className="relative">
