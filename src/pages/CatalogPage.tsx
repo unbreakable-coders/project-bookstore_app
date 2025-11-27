@@ -261,7 +261,11 @@ export const CatalogPage = () => {
 
         <section className="pt-6">
           {filteredBooks.length === 0 ? (
-            <NoResult />
+            <div className="flex justify-center py-10">
+              <div className="scale-75 md:scale-50 max-w-[420px]">
+                <NoResult />
+              </div>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10">
               {currentBooks.map((book, index) => (
@@ -271,7 +275,7 @@ export const CatalogPage = () => {
                     index % 2 === 0
                       ? 'md:justify-self-end md:mr-5'
                       : 'md:justify-self-start md:ml-5'
-                  } ${'justify-self-center lg:mr-0 lg:ml-0 lg:justify-self-center'}`}
+                  } justify-self-center lg:mr-0 lg:ml-0 lg:justify-self-center`}
                 >
                   <BookCard
                     book={book}
