@@ -39,7 +39,7 @@ export const teamMembers: TeamMember[] = [
   {
     name: 'Maksym Shevchuk',
     role: 'FE',
-    email: 'Mr.Maks@i.ua',
+    email: 'maksym.shevchuk1002@gmil.com',
     linkedin: 'shefing/',
     github: 'MaksimShe',
     photo: '/images/avatars/maksym.jpg',
