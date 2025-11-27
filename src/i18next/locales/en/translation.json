@@ -178,13 +178,16 @@
   "details": "Details",
   "novaPoshta": "Nova Poshta",
   "ukrposhta": "Ukrposhta",
-  "pending": "Processing",
+  "processing": "Processing",
   "awaiting_shipment": "Shipping",
-  "paid": "Completed",
+  "completed": "Completed",
   "cancelled": "Cancelled",
   "awaiting_payment": "Awaiting payment",
   "cod": "Cash on delivery",
   "not_paid": "Not paid",
   "unknown": "Unknown",
-  "uah": "UAH"
+  "uah": "UAH",
+  "Pay by card": "Pay by card",
+  "loginRequiredTitle": "Login required",
+  "loginRequiredMessage": "You need to be logged in to perform this action"
 }

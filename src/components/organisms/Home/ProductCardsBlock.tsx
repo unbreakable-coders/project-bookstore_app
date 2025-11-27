@@ -82,7 +82,7 @@ export const ProductCardsBlock = ({
     <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20">
       <div className="max-w-6xl w-full mx-auto">
         <div className="flex justify-between items-center">
-          <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
+          <h2 className="mb-4 ml-8 t text-2xl font-bold">{title}</h2>
 
           <div className="flex mr-4 gap-5">
             <div
