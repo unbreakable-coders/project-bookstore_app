@@ -2,6 +2,7 @@ import type { FC, ChangeEvent } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useCart } from '@/context/CartContext';
 import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
@@ -56,6 +57,8 @@ const PENDING_ORDER_KEY = 'pending_order';
 export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { user } = useAuth();
   const { cartItems, totalItems, totalPriceUAH, clearCart } = useCart();
   const {
@@ -171,6 +174,26 @@ export const CheckoutPage: FC = () => {
     })),
   });
 
+  type OrderInsertPayload = ReturnType<typeof buildOrderPayload>;
+
+  const orderMutation = useMutation({
+    mutationFn: async (payload: OrderInsertPayload) => {
+      const { error } = await supabase.from('orders').insert(payload);
+      if (error) throw error;
+    },
+    onSuccess: async () => {
+      if (hasActiveWelcomeDiscount) {
+        await markWelcomeDiscountUsed();
+      }
+      await queryClient.invalidateQueries({ queryKey: ['orders'] });
+      clearCart();
+      setShowSuccessModal(true);
+    },
+    onError: () => {
+      setErrorMessage(t('Something went wrong. Please try again'));
+    },
+  });
+
   const handleCardPayment = () => {
     if (!isFormValid()) {
       setErrorMessage(t('Please fill in all required fields'));
@@ -186,7 +209,7 @@ export const CheckoutPage: FC = () => {
     navigate(`/mock-checkout?amount=${totalWithDelivery}`);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (formData.paymentMethod === 'card') {
       handleCardPayment();
       return;
@@ -198,27 +221,7 @@ export const CheckoutPage: FC = () => {
     }
 
     const payload = buildOrderPayload();
-
-    try {
-      const { error } = await supabase.from('orders').insert(payload);
-
-      if (error) {
-        console.error('[Order create error]', error);
-        setErrorMessage(t('Something went wrong. Please try again'));
-        return;
-      }
-
-      // ✅ якщо знижка ще активна — позначаємо як використану
-      if (hasActiveWelcomeDiscount) {
-        await markWelcomeDiscountUsed();
-      }
-
-      clearCart();
-      setShowSuccessModal(true);
-    } catch (err) {
-      console.error(err);
-      setErrorMessage(t('Something went wrong. Please try again'));
-    }
+    orderMutation.mutate(payload);
   };
 
   const handleChange = (

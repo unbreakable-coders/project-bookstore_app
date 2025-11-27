@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
@@ -16,8 +16,8 @@ import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
-import { fetchBooks } from '@/lib/booksApi';
 import { NoResult } from '@/components/atoms/NoResult/NoResult';
+import { useBooks } from '@/hooks/useBooks';
 
 const ITEMS_PER_PAGE_OPTIONS = [4, 8, 16];
 
@@ -47,11 +47,8 @@ export const CatalogPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(16);
   const [sortBy, setSortBy] = useState('name-asc');
-  const [error, setError] = useState<string | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -62,21 +59,7 @@ export const CatalogPage = () => {
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const data = await fetchBooks();
-        setBooks(data);
-      } catch (err) {
-        console.error('Failed to load books from Supabase:', err);
-        setError(t('Failed to load books. Please try again later'));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void load();
-  }, [t]);
+  const { books, isLoading, isError } = useBooks();
 
   const segments = location.pathname.split('/');
   const type = segments[2] as 'paperback' | 'kindle' | 'audiobook' | undefined;
@@ -235,7 +218,7 @@ export const CatalogPage = () => {
     return pages;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen justify-center items-center text-xl">
         <Loader />
@@ -251,7 +234,11 @@ export const CatalogPage = () => {
           <p className="text-muted-foreground">
             {t('{{count}} books', { count: filteredBooks.length })}
           </p>
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+          {isError && (
+            <p className="mt-2 text-sm text-red-600">
+              {t('Failed to load books. Please try again later')}
+            </p>
+          )}
         </div>
 
         <div className="pt-10 flex gap-4 items-start">

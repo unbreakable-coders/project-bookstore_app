@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useProfile } from '@/hooks/useProfile';
-import { useOrders } from '@/hooks/useOrders';
-import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useTranslation } from 'react-i18next';
-import { OrdersHistory } from '@/components/molecules/profile/OrdersHistory';
+import { useProfile } from '@/hooks/useProfile';
+import { useAuth } from '@/hooks/useAuth';
 import { ProfileDetails } from '@/components/molecules/profile/ProfileDetails';
+import { OrdersHistoryContainer } from '@/components/molecules/profile/OrdersHistoryContainer';
 
 export const ProfilePage = () => {
   const { t } = useTranslation();
@@ -14,7 +13,6 @@ export const ProfilePage = () => {
   const navigate = useNavigate();
   const { signOut, getCurrentUser } = useAuth();
   const { profile, loading: profileLoading, updateProfile } = useProfile();
-  const { orders, loading: ordersLoading } = useOrders();
 
   const [activeTab, setActiveTab] = useState<'profile' | 'orders'>('profile');
   const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +32,7 @@ export const ProfilePage = () => {
       }
     };
 
-    loadUserEmail();
+    void loadUserEmail();
   }, [getCurrentUser]);
 
   useEffect(() => {
@@ -136,13 +134,7 @@ export const ProfilePage = () => {
           />
         )}
 
-        {activeTab === 'orders' && (
-          <OrdersHistory
-            orders={orders}
-            loading={ordersLoading}
-            onStartShopping={() => navigate('/')}
-          />
-        )}
+        {activeTab === 'orders' && <OrdersHistoryContainer />}
       </div>
     </div>
   );

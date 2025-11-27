@@ -66,12 +66,6 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
 
   const getOrderProcessLabel = (status: OrderProcessStatus) => {
     switch (status) {
-      case 'pending':
-        return t('pending');
-      case 'awaiting_shipment':
-        return t('awaiting_shipment');
-      case 'paid':
-        return t('paid');
       case 'processing':
         return t('processing');
       case 'completed':
@@ -237,3 +231,5 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     </div>
   );
 };
+
+

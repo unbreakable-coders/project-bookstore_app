@@ -1,39 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import type { FC } from 'react';
 import { BookCard } from '../components/organisms/BookCard';
 import type { Book } from '../types/book';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
-import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
+import { useBooks } from '@/hooks/useBooks';
 
-export const WishlistPage: React.FC = () => {
+export const WishlistPage: FC = () => {
   const { t } = useTranslation();
 
-  const [allBooks, setAllBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { books: allBooks, isLoading } = useBooks();
 
   const { toggleCart, isInCart } = useCart();
   const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const books = await fetchBooks();
-        setAllBooks(books);
-      } catch (error) {
-        console.error('[WishlistPage] Failed to load books:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const favouriteBooks: Book[] = allBooks.filter(book =>
+    wishlist.has(book.id),
+  );
 
-    void load();
-  }, []);
-
-  const favouriteBooks = allBooks.filter(book => wishlist.has(book.id));
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader />
