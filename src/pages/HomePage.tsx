@@ -14,6 +14,7 @@ import { BlurFadeWrapper } from '@/components/organisms/Home/BlurFadeWrapper.tsx
 import introVideo from '@/assets/homeIntro.mp4';
 import { Video } from '@/components/atoms/Video';
 import { useHolidayTheme } from '@/context/HolidayThemeContext';
+import { AnimatedDiv } from '@/components/atoms/AnimatedDiv';
 
 export const HomePage = () => {
   const { t } = useTranslation();
@@ -66,7 +67,7 @@ export const HomePage = () => {
 
         setNewBooks(
           [...allBooks]
-            .sort((a, b) => a.publicationYear - b.publicationYear)
+            .sort((a, b) => b.publicationYear - a.publicationYear)
             .slice(1, 9),
         );
 
@@ -112,15 +113,9 @@ export const HomePage = () => {
           }}
         />
       )}
-      <div
-        className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700"
-        style={{
-          opacity: scrollY < 800 ? Math.max(0, (800 - scrollY) / 800) : 0,
-        }}
-      >
+      <div className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700">
         <PromoSlider />
       </div>
-
       <div
         className="fixed inset-0 pointer-events-none -z-10 transition-opacity duration-700"
         style={{
@@ -129,31 +124,35 @@ export const HomePage = () => {
         }}
       />
 
-      {/* Spacer щоб банер був видно */}
       <div className="h-screen" />
 
-      {/* Основний контент */}
       <main className="relative w-full flex justify-center container">
-        <div className="w-full max-w-[1136px] px-4 flex flex-col">
-          <ProductCardsBlock
-            title={t('New books')}
-            listOfBooks={newBooks}
-            onAddToCart={toggleCart}
-            onToggleWishlist={toggleWishlist}
-            isInCart={isInCart}
-            isInWishlist={isInWishlist}
-          />
+        <div className="w-full max-w-[1136px] px-4 flex flex-col gap-24 pb-32">
+          <AnimatedDiv stagger={true}>
+            <ProductCardsBlock
+              title={t('New books')}
+              listOfBooks={newBooks}
+              onAddToCart={toggleCart}
+              onToggleWishlist={toggleWishlist}
+              isInCart={isInCart}
+              isInWishlist={isInWishlist}
+            />
+          </AnimatedDiv>
 
-          <Categories typeBooks={countTypeOfBooks} />
+          <AnimatedDiv stagger={true} delay={0.2}>
+            <Categories typeBooks={countTypeOfBooks} />
+          </AnimatedDiv>
 
-          <ProductCardsBlock
-            title={t('Also you might like it!')}
-            listOfBooks={booksMightLike}
-            onAddToCart={toggleCart}
-            onToggleWishlist={toggleWishlist}
-            isInCart={isInCart}
-            isInWishlist={isInWishlist}
-          />
+          <AnimatedDiv stagger={true} delay={0.3}>
+            <ProductCardsBlock
+              title={t('Also you might like it!')}
+              listOfBooks={booksMightLike}
+              onAddToCart={toggleCart}
+              onToggleWishlist={toggleWishlist}
+              isInCart={isInCart}
+              isInWishlist={isInWishlist}
+            />
+          </AnimatedDiv>
         </div>
       </main>
     </BlurFadeWrapper>
