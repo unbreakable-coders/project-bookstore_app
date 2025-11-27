@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Category, type CategoryType } from '@/components/molecules/Category';
 import { useTranslation } from 'react-i18next';
 import type { FC } from 'react';
+import { AnimatedDiv } from '@/components/atoms/AnimatedDiv';
 
 type CategoryWithLink = CategoryType & {
   to: string;
@@ -47,11 +48,18 @@ export const Categories: FC<Props> = ({ typeBooks }) => {
         {t('Shop by category')}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full overflow-visible">
         {categories.map(({ to, ...category }) => (
-          <Link to={to} key={category.title} className="cursor-pointer block">
-            <Category category={category} />
-          </Link>
+          <AnimatedDiv
+            key={category.title}
+            animation="fadeInUp"
+            hover={true}
+            className="block"
+          >
+            <Link to={to} className="block">
+              <Category category={category} />
+            </Link>
+          </AnimatedDiv>
         ))}
       </div>
     </div>

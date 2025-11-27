@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BookCard } from '@/components/organisms/BookCard';
 import type { Book } from '@/types/book';
 import { Icon } from '@/components/atoms/Icon';
+import { AnimatedDiv } from '@/components/atoms/AnimatedDiv';
 
 interface Props {
   listOfBooks: Book[] | null;
@@ -114,9 +115,15 @@ export const ProductCardsBlock = ({
           </div>
         </div>
 
-        <div className={`grid ${gridCols} justify-items-center`}>
+        <div
+          className={`grid ${gridCols} justify-items-center overflow-visible`}
+        >
           {visibleBooks.map(book => (
-            <div key={book.id} className="w-[272px]">
+            <AnimatedDiv
+              key={book.id}
+              animation="fadeInUp" // саме знизу вгору
+              className="w-[272px]"
+            >
               <BookCard
                 book={book}
                 onAddToCart={() => handleAddToCart(book.id)}
@@ -124,7 +131,7 @@ export const ProductCardsBlock = ({
                 isInCart={safeIsInCart(book.id)}
                 isInWishlist={safeIsInWishlist(book.id)}
               />
-            </div>
+            </AnimatedDiv>
           ))}
         </div>
       </div>
