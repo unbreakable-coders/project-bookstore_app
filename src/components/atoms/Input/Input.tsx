@@ -3,11 +3,13 @@ import { Icon } from '../Icon';
 
 type InputProps = {
   withSearchIcon?: boolean;
+  withDefaultClassname?: boolean;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 export const Input: FC<InputProps> = ({
   withSearchIcon,
   className,
+  withDefaultClassname,
   ...rest
 }) => {
   return (
@@ -20,23 +22,27 @@ export const Input: FC<InputProps> = ({
 
       <input
         {...rest}
-        className={[
-          // Size
-          'h-10 w-full',
+        className={
+          withDefaultClassname
+            ? [
+                // Size
+                'h-10 w-full',
 
-          // Style
-          'rounded-md border bg-card text-sm text-[#232323]',
-          'border-[#DADADA] hover:border-[#C5C5C5]',
-          'focus:border-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-black/5',
+                // Style
+                'rounded-md border bg-card text-sm text-[#232323]',
+                'border-[#DADADA] hover:border-[#C5C5C5]',
+                'focus:border-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-black/5',
 
-          // Placeholder color
-          'placeholder:text-muted',
+                // Placeholder color
+                'placeholder:text-muted',
 
-          // Padding for icon
-          withSearchIcon ? 'pl-10 pr-4' : 'px-4',
+                // Padding for icon
+                withSearchIcon ? 'pl-10 pr-4' : 'px-4',
 
-          className ?? '',
-        ].join(' ')}
+                className ?? '',
+              ].join(' ')
+            : className
+        }
       />
     </div>
   );
