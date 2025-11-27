@@ -19,7 +19,7 @@ export const GitHubPage = () => {
         <ProjectCard
           title={t('Project organization')}
           description={t('Main repository of the bookstore')}
-          url="https://github.com/your-org/bookstore"
+          url="https://github.com/unbreakable-coders/project-bookstore_app"
           buttonText={t('Go to repository')}
         />
       </section>
@@ -29,7 +29,7 @@ export const GitHubPage = () => {
           {t('Our team')}
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {teamMembers.map(member => (
             <GitHubProfileCard
               key={member.github}
