@@ -44,7 +44,7 @@ export const Categories: FC<Props> = ({ typeBooks }) => {
 
   return (
     <div className="w-full max-w-[1136px] mx-auto flex flex-col items-center">
-      <h2 className="w-full mb-6 text-2xl font-bold text-center [-webkit-text-stroke:2px_black]">
+      <h2 className="w-full mb-6 text-2xl font-bold text-center">
         {t('Shop by type')}
       </h2>
 
