@@ -7,7 +7,7 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/supabaseClient';
 import { useAuth } from '@/hooks/useAuth';
 
 interface WelcomeDiscountContextValue {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ordersApi, type Order } from '@/lib/ordersApi';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/supabaseClient';
 
 const fetchOrdersApi = async (): Promise<Order[]> => {
   const {

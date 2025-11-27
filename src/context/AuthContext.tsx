@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/supabaseClient';
 
 interface AuthContextValue {
   user: User | null;
