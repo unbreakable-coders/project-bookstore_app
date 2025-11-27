@@ -1,13 +1,22 @@
 import type { FC } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { CartItem } from '@/components/organisms/Cart/CartItem';
 import { CartSummary } from '@/components/organisms/Cart/CartSummary';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { BackButton } from '@/components/atoms/Form/BackButton';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthRequiredModal } from '@/components/atoms/AuthRequiredModal';
+
+const REDIRECT_AFTER_LOGIN_KEY = 'redirectAfterLogin';
 
 export const CartPage: FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const {
     loading,
@@ -25,6 +34,21 @@ export const CartPage: FC = () => {
       </div>
     );
   }
+
+  const handleCheckout = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      localStorage.setItem(REDIRECT_AFTER_LOGIN_KEY, '/cart');
+
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+
+      return;
+    }
+
+    navigate('/checkout');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,11 +79,19 @@ export const CartPage: FC = () => {
               <CartSummary
                 totalPriceUAH={totalPriceUAH}
                 totalItems={totalItems}
+                onCheckout={handleCheckout}
               />
             </div>
           </div>
         )}
       </div>
+
+      {showAuthModal && (
+        <AuthRequiredModal
+          title={t('loginRequiredTitle')}
+          message={t('loginRequiredMessage')}
+        />
+      )}
     </div>
   );
 };

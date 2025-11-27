@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Card,
@@ -19,8 +20,11 @@ import {
 } from '@/components/organisms/auth/RegisterForm';
 import { Loader } from '@/components/atoms/Loader/Loader';
 
+const REDIRECT_AFTER_LOGIN_KEY = 'redirectAfterLogin';
+
 export const LoginPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
 
@@ -58,13 +62,26 @@ export const LoginPage = () => {
     void load();
   }, []);
 
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+
+    const redirectPath = localStorage.getItem(REDIRECT_AFTER_LOGIN_KEY);
+
+    if (redirectPath) {
+      localStorage.removeItem(REDIRECT_AFTER_LOGIN_KEY);
+      navigate(redirectPath);
+    }
+  }, [currentUser, navigate]);
+
   const handleGoogleLogin = async () => {
     setLocalError(null);
     setSuccess(null);
 
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: `${window.location.origin}/login` },
     });
 
     if (authError) {
@@ -78,7 +95,7 @@ export const LoginPage = () => {
 
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: `${window.location.origin}/login` },
     });
 
     if (authError) {
@@ -110,7 +127,14 @@ export const LoginPage = () => {
     } else if (data) {
       setSuccess(t('auth.loginSuccess'));
       setTimeout(() => {
-        window.location.href = '/';
+        const redirectPath = localStorage.getItem(REDIRECT_AFTER_LOGIN_KEY);
+
+        if (redirectPath) {
+          localStorage.removeItem(REDIRECT_AFTER_LOGIN_KEY);
+          navigate(redirectPath);
+        } else {
+          navigate('/');
+        }
       }, 1000);
     }
   };
@@ -164,7 +188,7 @@ export const LoginPage = () => {
       if (authError.includes('already registered')) {
         setLocalError(t('auth.emailAlreadyRegistered'));
       } else {
-        setLocalError(authError);
+          setLocalError(authError);
       }
     } else if (data) {
       setSuccess(t('auth.registrationSuccess'));
