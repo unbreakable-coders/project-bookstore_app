@@ -189,5 +189,11 @@
   "uah": "UAH",
   "Pay by card": "Pay by card",
   "loginRequiredTitle": "Login required",
-  "loginRequiredMessage": "You need to be logged in to perform this action"
+  "loginRequiredMessage": "You need to be logged in to perform this action",
+  "orderSuccess": {
+    "title": "Your order has been accepted. Please wait for our manager's call",
+    "continueShopping": "Continue shopping",
+    "viewOrder": "View order"
+  },
+  "paid": "Paid"
 }
