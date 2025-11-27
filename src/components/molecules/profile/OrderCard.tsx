@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/atoms/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +11,7 @@ import type {
   OrderProcessStatus,
   PaymentMethod,
 } from '@/lib/ordersApi';
+import { useBooks } from '@/hooks/useBooks';
 
 interface OrderCardProps {
   order: Order;
@@ -18,6 +20,7 @@ interface OrderCardProps {
 export const OrderCard: FC<OrderCardProps> = ({ order }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
+  const { books } = useBooks();
 
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString(i18n.language, {
@@ -203,17 +206,33 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
                 {t('books_in_order')}
               </p>
 
-              {order.items.map(item => (
-                <div
-                  key={item.bookId}
-                  className="flex justify-between items-center border border-border/60 rounded-lg p-3"
-                >
-                  <p className="text-sm font-semibold">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {item.quantity} {t('pcs.')}
-                  </p>
-                </div>
-              ))}
+              {order.items.map(item => {
+                const fallbackNamespaceId =
+                  books.find(book => book.id === item.bookId)?.namespaceId;
+                const namespaceId = item.namespaceId || fallbackNamespaceId;
+                const href = namespaceId ? `/books/${namespaceId}` : null;
+
+                return (
+                  <div
+                    key={item.bookId}
+                    className="flex justify-between items-center border border-border/60 rounded-lg p-3"
+                  >
+                    {href ? (
+                      <Link
+                        to={href}
+                        className="text-sm font-semibold text-primary hover:underline"
+                      >
+                        {item.title}
+                      </Link>
+                    ) : (
+                      <p className="text-sm font-semibold">{item.title}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {item.quantity} {t('pcs.')}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -231,5 +250,3 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
     </div>
   );
 };
-
-

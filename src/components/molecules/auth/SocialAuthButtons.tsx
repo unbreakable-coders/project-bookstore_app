@@ -21,7 +21,7 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
       <Button
         type="button"
         variant="outline"
-        className="w-full flex items-center hover:bg-muted-foreground justify-center gap-3"
+        className="w-full flex items-center justify-center gap-3"
         onClick={onGoogle}
         disabled={loading}
       >
@@ -31,8 +31,10 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
           </div>
         ) : (
           <>
-            <span className="text-2xl font-bold text-[#4285F4]">G</span>
-            <span className="text-sm hover:text-primary text-secondary font-semibold">
+            <span className="text-2xl font-bold text-[#4285F4] group-hover:text-white">
+              G
+            </span>
+            <span className="text-sm text-secondary font-semibold group-hover:text-white">
               {t('auth.loginWithGoogle')}
             </span>
           </>
@@ -42,7 +44,7 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
       <Button
         type="button"
         variant="outline"
-        className="w-full flex items-center hover:bg-muted-foreground justify-center gap-3"
+        className="w-full flex items-center justify-center gap-3"
         onClick={onFacebook}
         disabled={loading}
       >
@@ -52,8 +54,10 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
           </div>
         ) : (
           <>
-            <span className="text-2xl font-bold text-[#4285F4]">G</span>
-            <span className="text-sm hover:text-primary text-secondary font-semibold">
+            <span className="text-2xl font-bold text-[#1877F2] group-hover:text-white">
+              f
+            </span>
+            <span className="text-sm text-secondary font-semibold group-hover:text-white">
               {t('auth.loginWithFacebook')}
             </span>
           </>

@@ -53,11 +53,6 @@ export const HeaderActionsDropdown: FC<HeaderActionsDropdownProps> = ({
     setOpen(false);
   };
 
-  const handleDevPreviewClick = () => {
-    navigate('/dev-preview');
-    setOpen(false);
-  };
-
   const rootClass =
     variant === 'mobile'
       ? 'relative flex h-14 flex-col items-center justify-center'
@@ -128,15 +123,6 @@ export const HeaderActionsDropdown: FC<HeaderActionsDropdownProps> = ({
             aria-label="Open profile or login"
           >
             <Icon name="user" className="h-5 w-5" />
-          </button>
-
-          <button
-            type="button"
-            onClick={handleDevPreviewClick}
-            className="flex h-9 w-9 items-center cursor-pointer justify-center rounded-md hover:bg-[#f7f4ef]"
-            aria-label="Open dev preview"
-          >
-            <span className="text-lg">⚙️</span>
           </button>
 
           <div className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-[#f7f4ef]">
