@@ -1,17 +1,18 @@
 import type { FC } from 'react';
 import { Button } from '@/components/atoms/Button';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 interface CartSummaryProps {
   totalPriceUAH: number;
   totalItems: number;
+  onCheckout: () => void;
 }
 
 export const CartSummary: FC<CartSummaryProps> = ({
   totalPriceUAH,
   totalItems,
+  onCheckout,
 }) => {
   const { t } = useTranslation();
   const { hasActiveWelcomeDiscount, discountPercent } = useWelcomeDiscount();
@@ -56,15 +57,14 @@ export const CartSummary: FC<CartSummaryProps> = ({
         </p>
       </div>
 
-      <Link to="/checkout">
-        <Button
-          className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors cursor-pointer"
-          size="lg"
-          type="button"
-        >
-          {t('Checkout')}
-        </Button>
-      </Link>
+      <Button
+        className="w-full py-4 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-colors cursor-pointer"
+        size="lg"
+        type="button"
+        onClick={onCheckout}
+      >
+        {t('Checkout')}
+      </Button>
     </div>
   );
 };
