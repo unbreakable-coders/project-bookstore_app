@@ -12,8 +12,10 @@ export const AuthRequiredModal: FC<AuthRequiredModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-card rounded-xl p-6 max-w-sm w-full shadow-lg border border-border">
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-muted-foreground text-sm">{message}</p>
+        <h3 className="text-lg text-center text-primary font-semibold mb-2">
+          {title}
+        </h3>
+        <p className="text-muted-foreground text-center text-sm">{message}</p>
       </div>
     </div>
   );
