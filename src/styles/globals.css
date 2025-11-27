@@ -1,0 +1,233 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===========================
+  TAILWIND THEME TOKENS
+   =========================== */
+@theme inline {
+  --font-sans: 'Manrope', system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-header: var(--header-background);
+  --color-footer: var(--footer-background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --breakpoint-sm: 320px;
+  --breakpoint-md: 640px;
+  --breakpoint-lg: 1200px;
+  --breakpoint-xl: 1440px;
+}
+
+/* ===========================
+  HEADER HEIGHT (для банерів під фіксованим хедером)
+   =========================== */
+:root {
+  --header-height: 80px; /* мобілка */
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-height: 90px;
+  } /* планшет */
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --header-height: 120px; /* десктоп — підстав свою реальну висоту! */
+  }
+}
+
+/* ===========================
+  ROOT VARIABLES (Figma Palette) - LIGHT THEME (Default)
+   =========================== */
+:root,
+.light {
+  --background-gradient: linear-gradient(
+    135deg,
+    #fdf8f2 0%,
+    #fbf3e9 25%,
+    #f9eddf 50%,
+    #f7e7d5 75%,
+    #f5e1cb 100%
+  ); /* Hover + BG */
+
+  --header-background: #faebd5;
+  --footer-background: #faebd5;
+
+  --foreground: #313237; /* Primary */
+
+  --card: #ffffff; /* White */
+  --primary: #421a0a; /* Primary */
+  --secondary: #5b5e60; /* Secondary */
+  --accent: #5a5b5d; /* Icons */
+
+  --muted: #b5b9bc; /* Elements */
+  --muted-foreground: #89939a;
+
+  --destructive: #eb5757;
+  --border: #bebb94;
+  --input: #f5f6e1;
+  --ring: #27ae60;
+
+  --radius: 0.625rem;
+
+  --z-base: 1;
+  --z-header: 10;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-modal: 40;
+  --z-popover: 50;
+  --z-toast: 60;
+}
+
+/* ===========================
+  DARK THEME
+   =========================== */
+.dark {
+  --background-gradient: linear-gradient(
+    135deg,
+    #312625 0%,
+    #63514b 50%,
+    #4f3e3b 100%
+  );
+
+  --header-background: #211917;
+  --footer-background: #211917;
+
+  --foreground: #f4e4c0;
+
+  --card: #e8dfd0;
+  --primary: #542a0d;
+  --secondary: #9f6b37;
+  --accent: #c19a6b;
+
+  --muted: #beaba4;
+  --muted-foreground: #8d6e63;
+
+  --destructive: #b22222;
+  --border: #bcaaa4;
+  --input: #daceb6;
+  --ring: #d4af37;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply min-h-screen text-foreground font-sans text-[14px] leading-[21px];
+    background: var(--background-gradient);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* -------- Typography (Figma) -------- */
+
+  h1 {
+    @apply font-bold text-[32px] leading-[41px] tracking-[-0.01em]
+           md:text-[48px] md:leading-[56px] md:tracking-[-0.02em];
+  }
+
+  h2 {
+    @apply font-bold text-[22px] leading-[31px]
+           md:text-[32px] md:leading-[41px];
+  }
+
+  h3 {
+    @apply font-semibold text-[20px] leading-[26px]
+           md:text-[22px] md:leading-[31px];
+  }
+
+  h4 {
+    @apply font-semibold text-[16px] leading-[20px]
+           md:text-[20px] md:leading-[26px];
+  }
+
+  h5 {
+    @apply font-semibold text-[16px] leading-[24px];
+  }
+
+  small {
+    @apply font-semibold text-[12px] leading-[15px];
+  }
+}
+
+@layer utilities {
+  .container {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 16px;
+    max-width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-inline: 24px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .container {
+      max-width: 1200px;
+      padding-inline: 32px;
+    }
+  }
+}
+
+/* ===========================
+  SMOOTH TRANSITIONS
+   =========================== */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 1000ms;
+}

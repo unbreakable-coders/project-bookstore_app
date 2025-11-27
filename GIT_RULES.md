@@ -30,3 +30,4 @@
 
 ```text
 <JIRA-ID>_short-description
+```

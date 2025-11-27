@@ -1,0 +1,1 @@
+export { ThemedBackground } from './ThemedBackground';
