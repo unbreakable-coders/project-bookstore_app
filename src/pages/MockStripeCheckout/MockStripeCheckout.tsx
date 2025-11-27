@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
+import { Image } from '@/components/atoms/Image';
+import bankCard from '@/assets/bankCard.png';
 
 interface FormState {
   cardNumber: string;
@@ -40,8 +42,6 @@ export const MockStripeCheckout = () => {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
-  const amount = params.get('amount') || '';
-
   const [form, setForm] = useState<FormState>({
     cardNumber: '',
     expiryMonth: '',
@@ -53,8 +53,15 @@ export const MockStripeCheckout = () => {
     country: '',
     address: '',
   });
-
   const [errors, setErrors] = useState<FormErrors>({});
+
+  const now = new Date();
+  const currentYear = now.getFullYear() % 100;
+  const currentMonth = now.getMonth() + 1;
+
+  const monthNum = Number(form.expiryMonth);
+  const yearNum = Number(form.expiryYear);
+  const amount = params.get('amount') || '';
 
   const setField = (key: keyof FormState, value: string) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -93,23 +100,30 @@ export const MockStripeCheckout = () => {
       nextErrors.cardNumber = t('Enter a valid 16-digit card number');
     }
 
-    const monthNum = Number(form.expiryMonth);
     if (
       !form.expiryMonth ||
       Number.isNaN(monthNum) ||
       monthNum < 1 ||
       monthNum > 12
     ) {
-      nextErrors.expiryMonth = t('Enter a valid month (01–12)');
+      nextErrors.expiryMonth = t('Enter a valid month');
     }
 
-    const yearNum = Number(form.expiryYear);
-    if (!form.expiryYear || Number.isNaN(yearNum) || yearNum < 25) {
-      nextErrors.expiryYear = t('Year must be 25 or greater');
+    if (
+      !form.expiryYear ||
+      Number.isNaN(yearNum) ||
+      yearNum < 25 ||
+      yearNum > 45
+    ) {
+      nextErrors.expiryYear = t('Enter a valid year');
+    }
+
+    if (yearNum === currentYear && monthNum < currentMonth) {
+      nextErrors.expiryMonth = t('Card is expired');
     }
 
     if (form.cvv.length !== 3) {
-      nextErrors.cvv = t('CVV must be 3 digits');
+      nextErrors.cvv = t('CVV is`t valid');
     }
 
     if (!form.cardholderName.trim()) {
@@ -161,133 +175,90 @@ export const MockStripeCheckout = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 px-6 py-6">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-secondary">
-              {t('Card number')}
-            </label>
-            <Input
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-              value={form.cardNumber}
-              onChange={e => handleCardNumberChange(e.target.value)}
-              placeholder="4242-4242-4242-4242"
-            />
-            {errors.cardNumber && (
-              <p className="text-xs text-red-500">{errors.cardNumber}</p>
-            )}
-          </div>
+          <section className="flex items-center justify-between flex-col ">
+            <div className="flex items-center justify-between flex-col text-white ">
+              <Image src={bankCard} className="max-[460px]:hidden" />
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                {t('Expiry month')}
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.expiryMonth}
-                onChange={e => handleMonthChange(e.target.value)}
-                placeholder={t('MM')}
-              />
-              {errors.expiryMonth && (
-                <p className="text-xs text-red-500">{errors.expiryMonth}</p>
-              )}
+              <div
+                className="min-[460px]:absolute w-64
+
+              max-[460px]:w-full max-[460px]:pb-4 max-[460px]:px-8 max-[460px]:rounded-2xl
+              max-[460px]:bg-linear-to-r from-gray-900 to-yellow-900
+              "
+              >
+                <Input
+                  withDefaultClassname={false}
+                  className="
+                    w-full text-white rounded-lg border border-border bg-background px-3 text-sm outline-none mt-8
+                    focus:border-primary focus:ring-1 z-50 
+                  "
+                  value={form.cardNumber}
+                  onChange={e => handleCardNumberChange(e.target.value)}
+                  placeholder="4242-4242-4242-4242"
+                />
+                {errors.cardNumber && (
+                  <p className="absolute text-xs text-red-500">
+                    {errors.cardNumber}
+                  </p>
+                )}
+                <div className="flex items-center justify-between mt-26 mb-4">
+                  <div className="flex gap-2 items-center justify-center">
+                    <Input
+                      withDefaultClassname={false}
+                      className="pl-1 w-12 rounded-lg border border-border bg-background text-sm outline-none focus:border-primary focus:ring-1"
+                      value={form.expiryMonth}
+                      onChange={e => handleMonthChange(e.target.value)}
+                      placeholder={t('MM')}
+                    />
+                    {errors.expiryMonth && (
+                      <p className="absolute -translate-y-5 w-36 text-xs text-red-500">
+                        {errors.expiryMonth}
+                      </p>
+                    )}
+                    <Input
+                      withDefaultClassname={false}
+                      className="pl-1 w-12 rounded-lg border border-border bg-background text-sm outline-none focus:border-primary focus:ring-1"
+                      value={form.expiryYear}
+                      onChange={e => handleYearChange(e.target.value)}
+                      placeholder={t('YY')}
+                    />
+                    {errors.expiryYear && (
+                      <p className="absolute translate-y-5 translate-x-14 text-xs text-red-500">
+                        {errors.expiryYear}
+                      </p>
+                    )}
+                  </div>
+
+                  <Input
+                    withDefaultClassname={false}
+                    className="pl-1 w-12 rounded-lg border border-border bg-background text-sm outline-none focus:border-primary focus:ring-1"
+                    value={form.cvv}
+                    onChange={e => handleCvvChange(e.target.value)}
+                    placeholder="***"
+                    type="password"
+                  />
+                  {errors.cvv && (
+                    <p className="absolute translate-y-5 translate-x-48 text-xs text-red-500">
+                      {errors.cvv}
+                    </p>
+                  )}
+                </div>
+
+                <Input
+                  withDefaultClassname={false}
+                  className="pl-1 w-full rounded-lg border border-border bg-background text-sm outline-none focus:border-primary focus:ring-1"
+                  value={form.cardholderName}
+                  onChange={e => setField('cardholderName', e.target.value)}
+                  placeholder={t('Cardholder name')}
+                />
+                {errors.cardholderName && (
+                  <p className="text-xs text-red-500">
+                    {errors.cardholderName}
+                  </p>
+                )}
+              </div>
             </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                {t('Expiry year')}
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.expiryYear}
-                onChange={e => handleYearChange(e.target.value)}
-                placeholder={t('YY')}
-              />
-              {errors.expiryYear && (
-                <p className="text-xs text-red-500">{errors.expiryYear}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                CVV
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.cvv}
-                onChange={e => handleCvvChange(e.target.value)}
-                placeholder="***"
-              />
-              {errors.cvv && (
-                <p className="text-xs text-red-500">{errors.cvv}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-secondary">
-              {t('Cardholder name')}
-            </label>
-            <Input
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-              value={form.cardholderName}
-              onChange={e => setField('cardholderName', e.target.value)}
-              placeholder={t('John Doe')}
-            />
-            {errors.cardholderName && (
-              <p className="text-xs text-red-500">{errors.cardholderName}</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                {t('Email')}
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.email}
-                onChange={e => setField('email', e.target.value)}
-              />
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                {t('Phone')}
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.phone}
-                onChange={e => setField('phone', e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                {t('Country')}
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.country}
-                onChange={e => setField('country', e.target.value)}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-secondary">
-                {t('Address')}
-              </label>
-              <Input
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1"
-                value={form.address}
-                onChange={e => setField('address', e.target.value)}
-              />
-            </div>
-          </div>
+          </section>
 
           {errors.general && (
             <p className="text-sm text-red-500">{errors.general}</p>
