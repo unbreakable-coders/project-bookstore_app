@@ -13,10 +13,6 @@ interface FormState {
   expiryYear: string;
   cvv: string;
   cardholderName: string;
-  email: string;
-  phone: string;
-  country: string;
-  address: string;
 }
 
 type FormErrorKey = keyof FormState | 'general';
@@ -48,11 +44,8 @@ export const MockStripeCheckout = () => {
     expiryYear: '',
     cvv: '',
     cardholderName: '',
-    email: '',
-    phone: '',
-    country: '',
-    address: '',
   });
+
   const [errors, setErrors] = useState<FormErrors>({});
 
   const now = new Date();
@@ -124,14 +117,6 @@ export const MockStripeCheckout = () => {
 
     if (form.cvv.length !== 3) {
       nextErrors.cvv = t('CVV is`t valid');
-    }
-
-    if (!form.cardholderName.trim()) {
-      nextErrors.cardholderName = t('Enter cardholder name');
-    }
-
-    if (!form.email.trim()) {
-      nextErrors.email = t('Enter your email');
     }
 
     if (Object.keys(nextErrors).length > 0) {
