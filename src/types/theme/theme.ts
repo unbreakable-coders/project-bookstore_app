@@ -15,7 +15,7 @@ export interface ThemeConfig {
   backgroundColor: string;
   particles?: {
     enabled: boolean;
-    type: 'snow' | 'hearts' | 'leaves' | 'confetti' | 'pumpkin';
+    type?: 'snow' | 'hearts' | 'leaves' | 'confetti' | 'pumpkin';
     density?: number;
   };
   backgroundImage?: string;
