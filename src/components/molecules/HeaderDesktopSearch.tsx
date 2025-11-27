@@ -7,7 +7,7 @@ import {
   type DropdownOption,
 } from '@/components/atoms/DropdownCategories';
 
-interface HeaderDesktopSearchProps {
+export interface HeaderDesktopSearchProps {
   isCatalogPage: boolean;
   catalogSearch: string;
   onCatalogSearchChange: (value: string) => void;
@@ -15,6 +15,7 @@ interface HeaderDesktopSearchProps {
   categoryOptions: DropdownOption[];
   onCategorySelect: (slug: string) => void;
   onOpenSearch: () => void;
+  variant?: 'desktop' | 'mobile';
 }
 
 export const HeaderDesktopSearch: FC<HeaderDesktopSearchProps> = ({
@@ -25,13 +26,26 @@ export const HeaderDesktopSearch: FC<HeaderDesktopSearchProps> = ({
   categoryOptions,
   onCategorySelect,
   onOpenSearch,
+  variant = 'desktop',
 }) => {
   const { t } = useTranslation();
 
   const dropdownValue = selectedCategory === 'all' ? '' : selectedCategory;
 
+  const containerClass =
+    variant === 'mobile'
+      ? 'flex flex-col gap-3'
+      : 'hidden items-center gap-4 lg:flex';
+
+  const searchWrapperClass =
+    !isCatalogPage && variant === 'mobile'
+      ? 'w-full text-left'
+      : !isCatalogPage
+        ? 'w-[289px] text-left'
+        : '';
+
   return (
-    <div className="hidden items-center gap-4 lg:flex">
+    <div className={containerClass}>
       {isCatalogPage ? (
         <Input
           withSearchIcon
@@ -42,7 +56,7 @@ export const HeaderDesktopSearch: FC<HeaderDesktopSearchProps> = ({
       ) : (
         <button
           type="button"
-          className="w-[289px] text-left"
+          className={searchWrapperClass}
           onClick={onOpenSearch}
         >
           <Input

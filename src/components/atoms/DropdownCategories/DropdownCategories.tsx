@@ -9,7 +9,7 @@ export interface DropdownOption {
 
 interface DropdownCategoriesProps {
   placeholder?: string;
-  options: DropdownOption[];
+  options?: DropdownOption[];
   onSelect: (value: string) => void;
   fullWidth?: boolean;
   value?: string;
@@ -17,7 +17,7 @@ interface DropdownCategoriesProps {
 
 export const DropdownCategories: FC<DropdownCategoriesProps> = ({
   placeholder = 'Categories',
-  options,
+  options = [],
   onSelect,
   fullWidth,
   value = '',
@@ -29,7 +29,6 @@ export const DropdownCategories: FC<DropdownCategoriesProps> = ({
   const selectedLabel =
     options.find(o => o.value === value)?.label || placeholder;
 
-  // Close on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (!wrapperRef.current) return;
@@ -64,7 +63,7 @@ export const DropdownCategories: FC<DropdownCategoriesProps> = ({
       {open && (
         <ul
           className={[
-            'absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-md  text-secondary border bg-card shadow-md',
+            'absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-md text-secondary border bg-card shadow-md',
             'scrollbar-thin scrollbar-track-[#f2e7dc] scrollbar-thumb-[#8B4513] scrollbar-thumb-rounded-md',
           ].join(' ')}
         >

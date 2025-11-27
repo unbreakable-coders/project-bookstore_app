@@ -8,7 +8,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { ThemedLogo } from '../../atoms/ThemedLogo';
-//import { Logo } from '../../atoms/Logo';
 import { Icon } from '../../atoms/Icon';
 import type { IconName } from '../../atoms/Icon';
 import { SearchPanel } from '@/components/molecules/SearchPanel';
@@ -23,10 +22,10 @@ import { HeaderDesktopSearch } from '@/components/molecules/HeaderDesktopSearch'
 import { HeaderMobileMenu } from '@/components/molecules/HeaderMobileMenu';
 import type { DropdownOption } from '@/components/atoms/DropdownCategories';
 
-type MobileIcon = Extract<IconName, 'heart' | 'cart' | 'user'>;
+type MobileIcon = Extract<IconName, 'heart' | 'cart' >;
 
 export const ICON_BUTTON_CLASS =
-  'flex h-9 w-9 items-center t justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
+  'flex h-9 w-9 items-center justify-center rounded-md border border-[#DADADA] bg-card hover:border-[#C5C5C5]';
 
 export const Header = () => {
   const { t } = useTranslation();
@@ -216,17 +215,22 @@ export const Header = () => {
 
   const openSearch = () => setIsSearchOpen(true);
 
+  const headerSearchProps = {
+    isCatalogPage,
+    catalogSearch,
+    onCatalogSearchChange: handleCatalogSearchChange,
+    selectedCategory,
+    categoryOptions,
+    onCategorySelect: handleCategorySelect,
+    onOpenSearch: openSearch,
+  };
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-header">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-8">
-              {/* <Link to="/" aria-label="Go to home page">
-                <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
-                  <Logo className="h-full w-auto" />
-                </div>
-              </Link> */}
               <Link to="/" aria-label="Go to home page">
                 <div className="flex h-8 w-[110px] flex-none items-center justify-start overflow-hidden">
                   <ThemedLogo className="h-full w-auto" />
@@ -258,15 +262,7 @@ export const Header = () => {
             </div>
 
             <div className="flex items-center gap-2 md:gap-3">
-              <HeaderDesktopSearch
-                isCatalogPage={isCatalogPage}
-                catalogSearch={catalogSearch}
-                onCatalogSearchChange={handleCatalogSearchChange}
-                selectedCategory={selectedCategory}
-                categoryOptions={categoryOptions}
-                onCategorySelect={handleCategorySelect}
-                onOpenSearch={openSearch}
-              />
+              <HeaderDesktopSearch {...headerSearchProps} />
 
               <HeaderIconButtons
                 isCatalogPage={isCatalogPage}
@@ -308,6 +304,7 @@ export const Header = () => {
         iconButtonClass={ICON_BUTTON_CLASS}
         headerHeartRef={headerHeartRef}
         headerCartRef={headerCartRef}
+        headerSearchProps={headerSearchProps}
         onClose={closeMobile}
       />
 

@@ -11,6 +11,7 @@ import {
   PaginationGap,
   PaginationPreviousButton,
   PaginationNextButton,
+  PaginationItem,
 } from '@/components/atoms/Pagination';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
@@ -290,47 +291,62 @@ export const CatalogPage = () => {
           )}
         </section>
 
-        {totalPages > 1 && filteredBooks.length > 0 && (
+        {filteredBooks.length > 0 && (
           <section className="flex justify-center py-16 px-4">
             <Pagination>
-              <PaginationList>
-                <PaginationPreviousButton
-                  href={buildHref(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                    e.preventDefault();
-                    if (currentPage > 1) handlePageChange(currentPage - 1);
-                  }}
-                />
-
-                {getPageNumbers().map((page, index) =>
-                  page === 'gap' ? (
-                    <PaginationGap key={`gap-${index}`} />
-                  ) : (
-                    <PaginationPage
-                      key={page}
-                      href={buildHref(page)}
-                      isCurrent={currentPage === page}
-                      onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                        e.preventDefault();
-                        handlePageChange(page);
-                      }}
+              {totalPages === 1 ? (
+                <PaginationList>
+                  <PaginationItem>
+                    <span
+                      aria-current="page"
+                      className="flex items-center justify-center w-10 h-10 rounded-md bg-foreground text-white cursor-default"
                     >
-                      {page}
-                    </PaginationPage>
-                  ),
-                )}
+                      1
+                    </span>
+                  </PaginationItem>
+                </PaginationList>
+              ) : (
+                <PaginationList>
+                  <PaginationPreviousButton
+                    href={buildHref(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                      e.preventDefault();
+                      if (currentPage > 1) handlePageChange(currentPage - 1);
+                    }}
+                  />
 
-                <PaginationNextButton
-                  href={buildHref(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages)
-                      handlePageChange(currentPage + 1);
-                  }}
-                />
-              </PaginationList>
+                  {getPageNumbers().map((page, index) =>
+                    page === 'gap' ? (
+                      <PaginationGap key={`gap-${index}`} />
+                    ) : (
+                      <PaginationPage
+                        key={page}
+                        href={buildHref(page)}
+                        isCurrent={currentPage === page}
+                        onClick={(
+                          e: React.MouseEvent<HTMLAnchorElement>,
+                        ) => {
+                          e.preventDefault();
+                          handlePageChange(page);
+                        }}
+                      >
+                        {page}
+                      </PaginationPage>
+                    ),
+                  )}
+
+                  <PaginationNextButton
+                    href={buildHref(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        handlePageChange(currentPage + 1);
+                    }}
+                  />
+                </PaginationList>
+              )}
             </Pagination>
           </section>
         )}
