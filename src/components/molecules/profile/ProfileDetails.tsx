@@ -71,12 +71,16 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Email</p>
+                <p className="text-sm text-muted-foreground">
+                  {t('Email')}
+                </p>
                 <p className="text-base font-semibold">{userEmail || '—'}</p>
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">{t('Phone')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t('Phone')}
+                </p>
                 <p className="text-base font-semibold">
                   {profile?.phone || '—'}
                 </p>
@@ -109,15 +113,23 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
                 <Input
                   value={formData.full_name}
                   className="border-border"
-                  onChange={e => onChangeField('full_name', e.target.value)}
+                  onChange={event =>
+                    onChangeField('full_name', event.target.value)
+                  }
                   placeholder={t('Your name')}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Email</label>
+                <label className="text-sm text-muted-foreground">
+                  {t('Email')}
+                </label>
 
-                <Input value={userEmail} disabled className="border-border" />
+                <Input
+                  value={userEmail}
+                  disabled
+                  className="border-border"
+                />
 
                 <p className="text-xs text-muted-foreground">
                   {t('Email cannot be changed')}
@@ -132,7 +144,9 @@ export const ProfileDetails: FC<ProfileDetailsProps> = ({
                 <Input
                   value={formData.phone}
                   className="border-border"
-                  onChange={e => onChangeField('phone', e.target.value)}
+                  onChange={event =>
+                    onChangeField('phone', event.target.value)
+                  }
                   placeholder="+380 XX XXX XX XX"
                 />
               </div>
