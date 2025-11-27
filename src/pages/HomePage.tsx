@@ -113,6 +113,15 @@ export const HomePage = () => {
           }}
         />
       )}
+      <div
+        className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700"
+        style={{
+          opacity: scrollY < 800 ? Math.max(0, (800 - scrollY) / 800) : 0,
+        }}
+      >
+        <PromoSlider />
+      </div>
+
       <div className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700">
         <PromoSlider />
       </div>
