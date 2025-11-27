@@ -1,8 +1,6 @@
 import { themesConfig } from '@/config/themes.config';
 import type { ThemeConfig } from '@/types/theme';
 
-const HOLIDAY_THEME_TEST_KEY = 'holidayThemeTestDate';
-
 function isDateInRange(
   current: Date,
   start: { month: number; day: number },
@@ -36,24 +34,7 @@ function isDateInRange(
 }
 
 export function getActiveTheme(): ThemeConfig {
-  let now: Date;
-
-  const storedDate =
-    typeof window !== 'undefined'
-      ? localStorage.getItem(HOLIDAY_THEME_TEST_KEY)
-      : null;
-
-  if (storedDate) {
-    const testDate = new Date(storedDate);
-
-    if (!isNaN(testDate.getTime())) {
-      now = testDate;
-    } else {
-      now = new Date();
-    }
-  } else {
-    now = new Date();
-  }
+  const now = new Date();
 
   const activeTheme = themesConfig.find(
     theme =>
