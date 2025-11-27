@@ -1,6 +1,7 @@
 export interface TeamMember {
   name: string;
   role: string;
+  phrase: string;
   email: string;
   linkedin: string;
   github?: string;
@@ -11,7 +12,8 @@ export interface TeamMember {
 export const teamMembers: TeamMember[] = [
   {
     name: 'Serhiy Khraban',
-    role: ' TL ',
+    role: 'Tech Lead',
+    phrase: 'Lead the way, not the people.',
     email: 'S.hraban@i.ua',
     linkedin: 'serhiy-hraban-074398388/',
     github: 'S-Khraban',
@@ -20,7 +22,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Julia Hertseva',
-    role: ' PM ',
+    role: 'Project Manager',
+    phrase: 'Today’s chaos is tomorrow’s process. Just give it a week.',
     email: 'julia.hertseva@gmail.com',
     linkedin: 'julia-hertseva',
     github: 'Julia-Hertseva',
@@ -29,7 +32,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Viktoriia Kodovbetska',
-    role: 'FE',
+    role: 'Frontend Developer',
+    phrase: 'finally go outdoor (holovne ne outwindow)',
     email: 'victoriia.kodovbetska@gmail.com',
     linkedin: 'viktoriia-kodovbetska/',
     github: 'Pobedasg',
@@ -38,7 +42,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Maksym Shevchuk',
-    role: 'FE',
+    role: 'Frontend Developer',
+    phrase: 'it’s not gambling( i wanna develop gambling',
     email: 'maksym.shevchuk1002@gmail.com',
     linkedin: 'shefing/',
     github: 'MaksimShe',
@@ -47,7 +52,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Elina Mrachkovska',
-    role: 'FE',
+    role: 'Frontend Developer',
+    phrase: 'Experientia docet',
     email: 'elinamrachkovska@gmail.com',
     linkedin: 'elina-mrachkovska-9a837b328/',
     github: 'ElinaMrachkovska',
