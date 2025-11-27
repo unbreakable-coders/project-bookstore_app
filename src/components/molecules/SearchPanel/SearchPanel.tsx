@@ -3,9 +3,9 @@ import type { Book } from '@/types/book';
 import { Icon } from '@/components/atoms/Icon';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
-import { fetchBooks } from '@/lib/booksApi';
 import { useTranslation } from 'react-i18next';
 import { Loader } from '@/components/atoms/Loader/Loader';
+import { useBooks } from '@/hooks/useBooks';
 
 interface SearchPanelProps {
   open: boolean;
@@ -35,26 +35,9 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [allBooks, setAllBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { books: allBooks, isLoading } = useBooks();
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchBooks();
-        setAllBooks(data);
-      } catch (error) {
-        console.error('Failed to load books for search:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void load();
-  }, []);
 
   useEffect(() => {
     if (!open) {
@@ -106,13 +89,13 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
           </div>
 
           <div className="mt-3 max-h-80 overflow-auto">
-            {loading && (
-              <div className="flex h-screen items-center justify-center text-xl">
+            {isLoading && (
+              <div className="flex h-24 items-center justify-center text-xl">
                 <Loader />
               </div>
             )}
 
-            {!loading &&
+            {!isLoading &&
               filteredBooks.map(book => {
                 const lang = mapLang(book.lang);
                 const icon = mapTypeIcon(book.type);
@@ -152,7 +135,7 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
                 );
               })}
 
-            {!loading &&
+            {!isLoading &&
               searchQuery.trim() !== '' &&
               filteredBooks.length === 0 && (
                 <p className="px-1 text-sm text-[#8F8F8F]">
@@ -165,3 +148,4 @@ export const SearchPanel = ({ open, onOpenChange }: SearchPanelProps) => {
     </Dialog>
   );
 };
+

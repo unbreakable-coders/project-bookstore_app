@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { booksData } from '@/books/data/books';
 import type { Book } from '@/types/book';
 
@@ -15,39 +16,25 @@ const USD_TO_UAH_RATE = 42;
 const toUAH = (amount: number) => Math.ceil(amount * USD_TO_UAH_RATE);
 
 export const useCart = () => {
-  const [allBooks, setAllBooks] = useState<Book[]>([]);
-  const [cartMap, setCartMap] = useState<CartMap>({});
-  const [loading, setLoading] = useState(true);
+  const [cartMap, setCartMap] = useState<CartMap>(() => {
+    const saved = localStorage.getItem(CART_STORAGE_KEY);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const books = await booksData();
-        setAllBooks(books);
+    if (!saved) {
+      return {};
+    }
 
-        const saved = localStorage.getItem(CART_STORAGE_KEY);
+    try {
+      return JSON.parse(saved) as CartMap;
+    } catch (error) {
+      console.error('[Cart] Failed to parse cart from localStorage', error);
+      return {};
+    }
+  });
 
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved) as CartMap;
-            setCartMap(parsed);
-          } catch (error) {
-            console.error(
-              '[Cart] Failed to parse cart from localStorage',
-              error,
-            );
-            setCartMap({});
-          }
-        }
-      } catch (err) {
-        console.error('[Cart] Failed to load books:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void load();
-  }, []);
+  const { data: allBooks = [], isLoading } = useQuery<Book[]>({
+    queryKey: ['books', 'cart'],
+    queryFn: booksData,
+  });
 
   const saveCart = (nextCart: CartMap) => {
     setCartMap(nextCart);
@@ -107,7 +94,7 @@ export const useCart = () => {
   );
 
   return {
-    loading,
+    loading: isLoading,
     cartItems,
     totalItems,
     totalPriceUAH,

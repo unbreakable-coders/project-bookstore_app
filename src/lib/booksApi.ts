@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase } from '@/supabaseClient';
 import type { Book } from '@/types/book';
 
 export const fetchBooks = async (): Promise<Book[]> => {

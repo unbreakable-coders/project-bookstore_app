@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { CartItem as CartItemType } from '@/hooks/useCart';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@/components/atoms/Icon';
@@ -20,7 +21,14 @@ export const CartItem: FC<CartItemProps> = ({
   onRemove,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { book, quantity } = item;
+
+  const openDetails = () => {
+    navigate(`/books/${book.namespaceId}?lang=${book.lang}`, {
+      state: { bookId: book.id },
+    });
+  };
 
   const discountPriceUAH = book.priceDiscount
     ? toUAH(book.priceDiscount)
@@ -44,12 +52,18 @@ export const CartItem: FC<CartItemProps> = ({
         <img
           src={book.images[0]}
           alt={book.name}
-          className="w-16 h-24 object-cover rounded"
+          className="w-16 h-24 object-cover rounded cursor-pointer"
+          onClick={openDetails}
         />
       </div>
 
       <div className="flex-1 min-w-0">
-        <h4 className="text-primary mb-1 truncate">{book.name}</h4>
+        <h4
+          className="text-primary mb-1 truncate cursor-pointer "
+          onClick={openDetails}
+        >
+          {book.name}
+        </h4>
         <p className="text-sm text-secondary">{book.author}</p>
 
         <div className="flex gap-4 text-xs text-muted-foreground">

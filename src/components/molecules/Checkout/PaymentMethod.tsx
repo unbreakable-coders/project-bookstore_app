@@ -1,27 +1,35 @@
 import type { FC, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Radio } from '@/components/atoms/Form/Radio';
-import type { CheckoutFormData } from '@/components/organisms/CheckoutForm/CheckoutForm';
-
+interface Errors {
+  paymentMethod?: string;
+}
 interface PaymentMethodProps {
-  formData: CheckoutFormData;
+  formData: { paymentMethod: 'card' | 'cod' | '' };
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  errors: Errors;
 }
 
 export const PaymentMethod: FC<PaymentMethodProps> = ({
   formData,
   onChange,
+  errors,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-lg text-secondary border border-border bg-card p-6">
-      <h2 className="mb-4 text-xl font-semibold">{t('Payment')}</h2>
+    <div className="rounded-lg border border-border bg-card p-6">
+      <h2 className="mb-4 text-xl font-semibold text-secondary">
+        {t('Payment')}
+      </h2>
+
+      {errors.paymentMethod && (
+        <p className="mb-4 text-sm text-red-500">{errors.paymentMethod}</p>
+      )}
 
       <div className="space-y-3">
         <div className="rounded-lg border border-border p-4">
           <Radio
-            className="cursor-pointer"
             name="paymentMethod"
             value="card"
             checked={formData.paymentMethod === 'card'}
@@ -33,7 +41,6 @@ export const PaymentMethod: FC<PaymentMethodProps> = ({
 
         <div className="rounded-lg border border-border p-4">
           <Radio
-            className="cursor-pointer"
             name="paymentMethod"
             value="cod"
             checked={formData.paymentMethod === 'cod'}

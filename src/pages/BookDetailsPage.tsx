@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
 import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
 import { useTranslation } from 'react-i18next';
@@ -24,8 +25,6 @@ export const BookDetailsPage = () => {
   const [searchParams] = useSearchParams();
   const urlLangParam = searchParams.get('lang') as LanguageCode | null;
 
-  const [product, setProduct] = useState<BookProduct | null>(null);
-  const [loading, setLoading] = useState(true);
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(
     urlLangParam || (i18n.language as LanguageCode) || 'uk',
   );
@@ -33,38 +32,19 @@ export const BookDetailsPage = () => {
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  const loadProductData = useCallback(
-    async (lang: LanguageCode) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['book', namespaceId, currentLanguage],
+    queryFn: () => {
       if (!namespaceId) {
-        setProduct(null);
-        setLoading(false);
-        return;
+        return Promise.reject(new Error('Missing namespaceId'));
       }
 
-      try {
-        setLoading(true);
-
-        const data = await fetchBookProduct(namespaceId, lang);
-        await new Promise(resolve => setTimeout(resolve, 5500));
-
-        if (!data) {
-          setProduct(null);
-          return;
-        }
-
-        setProduct(data);
-      } catch {
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
+      return fetchBookProduct(namespaceId, currentLanguage);
     },
-    [namespaceId],
-  );
+    enabled: !!namespaceId,
+  });
 
-  useEffect(() => {
-    void loadProductData(currentLanguage);
-  }, [loadProductData, currentLanguage, i18n.language]);
+  const product = data as BookProduct | null;
 
   const handleLanguageChange = (lang: LanguageCode) => {
     setCurrentLanguage(lang);
@@ -96,7 +76,7 @@ export const BookDetailsPage = () => {
     );
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center text-xl">
         <Loader />

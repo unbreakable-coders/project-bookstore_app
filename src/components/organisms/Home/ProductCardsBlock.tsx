@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BookCard } from '@/components/organisms/BookCard';
 import type { Book } from '@/types/book';
 import { Icon } from '@/components/atoms/Icon';
+import { AnimatedDiv } from '@/components/atoms/AnimatedDiv';
 
 interface Props {
   listOfBooks: Book[] | null;
@@ -81,7 +82,7 @@ export const ProductCardsBlock = ({
     <section className="w-full flex justify-center items-center mt-14 lg:mt-20 mb-10 lg:mb-20">
       <div className="max-w-6xl w-full mx-auto">
         <div className="flex justify-between items-center">
-          <h2 className="mb-4 ml-8 text-2xl font-bold">{title}</h2>
+          <h2 className="mb-4 ml-8 t text-2xl font-bold">{title}</h2>
 
           <div className="flex mr-4 gap-5">
             <div
@@ -114,9 +115,15 @@ export const ProductCardsBlock = ({
           </div>
         </div>
 
-        <div className={`grid ${gridCols} justify-items-center`}>
+        <div
+          className={`grid ${gridCols} justify-items-center overflow-visible`}
+        >
           {visibleBooks.map(book => (
-            <div key={book.id} className="w-[272px]">
+            <AnimatedDiv
+              key={book.id}
+              animation="fadeInUp" // саме знизу вгору
+              className="w-[272px]"
+            >
               <BookCard
                 book={book}
                 onAddToCart={() => handleAddToCart(book.id)}
@@ -124,7 +131,7 @@ export const ProductCardsBlock = ({
                 isInCart={safeIsInCart(book.id)}
                 isInWishlist={safeIsInWishlist(book.id)}
               />
-            </div>
+            </AnimatedDiv>
           ))}
         </div>
       </div>

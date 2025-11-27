@@ -1,50 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { ordersApi, type Order } from '@/lib/ordersApi';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/supabaseClient';
+
+const fetchOrdersApi = async (): Promise<Order[]> => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('Користувач не авторизований');
+  }
+
+  const data = await ordersApi.getByUser(user.id);
+
+  if (!data) {
+    return [];
+  }
+
+  return data;
+};
 
 export const useOrders = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        throw new Error('Користувач не авторизований');
-      }
-
-      const data = await ordersApi.getByUser(user.id);
-
-      setOrders(data);
-
-      return { data, error: null };
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Помилка завантаження замовлень';
-
-      setError(errorMessage);
-
-      return { data: null, error: errorMessage };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void fetchOrders();
-  }, []);
+  const {
+    data,
+    isLoading,
+    error,
+    refetch: fetchOrders,
+  } = useQuery<Order[], Error>({
+    queryKey: ['orders'],
+    queryFn: fetchOrdersApi,
+  });
 
   return {
-    orders,
-    loading,
-    error,
+    orders: data ?? [],
+    loading: isLoading,
+    error: error?.message ?? null,
     fetchOrders,
   };
 };

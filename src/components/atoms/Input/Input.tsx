@@ -1,43 +1,55 @@
-import type { FC, InputHTMLAttributes } from 'react';
+import * as React from 'react';
+import type { InputHTMLAttributes } from 'react';
+
+import { cn } from '@/lib/utils';
 import { Icon } from '../Icon';
 
-type InputProps = {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   withSearchIcon?: boolean;
-} & InputHTMLAttributes<HTMLInputElement>;
+  withDefaultClassname?: boolean;
+}
 
-export const Input: FC<InputProps> = ({
-  withSearchIcon,
-  className,
-  ...rest
-}) => {
-  return (
-    <div className="relative">
-      {withSearchIcon && (
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
-          <Icon name="search" className="h-4 w-4 opacity-70" />
-        </span>
-      )}
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      withSearchIcon = false,
+      withDefaultClassname = true,
+      className,
+      type = 'text',
+      ...props
+    },
+    ref,
+  ) => {
+    const baseClasses = withDefaultClassname
+      ? [
+          'flex h-10 w-full rounded-md border bg-card px-4 text-sm text-[#232323]',
+          'border-input',
+          'placeholder:text-muted-foreground',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'ring-offset-background',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+        ].join(' ')
+      : '';
 
-      <input
-        {...rest}
-        className={[
-          // Size
-          'h-10 w-full',
+    const paddingForIcon = withSearchIcon ? 'pl-10 pr-4' : '';
 
-          // Style
-          'rounded-md border bg-card text-sm text-[#232323]',
-          'border-[#DADADA] hover:border-[#C5C5C5]',
-          'focus:border-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-black/5',
+    return (
+      <div className="relative">
+        {withSearchIcon && (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+            <Icon name="search" className="h-4 w-4 opacity-70" />
+          </span>
+        )}
 
-          // Placeholder color
-          'placeholder:text-muted',
+        <input
+          ref={ref}
+          type={type}
+          className={cn(baseClasses, paddingForIcon, className)}
+          {...props}
+        />
+      </div>
+    );
+  },
+);
 
-          // Padding for icon
-          withSearchIcon ? 'pl-10 pr-4' : 'px-4',
-
-          className ?? '',
-        ].join(' ')}
-      />
-    </div>
-  );
-};
+Input.displayName = 'Input';

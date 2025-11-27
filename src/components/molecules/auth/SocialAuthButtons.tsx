@@ -31,8 +31,10 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
           </div>
         ) : (
           <>
-            <span className="text-2xl font-bold text-[#4285F4]">G</span>
-            <span className="text-sm text-secondary font-semibold">
+            <span className="text-2xl font-bold text-[#4285F4] group-hover:text-white">
+              G
+            </span>
+            <span className="text-sm text-secondary font-semibold group-hover:text-white">
               {t('auth.loginWithGoogle')}
             </span>
           </>
@@ -52,8 +54,10 @@ export const SocialAuthButtons: FC<SocialAuthButtonsProps> = ({
           </div>
         ) : (
           <>
-            <span className="text-2xl font-bold text-[#4285F4]">G</span>
-            <span className="text-sm text-secondary font-semibold">
+            <span className="text-2xl font-bold text-[#1877F2] group-hover:text-white">
+              f
+            </span>
+            <span className="text-sm text-secondary font-semibold group-hover:text-white">
               {t('auth.loginWithFacebook')}
             </span>
           </>

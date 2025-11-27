@@ -160,7 +160,6 @@ export const themesConfig: ThemeConfig[] = [
     backgroundColor: '#1a2332',
     particles: {
       enabled: true,
-      type: 'pumpkin',
       density: 40,
     },
     backgroundImage: '/books/img/backgrounds/default.svg',

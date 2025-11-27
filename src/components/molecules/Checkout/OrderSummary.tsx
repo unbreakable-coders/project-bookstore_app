@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/atoms/Button';
 import { OrderItemSummary } from '@/components/molecules/order/OrderItemSummary';
 import type { Book } from '@/types/book';
+import { useWelcomeDiscount } from '@/context/WelcomeDiscountContext';
 
 interface CartItem {
   book: Book;
@@ -15,7 +16,7 @@ interface OrderSummaryProps {
   totalItems: number;
   itemsTotalUAH: number;
   deliveryPrice: number;
-  totalWithDelivery: number;
+  totalWithDelivery: number; // залишаємо в типах, але не використовуємо
   getItemTotalUAH: (item: CartItem) => number;
 
   onSubmit: () => void;
@@ -28,13 +29,13 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
   totalItems,
   itemsTotalUAH,
   deliveryPrice,
-  totalWithDelivery,
   onSubmit,
   getItemTotalUAH,
   isCardPaymentSelected,
   onCardPayment,
 }) => {
   const { t } = useTranslation();
+  const { hasActiveWelcomeDiscount, discountPercent } = useWelcomeDiscount();
 
   const handleClick = () => {
     if (isCardPaymentSelected) {
@@ -43,6 +44,18 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
       onSubmit();
     }
   };
+
+  const baseTotal = itemsTotalUAH + (deliveryPrice || 0);
+
+  const discountAmount = hasActiveWelcomeDiscount
+    ? Math.round((itemsTotalUAH * discountPercent) / 100)
+    : 0;
+
+  const totalDue = hasActiveWelcomeDiscount
+    ? baseTotal - discountAmount
+    : baseTotal;
+
+  const showDiscountRow = hasActiveWelcomeDiscount && discountAmount > 0;
 
   return (
     <div className="sticky top-8 space-y-4">
@@ -70,12 +83,34 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
             </span>
           </div>
 
+          {showDiscountRow && (
+            <div className="flex justify-between text-sm">
+              <span className="text-green-600">
+                {t('Welcome discount ({{percent}}%)', {
+                  percent: discountPercent,
+                })}
+              </span>
+              <span className="font-semibold text-green-600">
+                -{discountAmount} ₴
+              </span>
+            </div>
+          )}
+
           <div className="pt-3 border-t border-border">
             <div className="flex justify-between items-center pt-3">
               <span className="font-semibold text-accent">{t('Due')}</span>
-              <span className="text-2xl font-bold text-primary">
-                {totalWithDelivery} ₴
-              </span>
+
+              <div className="text-right">
+                {showDiscountRow && (
+                  <div className="text-xs text-accent line-through">
+                    {baseTotal} ₴
+                  </div>
+                )}
+
+                <div className="text-2xl font-bold text-primary">
+                  {totalDue} ₴
+                </div>
+              </div>
             </div>
           </div>
         </div>
