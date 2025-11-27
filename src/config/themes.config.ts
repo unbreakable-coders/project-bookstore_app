@@ -162,7 +162,7 @@ export const themesConfig: ThemeConfig[] = [
       enabled: true,
       density: 40,
     },
-    backgroundImage: '/books/img/backgrounds/default.svg',
+    //backgroundImage: '/books/img/backgrounds/default.svg',
   },
 
   // Хелловін
