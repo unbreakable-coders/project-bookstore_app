@@ -18,6 +18,7 @@ export type NovaPoshtaType = 'branch' | 'locker' | 'courier' | null;
 export interface OrderItem {
   title: string;
   bookId: string;
+  namespaceId: string;
   quantity: number;
   totalPriceUAH: number;
   image?: string;
