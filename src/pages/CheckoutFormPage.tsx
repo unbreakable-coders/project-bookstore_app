@@ -1,5 +1,5 @@
 import type { FC, ChangeEvent } from 'react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ import { CheckoutForm } from '@/components/organisms/CheckoutForm/CheckoutForm';
 import { OrderSummary } from '@/components/molecules/Checkout/OrderSummary';
 import { supabase } from '@/supabaseClient';
 
-interface CheckoutFormState {
+export interface CheckoutFormState {
   firstName: string;
   lastName: string;
   phone: string;
@@ -31,9 +31,11 @@ interface CheckoutFormState {
   ukrposhtaCity: string;
   ukrposhtaBranch: string;
 
-  paymentMethod: string;
+  paymentMethod: 'card' | 'cod' | '';
   comment?: string;
 }
+
+type Errors = Partial<Record<keyof CheckoutFormState, string>>;
 
 const initialFormState: CheckoutFormState = {
   firstName: '',
@@ -58,18 +60,16 @@ export const CheckoutPage: FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
   const { user } = useAuth();
   const { cartItems, totalItems, totalPriceUAH, clearCart } = useCart();
-  const {
-    hasActiveWelcomeDiscount,
-    discountPercent,
-    markWelcomeDiscountUsed,
-  } = useWelcomeDiscount();
+  const { hasActiveWelcomeDiscount, discountPercent, markWelcomeDiscountUsed } =
+    useWelcomeDiscount();
 
   const [formData, setFormData] = useState<CheckoutFormState>(initialFormState);
+  const [errors, setErrors] = useState<Errors>({});
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const formRef = useRef<HTMLDivElement>(null);
 
   const deliveryPrice =
     formData.deliveryService === 'novaPoshta' &&
@@ -78,64 +78,76 @@ export const CheckoutPage: FC = () => {
       : 0;
 
   const itemsTotalUAH = totalPriceUAH;
-
   const discountUAH = hasActiveWelcomeDiscount
     ? Math.min(
         Math.round(itemsTotalUAH * (discountPercent / 100)),
         itemsTotalUAH,
       )
     : 0;
-
   const totalWithDelivery = itemsTotalUAH - discountUAH + deliveryPrice;
 
-  const getItemTotalUAH = (item: (typeof cartItems)[number]) =>
-    item.totalPriceUAH ?? 0;
+  const validateForm = (): boolean => {
+    const newErrors: Errors = {};
 
-  const isFormValid = () => {
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.phone ||
-      !formData.email ||
-      !formData.deliveryService ||
-      !formData.paymentMethod
-    ) {
-      return false;
-    }
+    if (!formData.firstName.trim()) newErrors.firstName = t('Enter your name');
+    if (!formData.lastName.trim()) newErrors.lastName = t('Enter your surname');
+    if (!formData.phone.trim()) newErrors.phone = t('Enter phone number');
+    // eslint-disable-next-line no-useless-escape
+    else if (!/^\+38\d{10}$/.test(formData.phone.replace(/[\s\-\(\)]/g, '')))
+      newErrors.phone = t('Invalid phone number');
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+      newErrors.email = t('Invalid email');
+
+    if (!formData.deliveryService)
+      newErrors.deliveryService = t('Choose delivery method');
+    if (!formData.paymentMethod)
+      newErrors.paymentMethod = t('Choose payment method');
 
     if (formData.deliveryService === 'novaPoshta') {
-      if (!formData.novaPoshtaCity) return false;
-
-      if (
+      if (!formData.novaPoshtaCity) newErrors.novaPoshtaCity = t('Choose city');
+      if (!formData.novaPoshtaType) {
+        newErrors.novaPoshtaType = t('Choose delivery type');
+      } else if (
         formData.novaPoshtaType === 'branch' &&
         !formData.novaPoshtaBranch
-      ) {
-        return false;
-      }
-
-      if (
+      )
+        newErrors.novaPoshtaBranch = t('Choose branch');
+      else if (
         formData.novaPoshtaType === 'locker' &&
         !formData.novaPoshtaLocker
-      ) {
-        return false;
-      }
-
-      if (
+      )
+        newErrors.novaPoshtaLocker = t('Choose parcel locker');
+      else if (
         formData.novaPoshtaType === 'courier' &&
-        !formData.novaPoshtaAddress
-      ) {
-        return false;
-      }
+        !formData.novaPoshtaAddress.trim()
+      )
+        newErrors.novaPoshtaAddress = t('Enter delivery address');
     }
 
     if (formData.deliveryService === 'ukrposhta') {
-      if (!formData.ukrposhtaCity || !formData.ukrposhtaBranch) {
-        return false;
-      }
+      if (!formData.ukrposhtaCity.trim())
+        newErrors.ukrposhtaCity = t('Enter city');
+      if (!formData.ukrposhtaBranch.trim())
+        newErrors.ukrposhtaBranch = t('Enter branch number');
     }
 
-    return true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0 && formRef.current) {
+      const firstErrorKey = Object.keys(errors)[0] as keyof CheckoutFormState;
+      const element = formRef.current.querySelector(
+        `[name="${firstErrorKey}"]`,
+      ) as HTMLElement | null;
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus({ preventScroll: true });
+      }
+    }
+  }, [errors]);
 
   const buildOrderPayload = () => ({
     user_id: user?.id ?? null,
@@ -143,85 +155,66 @@ export const CheckoutPage: FC = () => {
     last_name: formData.lastName,
     phone: formData.phone,
     email: formData.email,
-
     delivery_service: formData.deliveryService,
-    nova_poshta_type: formData.novaPoshtaType,
-    nova_poshta_city: formData.novaPoshtaCity,
-    nova_poshta_branch: formData.novaPoshtaBranch,
-    nova_poshta_locker: formData.novaPoshtaLocker,
-    nova_poshta_address: formData.novaPoshtaAddress,
-    ukrposhta_city: formData.ukrposhtaCity,
-    ukrposhta_branch: formData.ukrposhtaBranch,
-
+    nova_poshta_type: formData.novaPoshtaType || null,
+    nova_poshta_city: formData.novaPoshtaCity || null,
+    nova_poshta_branch: formData.novaPoshtaBranch || null,
+    nova_poshta_locker: formData.novaPoshtaLocker || null,
+    nova_poshta_address: formData.novaPoshtaAddress || null,
+    ukrposhta_city: formData.ukrposhtaCity || null,
+    ukrposhta_branch: formData.ukrposhtaBranch || null,
     payment_method: formData.paymentMethod,
-
     total_items: totalItems,
     subtotal_uah: itemsTotalUAH,
     discount_uah: discountUAH,
     delivery_price_uah: deliveryPrice,
     total_price: totalWithDelivery,
-
-    comment: formData.comment ?? null,
-
+    comment: formData.comment || null,
     status: 'pending' as const,
     order_status: 'processing' as const,
-
     items: cartItems.map(item => ({
       bookId: item.book.id,
       title: item.book.name,
       quantity: item.quantity,
-      totalPriceUAH: item.totalPriceUAH,
+      totalPriceUAH: item.totalPriceUAH ?? 0,
     })),
   });
 
-  type OrderInsertPayload = ReturnType<typeof buildOrderPayload>;
-
-  const orderMutation = useMutation({
-    mutationFn: async (payload: OrderInsertPayload) => {
+  const orderMutation = useMutation<
+    void,
+    Error,
+    ReturnType<typeof buildOrderPayload>
+  >({
+    mutationFn: async payload => {
       const { error } = await supabase.from('orders').insert(payload);
       if (error) throw error;
     },
     onSuccess: async () => {
-      if (hasActiveWelcomeDiscount) {
-        await markWelcomeDiscountUsed();
-      }
+      if (hasActiveWelcomeDiscount) await markWelcomeDiscountUsed();
       await queryClient.invalidateQueries({ queryKey: ['orders'] });
       clearCart();
       setShowSuccessModal(true);
     },
     onError: () => {
-      setErrorMessage(t('Something went wrong. Please try again'));
+      setErrors({});
+      alert(t('Something went wrong. Please try again'));
     },
   });
 
   const handleCardPayment = () => {
-    if (!isFormValid()) {
-      setErrorMessage(t('Please fill in all required fields'));
-      return;
-    }
-
-    const draft = {
-      formData,
-      orderPayload: buildOrderPayload(),
-    };
-
+    if (!validateForm()) return;
+    const draft = { formData, orderPayload: buildOrderPayload() };
     localStorage.setItem(PENDING_ORDER_KEY, JSON.stringify(draft));
     navigate(`/mock-checkout?amount=${totalWithDelivery}`);
   };
 
   const handleSubmit = () => {
+    if (!validateForm()) return;
     if (formData.paymentMethod === 'card') {
       handleCardPayment();
       return;
     }
-
-    if (!isFormValid()) {
-      setErrorMessage(t('Please fill in all required fields'));
-      return;
-    }
-
-    const payload = buildOrderPayload();
-    orderMutation.mutate(payload);
+    orderMutation.mutate(buildOrderPayload());
   };
 
   const handleChange = (
@@ -243,7 +236,6 @@ export const CheckoutPage: FC = () => {
           ukrposhtaBranch: '',
         };
       }
-
       if (name === 'novaPoshtaType') {
         return {
           ...prev,
@@ -253,41 +245,26 @@ export const CheckoutPage: FC = () => {
           novaPoshtaAddress: '',
         };
       }
-
-      if (name === 'novaPoshtaCity') {
-        return {
-          ...prev,
-          novaPoshtaCity: value,
-          novaPoshtaBranch: '',
-          novaPoshtaLocker: '',
-        };
-      }
-
-      if (name === 'ukrposhtaCity') {
-        return {
-          ...prev,
-          ukrposhtaCity: value,
-          ukrposhtaBranch: '',
-        };
-      }
-
       return { ...prev, [name]: value };
     });
+
+    if (errors[name as keyof CheckoutFormState]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" ref={formRef}>
       <div className="container py-8">
         <BackButton onClick={() => window.history.back()} label={t('Back')} />
-
-        <h2 className="mb-8">{t('Place an order')}</h2>
-
-        {errorMessage && (
-          <p className="mb-4 text-sm text-red-500">{errorMessage}</p>
-        )}
+        <h2 className="mb-8 text-3xl font-bold">{t('Place an order')}</h2>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <CheckoutForm formData={formData} onChange={handleChange} />
+          <CheckoutForm
+            formData={formData}
+            onChange={handleChange}
+            errors={errors}
+          />
 
           <div className="lg:col-span-1">
             <OrderSummary
@@ -297,7 +274,7 @@ export const CheckoutPage: FC = () => {
               deliveryPrice={deliveryPrice}
               totalWithDelivery={totalWithDelivery}
               onSubmit={handleSubmit}
-              getItemTotalUAH={getItemTotalUAH}
+              getItemTotalUAH={item => item.totalPriceUAH ?? 0}
               isCardPaymentSelected={formData.paymentMethod === 'card'}
               onCardPayment={handleCardPayment}
             />
@@ -312,7 +289,6 @@ export const CheckoutPage: FC = () => {
               {t('Your order has been accepted for processing')}
             </h3>
             <p className="text-accent">{t("Wait for the manager's call")}</p>
-
             <div className="mt-6 flex justify-end gap-3">
               <Button onClick={() => navigate('/profile')}>
                 {t('Profile')}

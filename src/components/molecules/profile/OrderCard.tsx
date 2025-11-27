@@ -36,8 +36,8 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
 
   const deliveryCity =
     order.delivery_service === 'novaPoshta'
-      ? order.nova_poshta_city ?? ''
-      : order.ukrposhta_city ?? '';
+      ? (order.nova_poshta_city ?? '')
+      : (order.ukrposhta_city ?? '');
 
   const formatDeliveryAddress = () => {
     const parts: string[] = [];
@@ -207,8 +207,9 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
               </p>
 
               {order.items.map(item => {
-                const fallbackNamespaceId =
-                  books.find(book => book.id === item.bookId)?.namespaceId;
+                const fallbackNamespaceId = books.find(
+                  book => book.id === item.bookId,
+                )?.namespaceId;
                 const namespaceId = item.namespaceId || fallbackNamespaceId;
                 const href = namespaceId ? `/books/${namespaceId}` : null;
 
@@ -228,7 +229,7 @@ export const OrderCard: FC<OrderCardProps> = ({ order }) => {
                       <p className="text-sm font-semibold">{item.title}</p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                      {item.quantity} {t('pcs.')}
+                      {item.quantity} {t('pcs')}
                     </p>
                   </div>
                 );
