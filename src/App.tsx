@@ -18,7 +18,6 @@ import { GitHubPage } from './pages/system/GithubPage';
 import { RightsPage } from './pages/system/RightsPage';
 
 import { MockStripeCheckout } from './pages/MockStripeCheckout/MockStripeCheckout';
-import { PaymentSuccess } from './pages/PaymentSuccess/PaymentSuccess';
 import { OrderSuccessPage } from './pages/OrderSuccessPage/OrderSuccessPage';
 
 import { CartProvider } from './context/CartContext';
@@ -74,11 +73,6 @@ export default function App() {
                     <Route
                       path="mock-checkout"
                       element={<MockStripeCheckout />}
-                    />
-
-                    <Route
-                      path="payment-success"
-                      element={<PaymentSuccess />}
                     />
 
                     <Route

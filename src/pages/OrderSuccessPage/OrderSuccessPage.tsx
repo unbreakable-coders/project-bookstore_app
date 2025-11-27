@@ -1,9 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const OrderSuccessPage = () => {
   const navigate = useNavigate();
-  const { orderId } = useParams<{ orderId: string }>();
   const { t } = useTranslation();
 
   return (
@@ -11,28 +10,22 @@ export const OrderSuccessPage = () => {
       <div className="text-4xl">🎉</div>
 
       <h1 className="text-2xl font-semibold text-center">
-        {t('Thank you for your order!')}
+        Ваше замовлення прийнято в роботу. Очікуйте на дзвінок нашого менеджера
       </h1>
 
-      {orderId && (
-        <p className="text-sm text-gray-600">
-          {t('Order ID:')} <b>{orderId}</b>
-        </p>
-      )}
-
-      <div className="flex gap-4 mt-4">
+      <div className="flex flex-col gap-3 mt-4 w-full max-w-xs">
         <button
           onClick={() => navigate('/')}
-          className="px-8 cursor-pointer py-3 bg-black text-white rounded-lg"
+          className="px-8 cursor-pointer py-3 bg-black text-white rounded-lg w-full"
         >
-          {t('Go to Home')}
+          Продовжити покупки
         </button>
 
         <button
-          onClick={() => navigate('/catalog')}
-          className="px-8 cursor-pointer py-3 border border-black rounded-lg"
+          onClick={() => navigate('/profile')}
+          className="px-8 cursor-pointer py-3 border border-black rounded-lg w-full"
         >
-          {t('Go to Catalog')}
+          Перегляд замовлення
         </button>
       </div>
     </div>
