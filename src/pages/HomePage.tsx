@@ -99,6 +99,8 @@ export const HomePage = () => {
 
   sessionStorage.setItem('wasIntro', 'true');
 
+  const heroOpacity = Math.max(0, (800 - scrollY) / 800);
+
   return (
     <BlurFadeWrapper>
       {theme.backgroundImage && (
@@ -114,21 +116,16 @@ export const HomePage = () => {
         />
       )}
       <div
-        className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700"
-        style={{
-          opacity: scrollY < 800 ? Math.max(0, (800 - scrollY) / 800) : 0,
-        }}
+        className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-1000"
+        style={{ opacity: heroOpacity }}
       >
         <PromoSlider />
       </div>
 
-      <div className="fixed inset-0 -z-20 pointer-events-none transition-opacity duration-700">
-        <PromoSlider />
-      </div>
       <div
         className="fixed inset-0 pointer-events-none -z-10 transition-opacity duration-700"
         style={{
-          background: `linear-gradient(to bottom, transparent 0%, rgba(255,251,245,0.5) 50%, rgb(255,251,245) 100%)`,
+          background: `linear-gradient(to bottom, transparent 0%, rgba(255,251,245,0.5) 50%, rgb(255,251,245) 180%)`,
           opacity: overlayOpacity,
         }}
       />
