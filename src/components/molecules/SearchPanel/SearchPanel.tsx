@@ -25,7 +25,7 @@ const mapTypeIcon = (type: string): string => {
   const t = type.toLowerCase();
 
   if (t === 'paperback') return ' 📖';
-  if (t === 'kindle') return ' 📋';
+  if (t === 'kindle') return ' 📱';
   if (t === 'audiobook') return ' 🔉';
 
   return '';

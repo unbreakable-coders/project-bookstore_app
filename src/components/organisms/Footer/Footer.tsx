@@ -34,7 +34,6 @@ export const Footer = () => {
             <div className="w-7" />
           </div>
 
-          {/* MOBILE */}
           <div className="md:hidden">
             <div className="flex items-center justify-start">
               <Logo className="h-7 w-auto" />

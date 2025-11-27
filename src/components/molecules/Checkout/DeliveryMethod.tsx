@@ -114,7 +114,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
       <div className="space-y-4">
         <div className="space-y-3">
-          {/* Nova Poshta */}
           <div className="rounded-lg border border-border bg-card p-4">
             <Radio
               name="deliveryService"
@@ -127,7 +126,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
 
             {formData.deliveryService === 'novaPoshta' && (
               <div className="mt-4 space-y-5 ml-6">
-                {/* City */}
                 <div>
                   <label className="block text-sm font-medium text-muted mb-1">
                     {t('City *')}
@@ -262,7 +260,6 @@ export const DeliveryMethod: FC<DeliveryMethodProps> = ({
             )}
           </div>
 
-          {/* Ukrposhta */}
           <div className="rounded-lg border border-border bg-card p-4">
             <Radio
               name="deliveryService"

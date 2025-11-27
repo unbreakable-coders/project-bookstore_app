@@ -28,9 +28,13 @@ export const TeamMemberCard = ({
         {name}
       </h3>
 
+<<<<<<< Updated upstream
       <p className="text-[14px] leading-[21px] text-secondary mb-8 h-[30px]">
         {phrase}
       </p>
+=======
+      <p className="text-[14px] leading-[21px] text-secondary mb-8">{role}</p>
+>>>>>>> Stashed changes
 
       <div className="w-full space-y-3">
         <ContactLink icon="mail" href={`mailto:${email}`} label={email} />

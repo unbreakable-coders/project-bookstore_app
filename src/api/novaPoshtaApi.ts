@@ -1,15 +1,11 @@
-// src/api/novaPoshtaApi.ts
 const NOVA_POSHTA_API_URL = 'https://api.novaposhta.ua/v2.0/json/';
 
-// Витягуємо ключ з env (Vite)
 const API_KEY = import.meta.env.VITE_NOVA_POSHTA_API_KEY as string;
 
 if (!API_KEY) {
-  // Можеш потім замінити на більш цивільний варіант / warning
   console.warn('[NovaPoshtaApi] VITE_NOVA_POSHTA_API_KEY is not set');
 }
 
-// ===== Типи відповіді можна спростити до потрібного мінімуму =====
 
 interface NovaPoshtaResponse<T> {
   success: boolean;
@@ -23,27 +19,24 @@ interface NovaPoshtaResponse<T> {
   infoCodes: string[];
 }
 
-// Населені пункти (searchSettlements)
 export interface NovaPoshtaSettlement {
   Present: string;
-  MainDescription: string; // назва міста
+  MainDescription: string; 
   Area: string;
   Region: string;
   DeliveryCity: string;
-  Ref: string; // потрібен для пошуку відділень
+  Ref: string; 
 }
 
-// Відділення / поштомати (getWarehouses)
 export interface NovaPoshtaWarehouse {
   SiteKey: string;
   Description: string;
   ShortAddress: string;
   Number: string;
   CityRef: string;
-  TypeOfWarehouse: string; // "Branch", "Postomat" etc
+  TypeOfWarehouse: string; 
 }
 
-// ===== Базова функція для запитів =====
 
 async function callNovaPoshta<T>(
   modelName: string,
@@ -75,9 +68,6 @@ async function callNovaPoshta<T>(
   return json.data;
 }
 
-// ===== Публічні функції для твоєї форми =====
-
-// Пошук міст (онлайн довідник) – Address/searchSettlements
 export async function searchNovaPoshtaSettlements(query: string) {
   if (!query.trim()) return [];
 
@@ -88,14 +78,13 @@ export async function searchNovaPoshtaSettlements(query: string) {
   });
 }
 
-// Отримати відділення/поштомати для вибраного міста
 export async function getNovaPoshtaWarehouses(
   cityRef: string,
   type?: 'branch' | 'locker',
 ) {
   const typeOfWarehouseRef =
     type === 'locker'
-      ? 'f9316480-5f2d-425d-bc2c-ac7cd29decf0' // умовний ref для поштоматів (замінити на реальний при потребі)
+      ? 'f9316480-5f2d-425d-bc2c-ac7cd29decf0' 
       : undefined;
 
   return callNovaPoshta<NovaPoshtaWarehouse>('AddressGeneral', 'getWarehouses', {

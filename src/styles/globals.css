@@ -66,7 +66,7 @@
 
 @media (min-width: 1200px) {
   :root {
-    --header-height: 120px; /* десктоп — підстав свою реальну висоту! */
+    --header-height: 120px; 
   }
 }
 

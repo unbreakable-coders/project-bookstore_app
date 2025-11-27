@@ -16,7 +16,7 @@ interface OrderSummaryProps {
   totalItems: number;
   itemsTotalUAH: number;
   deliveryPrice: number;
-  totalWithDelivery: number; // залишаємо в типах, але не використовуємо
+  totalWithDelivery: number; 
   getItemTotalUAH: (item: CartItem) => number;
 
   onSubmit: () => void;

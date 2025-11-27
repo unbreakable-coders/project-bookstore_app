@@ -15,7 +15,5 @@ export const Price: React.FC<PriceProps> = ({
     old: 'text-sm text-muted line-through',
   };
 
-  //return <span className={styles[variant]}>₴{amount}</span>;
-  //return <span className={styles[variant]}>${amount}</span>;
   return <span className={styles[variant]}>₴{Math.ceil(amount * 42)}</span>;
 };

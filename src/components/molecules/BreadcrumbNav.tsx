@@ -22,28 +22,23 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
 
   return (
     <div className="flex items-center gap-1 uppercase font-bold tracking-[0.01em] truncate whitespace-nowrap">
-      {/* Home icon */}
       <Link to="/">
         <Icon name={theme === 'dark' ? 'homeWhite' : 'home'} />
       </Link>
 
-      {/* Стрілка після home */}
       <Icon
         className="h-3 w-3"
         name={theme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
       />
 
-      {/* Мобілка показує ... */}
       <span className="block md:hidden">...</span>
 
-      {/* Breadcrumb #1 */}
       {first && (
         <>
           <Link to={first.href} className="hidden md:inline hover:underline">
             {first.label}
           </Link>
 
-          {/* Стрілка після першого елемента */}
           <Icon
             className="hidden md:inline h-3 w-3"
             name={theme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}
@@ -51,7 +46,6 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
         </>
       )}
 
-      {/* Breadcrumb #2 */}
       {second && (
         <>
           <Link to={second.href} className="hidden md:inline hover:underline">
@@ -60,7 +54,6 @@ export const BreadcrumbNav: FC<BreadcrumbNavProps> = ({
         </>
       )}
 
-      {/* Поточна книга */}
       <Icon
         className="h-3 w-3"
         name={theme === 'dark' ? 'arrowRightWhite' : 'arrowRight'}

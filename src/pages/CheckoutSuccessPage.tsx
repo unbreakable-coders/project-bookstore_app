@@ -61,9 +61,20 @@ export const CheckoutSuccessPage: FC = () => {
     );
   }
 
-  const items = order.items.cart ?? [];
-  const delivery = order.items.delivery;
-  const contact = order.items.contact;
+  const items = order.items ?? [];
+
+  const deliveryServiceLabel =
+    order.delivery_service === 'novaPoshta'
+      ? t('novaPoshta')
+      : t('ukrposhta');
+
+  const deliveryCity =
+    order.delivery_service === 'novaPoshta'
+      ? order.nova_poshta_city
+      : order.ukrposhta_city;
+
+  const deliveryBranch =
+    order.delivery_service === 'novaPoshta' ? order.nova_poshta_branch : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,8 +85,9 @@ export const CheckoutSuccessPage: FC = () => {
           </h1>
 
           <p className="mb-6 text-secondary">
-            {t('Your order number is')} #{order.id}. {t('We have sent the details to')}{' '}
-            {contact.email || t('your email')}.
+            {t('Your order number is')} #{order.id}.{' '}
+            {t('We have sent the details to')}{' '}
+            {order.email || t('your email')}.
           </p>
 
           <div className="mb-6 space-y-2 text-sm">
@@ -96,10 +108,9 @@ export const CheckoutSuccessPage: FC = () => {
             <div>
               <span className="text-accent">{t('Delivery')}</span>
               <div className="text-secondary">
-                {delivery.service} · {delivery.type}{' '}
-                {delivery.city && `· ${delivery.city}`}
-                {delivery.branch && ` · ${delivery.branch}`}
-                {delivery.address && ` · ${delivery.address}`}
+                {deliveryServiceLabel}
+                {deliveryCity && ` · ${deliveryCity}`}
+                {deliveryBranch && ` · ${deliveryBranch}`}
               </div>
             </div>
           </div>
@@ -132,7 +143,7 @@ export const CheckoutSuccessPage: FC = () => {
                   </div>
 
                   <div className="text-sm font-semibold text-secondary">
-                    {item.price * item.quantity} ₴
+                    {item.quantity}
                   </div>
                 </div>
               ))}

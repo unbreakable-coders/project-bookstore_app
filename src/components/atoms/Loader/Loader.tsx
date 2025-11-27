@@ -13,10 +13,8 @@ export const Loader = () => {
   return (
     <div className="loader-container">
       <div className="loader-wrapper">
-        {/* Текст Loading */}
         <div className="loader-text">LOADING</div>
 
-        {/* Літаючі книги */}
         {books.map((book, index) => (
           <div
             key={index}
@@ -25,12 +23,9 @@ export const Loader = () => {
               animationDelay: `${book.delay}s`,
             }}
           >
-            {/* Книга */}
             <div className={`book bg-gradient-to-br ${book.color}`}>
-              {/* Корінець книги */}
               <div className="book-spine"></div>
 
-              {/* Сторінки */}
               <div className="book-pages">
                 <div className="page-line w-3/4"></div>
                 <div className="page-line w-full"></div>
@@ -39,10 +34,8 @@ export const Loader = () => {
                 <div className="page-line w-3/4"></div>
               </div>
 
-              {/* Обкладинка з текстурою */}
               <div className="book-texture"></div>
 
-              {/* Тінь */}
               <div
                 className="book-shadow"
                 style={{
@@ -53,7 +46,6 @@ export const Loader = () => {
           </div>
         ))}
 
-        {/* Декоративна лінія */}
         <div className="decorative-line"></div>
       </div>
     </div>

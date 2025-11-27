@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from '@/components/atoms/Loader/Loader';
 import { useTranslation } from 'react-i18next';

@@ -11,7 +11,7 @@ export interface HeaderDesktopSearchProps {
   isCatalogPage: boolean;
   catalogSearch: string;
   onCatalogSearchChange: (value: string) => void;
-  selectedCategory: string; // 'all' або slug
+  selectedCategory: string; 
   categoryOptions: DropdownOption[];
   onCategorySelect: (slug: string) => void;
   onOpenSearch: () => void;

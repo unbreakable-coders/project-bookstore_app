@@ -46,7 +46,6 @@ export const WelcomeDiscountProvider = ({
 
   const DISCOUNT_PERCENT = 10;
 
-  // ---- завантаження профілю ----
   useEffect(() => {
     if (!user?.id || authInitializing) {
       setExpiresAt(null);
@@ -104,7 +103,6 @@ export const WelcomeDiscountProvider = ({
     };
   }, [user?.id, authInitializing]);
 
-  // ---- таймер до закінчення знижки ----
   useEffect(() => {
     if (!expiresAt) {
       setRemainingMs(0);
@@ -128,13 +126,11 @@ export const WelcomeDiscountProvider = ({
     };
   }, [expiresAt]);
 
-  // активна знижка = є дата, ще не протермінована і не використана
   const hasActiveWelcomeDiscount = useMemo(
     () => Boolean(expiresAt && remainingMs > 0 && !isUsed),
     [expiresAt, remainingMs, isUsed],
   );
 
-  // якщо знижка стала неактивною — модалка автоматом ховається
   useEffect(() => {
     if (!hasActiveWelcomeDiscount) {
       setShowModal(false);

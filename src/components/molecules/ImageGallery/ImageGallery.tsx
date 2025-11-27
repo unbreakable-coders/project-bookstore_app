@@ -20,7 +20,6 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
 
   return (
     <>
-      {/* DESKTOP/TABLET (VERTICAL THUMBS) */}
       <div className="hidden md:flex flex-col gap-2 mr-6">
         {images.map((imgSrc, index) => (
           <div
@@ -42,7 +41,6 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
         ))}
       </div>
 
-      {/* COLUMN 2 — MAIN IMAGE */}
       <div className="flex justify-center lg:justify-start mr-8">
         <div className="flex items-start justify-center w-[205px] h-[278px] md:w-[205px] md:h-[316px] lg:w-[337px] lg:h-[520px] rounded-[10px] overflow-hidden bg-background">
           <img
@@ -57,7 +55,6 @@ export const MainImageGallery: React.FC<MainImageGalleryProps> = ({
         </div>
       </div>
 
-      {/* COLUMN 1 MOBILE — HORIZONTAL SCROLL */}
       <div className="w-full overflow-x-auto p-2 md:hidden mt-[41px]">
         <div className="flex justify-center gap-2">
           {images.map((imgSrc, index) => (

@@ -1,7 +1,7 @@
 import type { ThemeConfig } from '@/types/theme';
 
 export const themesConfig: ThemeConfig[] = [
-  // Різдво
+
   {
     id: 'christmas',
     name: 'Christmas',
@@ -62,7 +62,6 @@ export const themesConfig: ThemeConfig[] = [
     backgroundImage: '/books/img/backgrounds/christmas.svg',
   },
 
-  // День святого Валентина
   {
     id: 'valentine',
     name: 'Valentine',
@@ -123,7 +122,6 @@ export const themesConfig: ThemeConfig[] = [
     backgroundImage: '/books/img/backgrounds/valentine.svg',
   },
 
-  // День незалежності України (Дефолтна)
   {
     id: 'default',
     name: 'Default',
@@ -162,10 +160,8 @@ export const themesConfig: ThemeConfig[] = [
       enabled: true,
       density: 40,
     },
-    //backgroundImage: '/books/img/backgrounds/default.svg',
   },
 
-  // Хелловін
   {
     id: 'halloween',
     name: 'Halloween',
@@ -225,7 +221,6 @@ export const themesConfig: ThemeConfig[] = [
     backgroundImage: '/books/img/backgrounds/halloween.svg',
   },
 
-  // День знань
   {
     id: 'knowlenge',
     name: 'Knowledge',

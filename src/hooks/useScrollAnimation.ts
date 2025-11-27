@@ -13,7 +13,5 @@ export const useWow = () => {
 
     wow.init();
 
-    // return () => {
-    // };
   }, []);
 };

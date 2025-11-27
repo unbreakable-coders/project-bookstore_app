@@ -26,7 +26,6 @@
   overflow: hidden;
 }
 
-/* Текст Loading */
 .loader-text {
   position: absolute;
   top: 50%;
@@ -69,7 +68,6 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
-/* Корінець */
 .book-spine {
   position: absolute;
   left: 0;
@@ -84,7 +82,6 @@
   background-color: rgba(139, 69, 19, 0.4);
 }
 
-/* Сторінки */
 .book-pages {
   position: absolute;
   top: 0.5rem;
@@ -105,7 +102,6 @@
   background-color: rgba(160, 82, 45, 0.5);
 }
 
-/* Текстура обкладинки */
 .book-texture {
   position: absolute;
   inset: 0;
@@ -129,7 +125,6 @@
   );
 }
 
-/* Тінь під книгою */
 .book-shadow {
   position: absolute;
   top: 100%;
@@ -155,7 +150,6 @@
   );
 }
 
-/* Декоративна лінія */
 .decorative-line {
   position: absolute;
   bottom: 0;

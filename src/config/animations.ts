@@ -1,4 +1,3 @@
-// @/config/animations.ts — заміни повністю цей файл на цей варіант
 import type { Variants } from 'framer-motion';
 import type { AnimationType } from '@/types/animations';
 

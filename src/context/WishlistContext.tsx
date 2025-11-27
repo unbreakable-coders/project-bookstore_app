@@ -25,7 +25,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
   const [authReady, setAuthReady] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
-  // --- AUTH RESOLUTION ---
   useEffect(() => {
     let isMounted = true;
 
@@ -57,7 +56,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [getCurrentUser]);
 
-  // --- INITIAL LOAD ---
   useEffect(() => {
     if (!authReady) return;
 
@@ -75,7 +73,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
 
           setWishlist(new Set(merged));
 
-          // sync local items to supabase if needed
           if (merged.length !== remote.length) {
             await Promise.all(
               merged.map(bookId => wishlistApi.add(userId, bookId)),
@@ -96,7 +93,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     void initWishlist();
   }, [authReady, userId]);
 
-  // --- TOGGLE ---
   const toggleWishlist = (bookId: string) => {
     setWishlist(prev => {
       const next = new Set(prev);

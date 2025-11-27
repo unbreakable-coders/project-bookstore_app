@@ -20,7 +20,6 @@ export const WelcomeDiscountModal = () => {
 
   const navigate = useNavigate();
 
-  // затримка перед показом будь-якої модалки
   useEffect(() => {
     const id = window.setTimeout(() => setIsDelayPassed(true), 9000);
 
@@ -29,13 +28,11 @@ export const WelcomeDiscountModal = () => {
     };
   }, []);
 
-  // вибір, яку модалку показувати після затримки
   useEffect(() => {
     if (!isDelayPassed || initializing) {
       return;
     }
 
-    // гість
     if (!user) {
       const dismissed = localStorage.getItem('welcomeModalDismissed');
 
@@ -48,7 +45,6 @@ export const WelcomeDiscountModal = () => {
       return;
     }
 
-    // авторизований юзер
     setShowGuestModal(false);
   }, [user, initializing, isDelayPassed]);
 

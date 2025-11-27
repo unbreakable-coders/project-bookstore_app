@@ -59,7 +59,6 @@ export const ProductCardsBlock = ({
     4: 'grid-cols-4',
   }[itemsPerPage];
 
-  // 🔒 Захисні обгортки — якщо батько раптом передав не функцію
   const safeIsInCart = (bookId: string) =>
     typeof isInCart === 'function' ? isInCart(bookId) : false;
 
@@ -121,7 +120,7 @@ export const ProductCardsBlock = ({
           {visibleBooks.map(book => (
             <AnimatedDiv
               key={book.id}
-              animation="fadeInUp" // саме знизу вгору
+              animation="fadeInUp"
               className="w-[272px]"
             >
               <BookCard
