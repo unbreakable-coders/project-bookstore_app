@@ -10,7 +10,7 @@ export const OrderSuccessPage = () => {
       <div className="text-4xl">🎉</div>
 
       <h1 className="text-2xl font-semibold text-center">
-        Ваше замовлення прийнято в роботу. Очікуйте на дзвінок нашого менеджера
+        {t('orderSuccess.title')}
       </h1>
 
       <div className="flex flex-col gap-3 mt-4 w-full max-w-xs">
@@ -18,14 +18,14 @@ export const OrderSuccessPage = () => {
           onClick={() => navigate('/')}
           className="px-8 cursor-pointer py-3 bg-black text-white rounded-lg w-full"
         >
-          Продовжити покупки
+          {t('orderSuccess.continueShopping')}
         </button>
 
         <button
           onClick={() => navigate('/profile')}
           className="px-8 cursor-pointer py-3 border border-black rounded-lg w-full"
         >
-          Перегляд замовлення
+          {t('orderSuccess.viewOrder')}
         </button>
       </div>
     </div>
