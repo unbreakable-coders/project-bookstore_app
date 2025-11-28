@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
@@ -21,8 +21,8 @@ export const BookDetailsPage = () => {
   const { namespaceId } = useParams<{ namespaceId: string }>();
   const { t, i18n } = useTranslation();
   const { books: recommendedBooks } = useRecommendedBooks(16);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchParams] = useSearchParams();
   const urlLangParam = searchParams.get('lang') as LanguageCode | null;
 
   const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(
@@ -31,6 +31,12 @@ export const BookDetailsPage = () => {
 
   const { toggleCart, isInCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+
+  useEffect(() => {
+    if (urlLangParam && urlLangParam !== currentLanguage) {
+      setCurrentLanguage(urlLangParam);
+    }
+  }, [urlLangParam]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['book', namespaceId, currentLanguage],
@@ -48,6 +54,10 @@ export const BookDetailsPage = () => {
 
   const handleLanguageChange = (lang: LanguageCode) => {
     setCurrentLanguage(lang);
+
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('lang', lang);
+    setSearchParams(newSearchParams);
   };
 
   const getDisplayValue = (
