@@ -1,150 +1,71 @@
-import { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { fetchBookProduct, type BookProduct } from '@/lib/booksApi';
-import { BookDetailsTemplate } from '@/components/templates/BookDetailsTemplate';
+import React from 'react';
+import { BreadcrumbNav } from '../molecules/BreadcrumbNav';
+import { MainImageGallery } from '../molecules/ImageGallery/ImageGallery.tsx';
+import { ProductInfoPanel } from '../organisms/ProductInfoPanel.tsx';
+import { AboutAndCharacteristics } from '../organisms/AboutAndCharacteristics.tsx';
+import { ProductCardsBlock } from '../organisms/Home/ProductCardsBlock.tsx';
+import type { Book } from '@/types/book/book.ts';
 import { useTranslation } from 'react-i18next';
-import { Loader } from '@/components/atoms/Loader/Loader';
-import { useRecommendedBooks } from '@/hooks/useRecommendedBooks';
-import { useCart } from '@/context/CartContext';
-import { useWishlist } from '@/context/WishlistContext';
 
-type LanguageCode = 'uk' | 'en' | string;
+interface BookDetailsTemplateProps {
+  book: {
+    id: string;
+    title: string;
+    author: string;
+    images: string[];
+    category: string;
+    price: number;
+    oldPrice: number | null;
+    details: { label: string; value: string | number }[];
+    aboutTitle: string;
+    aboutContent: string[];
+    characteristics: { label: string; value: string | number }[];
+    type: string;
+  };
+  breadcrumbs: { label: string; href: string }[];
+  selectedLanguage: string;
+  onSelectLanguage: (lang: string) => void;
+  onAddToCart: (bookId: string) => void;
+  onToggleWishlist: (bookId: string) => void;
+  isInWishlist: (bookId: string) => boolean;
+  isInCart: (bookId: string) => boolean;
+  availableLanguages: string[];
+  booksMightLike: Book[];
+}
 
 const BOOK_TYPE_LABELS: Record<string, string> = {
-  paperback: 'PAPER BOOKS',
-  kindle: 'KINDLE EDITION',
+  paperback: 'PAPER_BOOKS',
+  kindle: 'KINDLE_EDITION',
   audiobook: 'AUDIOBOOKS',
 };
 
-export const BookDetailsPage = () => {
-  const { namespaceId } = useParams<{ namespaceId: string }>();
-  const { t, i18n } = useTranslation();
-  const { books: recommendedBooks } = useRecommendedBooks(16);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const urlLangParam = searchParams.get('lang') as LanguageCode | null;
-
-  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>(
-    urlLangParam || (i18n.language as LanguageCode) || 'uk',
-  );
-
-  const { toggleCart, isInCart } = useCart();
-  const { toggleWishlist, isInWishlist } = useWishlist();
-
-  useEffect(() => {
-    if (urlLangParam && urlLangParam !== currentLanguage) {
-      setCurrentLanguage(urlLangParam);
-    }
-  }, [urlLangParam]);
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['book', namespaceId, currentLanguage],
-    queryFn: () => {
-      if (!namespaceId) {
-        return Promise.reject(new Error('Missing namespaceId'));
-      }
-
-      return fetchBookProduct(namespaceId, currentLanguage);
-    },
-    enabled: !!namespaceId,
-  });
-
-  const product = data as BookProduct | null;
-
-  const handleLanguageChange = (lang: LanguageCode) => {
-    setCurrentLanguage(lang);
-
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('lang', lang);
-    setSearchParams(newSearchParams);
+const getCatalogType = (bookType: string): string => {
+  const map: Record<string, string> = {
+    paperback: 'paper',
+    kindle: 'kindle',
+    audiobook: 'audiobook',
   };
 
-  const getDisplayValue = (
-    value: string | number | null | undefined,
-  ): string => {
-    if (value === null || value === undefined || value === '') {
-      return '-';
-    }
-    return String(value);
-  };
+  return map[bookType] || 'paper';
+};
 
-  const getTranslatedValue = (
-    value: string | number | null | undefined,
-  ): string => {
-    if (value === null || value === undefined || value === '') {
-      return '-';
-    }
-    return t(String(value));
-  };
+export const BookDetailsTemplate: React.FC<BookDetailsTemplateProps> = ({
+  book,
+  breadcrumbs,
+  selectedLanguage,
+  onSelectLanguage,
+  onAddToCart,
+  onToggleWishlist,
+  isInCart,
+  isInWishlist,
+  availableLanguages,
+  booksMightLike,
+}) => {
+  const { t } = useTranslation();
 
-  if (!namespaceId) {
-    return (
-      <div className="flex h-screen items-center justify-center text-xl text-red-600">
-        {t('Error: Book ID not passed in URL')}
-      </div>
-    );
-  }
+  const catalogType = getCatalogType(book.type);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center text-xl">
-        <Loader />
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="flex h-screen items-center justify-center text-xl text-red-600">
-        {t('Error: Failed to load product data')}
-      </div>
-    );
-  }
-
-  const bookId = product.id;
-
-  const handleToggleWishlist = (id: string) => {
-    if (!id) {
-      return;
-    }
-    toggleWishlist(id);
-  };
-
-  const handleAddToCart = (id: string) => {
-    if (!id) {
-      return;
-    }
-    toggleCart(id);
-  };
-
-  const detailsList = [
-    { label: t('Author'), value: getDisplayValue(product.author) },
-    {
-      label: t('Cover type'),
-      value: getTranslatedValue(product.details.coverType),
-    },
-    {
-      label: t('Number of pages'),
-      value: getDisplayValue(product.details.numberOfPages),
-    },
-    {
-      label: t('Year of publication'),
-      value: getDisplayValue(product.details.publicationYear),
-    },
-    {
-      label: t('Publication'),
-      value: getTranslatedValue(product.details.publication),
-    },
-    { label: t('Format'), value: getTranslatedValue(product.details.format) },
-    { label: t('Language'), value: getTranslatedValue(product.lang) },
-    {
-      label: t('Illustrations'),
-      value: product.details.illustrations ? t('yes') : t('no'),
-    },
-  ];
-
-  const createCategorySlug = (category: string): string => {
+  const categorySlug = (category: string): string => {
     return category
       .toLowerCase()
       .replace(/&/g, 'and')
@@ -152,58 +73,72 @@ export const BookDetailsPage = () => {
       .replace(/(^-|-$)/g, '');
   };
 
-  const getCatalogType = (bookType: string): string => {
-    const typeMap: Record<string, string> = {
-      paperback: 'paper',
-      kindle: 'kindle',
-      audiobook: 'audiobook',
-    };
-    return typeMap[bookType] || 'paper';
-  };
-
-  const catalogType = getCatalogType(product.type);
-  const categorySlug = createCategorySlug(product.category[0] || 'books');
-
-  const breadcrumbs = [
+  const defaultBreadcrumbs = [
     {
-      label: t(BOOK_TYPE_LABELS[product.type] || 'BOOKS'),
-      href: `/catalog/${catalogType}`,
+      label: t(BOOK_TYPE_LABELS[book.type] || 'BOOKS'),
+      href: `/catalog/${catalogType}?page=1`,
     },
     {
-      label: t(product.category[0] || 'BOOKS').toUpperCase(),
-      href: `/catalog/${catalogType}?category=${categorySlug}&page=1`,
+      label: t(book.category).toUpperCase(),
+      href: `/catalog/${catalogType}?category=${categorySlug(book.category)}&page=1`,
     },
   ];
 
-  const templateData = {
-    book: {
-      id: bookId,
-      title: product.title,
-      author: product.author,
-      images: product.images,
-      category: product.category[0] ?? '',
-      price: product.price,
-      oldPrice: product.oldPrice,
-      details: detailsList,
-      aboutTitle: product.description[0] || t('About this book'),
-      aboutContent: product.description.slice(1),
-      characteristics: detailsList,
-      type: product.type,
-    },
-    breadcrumbs,
-    selectedLanguage: currentLanguage,
-    onSelectLanguage: handleLanguageChange,
-    onAddToCart: handleAddToCart,
-    onToggleWishlist: handleToggleWishlist,
-    isInCart,
-    isInWishlist,
-    availableLanguages: product.availableLanguages,
-    booksMightLike: recommendedBooks,
-  };
-
+  const breadcrumbItems = breadcrumbs.length ? breadcrumbs : defaultBreadcrumbs;
+  console.log('Book type:', book.type);
+  console.log('Book category:', book.category);
+  console.log('Catalog type:', catalogType);
+  console.log('Category slug:', categorySlug);
+  console.log('Breadcrumbs:', defaultBreadcrumbs);
   return (
-    <div className="mt-10">
-      <BookDetailsTemplate {...templateData} />
+    <div className="container pt-6">
+      <BreadcrumbNav items={breadcrumbItems} currentTitle={book.title} />
+
+      <h2 className="mt-4 md:mt-6 tracking-[0] md:tracking-[-0.01em]">
+        {book.title}
+      </h2>
+      <p className="mt-1.5 opacity-60">{book.author}</p>
+
+      <div className="px-4 md:px-6 lg:px-8 mt-[5px] md:mt-8 lg:mt-10 ">
+        <div className="md:grid md:grid-cols-[auto_1fr_1fr] flex flex-col items-center md:flex-none md:flex-row md:items-start">
+          <MainImageGallery
+            images={book.images}
+            alt={`Обкладинка книги ${book.title}`}
+          />
+
+          <ProductInfoPanel
+            bookId={book.id}
+            category={book.category}
+            price={book.price}
+            oldPrice={book.oldPrice}
+            details={book.details}
+            languages={availableLanguages}
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={onSelectLanguage}
+            onAddToCart={() => onAddToCart(book.id)}
+            onToggleWishlist={() => onToggleWishlist(book.id)}
+            isInWishlist={isInWishlist}
+            isInCart={isInCart}
+          />
+        </div>
+      </div>
+
+      <AboutAndCharacteristics
+        aboutTitle={book.aboutTitle}
+        aboutContent={book.aboutContent}
+        characteristics={book.characteristics}
+      />
+
+      {booksMightLike.length > 0 && (
+        <ProductCardsBlock
+          title={t('You may also like')}
+          listOfBooks={booksMightLike}
+          onAddToCart={onAddToCart}
+          onToggleWishlist={onToggleWishlist}
+          isInCart={isInCart}
+          isInWishlist={isInWishlist}
+        />
+      )}
     </div>
   );
 };
