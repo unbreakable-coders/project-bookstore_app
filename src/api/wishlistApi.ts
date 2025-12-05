@@ -14,7 +14,13 @@ export const wishlistApi = {
   async add(userId: string, bookId: string) {
     const { error } = await supabase
       .from('wishlist_items')
-      .insert({ user_id: userId, book_id: bookId });
+      .upsert(
+        { user_id: userId, book_id: bookId },
+        {
+          onConflict: 'user_id,book_id',
+          ignoreDuplicates: true,
+        }
+      );
 
     if (error) throw error;
   },
