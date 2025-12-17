@@ -1,82 +1,36 @@
-# React + TypeScript + Vite
+## Bookstore App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+The Bookstore App is a full-featured web application designed to support the core operations of an online bookstore. It enables users to browse and search a product catalog, filter items by categories, manage a shopping cart, and complete orders. The system integrates with Supabase to handle data persistence and secure user authentication.
+The application is developed using React and TypeScript, following a scalable, component-driven architecture. It leverages Vite and Hot Module Replacement (HMR) to optimize developer productivity and reduce iteration time. The project is intended as a production-ready foundation for small to medium-sized e-commerce businesses.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Preview
 
-## React Compiler
+[DEMO LINK]: (https://project-bookstore-app-ashen.vercel.app/)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technology Stack
 
-## Expanding the ESLint configuration
+Frontend:
+React, TypeScript
+Vite with HMR for fast development cycles
+Backend / Services:
+Supabase (Database, Authentication, BaaS)
+Tooling & Quality:
+ESLint with TypeScript-focused configuration
+@vitejs/plugin-react / @vitejs/plugin-react-swc
+Optional Extensions:
+React Router for routing
+Zustand / Redux for advanced state management
+SWC for optimized builds
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technical Highlights
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
-
-## Supabase Integration
-
-To run the project with Supabase, create a `.env.local` file in the project root:
-
-```env
-VITE_SUPABASE_URL=your-project-url
-VITE_SUPABASE_ANON_KEY=your-anon-public-key
-```
+Strongly typed architecture using TypeScript to improve reliability and reduce runtime errors
+Modular, component-based UI design for high reusability and testability
+Efficient state handling and predictable data flow
+Supabase integration enabling rapid backend setup with secure authentication
+Developer-optimized environment with Vite and HMR for faster feedback loops
+Configurable linting strategy to enforce coding standards and code quality
+Deployment
+The application is structured to support production deployment and can be easily hosted on modern platforms such as Vercel or GitHub Pages, depending on business requirements.
